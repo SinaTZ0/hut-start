@@ -1,0 +1,235 @@
+/*
+ * V11 "Kaj": design tokens (V4's palette, kept: the reference design was drawn on it).
+ * Deep pine teal from the slopes of Alvand, a wheat-gold accent for the one action that matters
+ * on each band, and a cool off-white page. One family (Vazirmatn).
+ * The header toggle sets data-theme="dark"; the teal bands stay dark in both themes.
+ */
+[data-version='v11'] {
+  /* palette */
+  --pine-950: #0b2f32;
+  --pine-900: #103d40;
+  --pine-700: #1b6a64;
+  --pine-600: #1f7a72;
+  --pine-500: #2a8a80;
+  --pine-wash: #e8f0ec;
+  --gold: #e7bc65;
+  --gold-deep: #9a6b14;
+  --snow: #fbfcfa;
+  --mist: #f6f8f5;
+  --mist-2: #f0f4f1;
+  --white: #ffffff;
+  --ink: #15292b;
+
+  /* roles */
+  --bg: var(--mist);
+  --bg-alt: var(--snow);
+  --surface: var(--white);
+  --surface-2: var(--mist-2);
+  --chip: var(--pine-wash);
+  --text: var(--ink);
+  --text-muted: #5a6b6a;
+  --heading: var(--pine-900);
+  --link: var(--pine-700);
+  --line: #dfe6e2;
+  --line-strong: #c8d3ce;
+  --band: var(--pine-900);
+  --band-deep: var(--pine-950);
+  --on-band: #f3f6f4;
+  --on-band-muted: #a9c0bd;
+  --accent: var(--gold);
+  --on-accent: var(--pine-950);
+  /* gold text on light surfaces needs a darker tone for AA */
+  --accent-text: var(--gold-deep);
+  --focus: var(--pine-600);
+  /* the milestone that is under way or next */
+  --accent-wash: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  --shadow: 0 1px 2px rgb(16 61 64 / 0.04), 0 8px 24px -12px rgb(16 61 64 / 0.12);
+
+  /* type */
+  --font: 'Vazirmatn Variable', 'Vazirmatn', system-ui, sans-serif;
+  --step--2: 0.75rem;
+  --step--1: 0.8125rem;
+  --step-0: 0.9375rem;
+  --step-1: 1.125rem;
+  --step-2: 1.375rem;
+  --step-3: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  --step-4: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+  --step-5: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
+
+  /* space */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-s: 16px;
+  --space-m: 24px;
+  --space-l: 40px;
+  --space-xl: clamp(56px, 7vw, 96px);
+  --gutter: clamp(16px, 4vw, 40px);
+  /* full-bleed bands (the hero) keep only this edge, no max width */
+  --edge: clamp(16px, 4vw, 72px);
+  /* utility bar + main nav; the hero fills the rest of the first screen */
+  --header-h: 117px;
+  --max: 1240px;
+  --radius-s: 10px;
+  --radius: 16px;
+  --radius-l: 22px;
+
+  --skip-bg: var(--pine-950);
+  --skip-fg: var(--snow);
+
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--step-0);
+  line-height: 1.8;
+  color-scheme: light;
+}
+
+[data-version='v11'][data-theme='dark'] {
+  --bg: #0d1a1b;
+  --bg-alt: #0f1e20;
+  --surface: #142628;
+  --surface-2: #112123;
+  --chip: #1b3436;
+  --text: #e3ebe8;
+  --text-muted: #9db0ad;
+  --heading: #eef4f1;
+  --link: #7fd0c3;
+  --line: #22393b;
+  --line-strong: #2e4a4c;
+  --band: #0f3436;
+  --band-deep: #081f21;
+  --accent-text: var(--gold);
+  --focus: #7fd0c3;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.5);
+  color-scheme: dark;
+}
+
+/* in the base layer, so Tailwind utilities on a link or a focused control win over these defaults */
+@layer base {
+  :where([data-version='v11']) :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  :where([data-version='v11']) a {
+    color: var(--link);
+    text-underline-offset: 0.3em;
+  }
+}
+
+/*
+ * v11-open: the systems panel opens from the rail: up from its bottom edge on wide screens, where it sits
+ * above the rail, and down from its top edge on phones, where it sits under it.
+ * v11-slide: the hero copy rises (wide screens) or the sections under it move down (phones).
+ */
+::view-transition-group(.v11-open),
+::view-transition-group(.v11-slide) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+::view-transition-new(.v11-open):only-child {
+  animation: v11-open 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+::view-transition-old(.v11-open):only-child {
+  animation: v11-open 0.25s cubic-bezier(0.4, 0, 0.6, 1) reverse both;
+}
+
+@keyframes v11-open {
+  from {
+    clip-path: inset(0 0 100% 0);
+    translate: 0 -8px;
+    opacity: 0.4;
+  }
+  to {
+    clip-path: inset(0);
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+@media (min-width: 761px) {
+  ::view-transition-new(.v11-open):only-child {
+    animation-name: v11-rise;
+  }
+
+  ::view-transition-old(.v11-open):only-child {
+    animation-name: v11-rise;
+  }
+}
+
+@keyframes v11-rise {
+  from {
+    clip-path: inset(100% 0 0 0);
+    translate: 0 8px;
+    opacity: 0.4;
+  }
+  to {
+    clip-path: inset(0);
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+/*
+ * v11-pill: the announcements tab fill slides to the chosen tab. The group itself is
+ * painted as the pill (snapshots stretch and blur its round ends), so it stays sharp at
+ * every width. The colour is literal because the pseudo-elements hang off <html>,
+ * outside [data-version='v11'] where --pine-900 lives.
+ * v11-notices-out / -in: the old list is gone almost at once, then the new one settles in;
+ * they never overlap, which is what made the swap look blurred.
+ * The rest of the page (the root) swaps without a cross-fade, so no text ghosts.
+ */
+::view-transition-group(.v11-pill) {
+  animation-duration: 0.22s;
+  animation-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 999px;
+  background: #103d40;
+}
+
+::view-transition-old(.v11-pill),
+::view-transition-new(.v11-pill) {
+  display: none;
+}
+
+/* tab labels switch colour quickly, so the one the pill leaves never washes out */
+::view-transition-old(.v11-tab-label),
+::view-transition-new(.v11-tab-label) {
+  animation-duration: 0.12s;
+}
+
+:active-view-transition-type(v11-notices)::view-transition-old(root),
+:active-view-transition-type(v11-notices)::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(.v11-notices-out):only-child {
+  animation: v11-fade 0.07s linear reverse both;
+}
+
+::view-transition-new(.v11-notices-in):only-child {
+  animation: v11-notices-in 0.18s cubic-bezier(0.25, 0.8, 0.25, 1) 0.07s both;
+}
+
+@keyframes v11-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes v11-notices-in {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

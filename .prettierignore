@@ -18,3 +18,5 @@ tools/error-viewer/static/htmx.min.js
 tools/error-viewer/templates/
 # Vendored agent skills, copied from their packages (.agents/skills/*/SOURCE.md).
 .agents/
+# Copied design references (docs/frontend/reference/), kept as they were exported.
+docs/frontend/reference/
