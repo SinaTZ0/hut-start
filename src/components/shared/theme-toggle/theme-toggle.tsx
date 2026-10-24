@@ -15,8 +15,8 @@ export function ThemeToggle({ className }: { className?: string }) {
 
   return (
     <Button
-      variant="ghost"
-      size="icon"
+      variant="tool"
+      size="icon-sm"
       aria-label={m.theme_dark_mode()}
       aria-pressed={theme === null ? undefined : isDark}
       onClick={() => setTheme(isDark ? "light" : "dark")}

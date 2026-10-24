@@ -54,6 +54,13 @@ const twVariant = defineStyles({
     hover: "hover:bg-accent",
     state: "aria-expanded:bg-accent",
   },
+  // The header's round icon tools (search, theme, account, menu): use with an `icon-*` size.
+  tool: {
+    geometry: "rounded-full",
+    appearance: "text-heading",
+    hover: "hover:bg-accent",
+    state: "aria-expanded:bg-accent data-popup-open:bg-accent",
+  },
   ghost: {
     appearance: "text-brand-text",
     hover: "hover:bg-accent",

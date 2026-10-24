@@ -1,13 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import type { ComponentProps } from "react";
 
+import { m } from "#/paraglide/messages";
+
 /*===== Site Link =====*/
 
 export type SiteLinkProps = Omit<ComponentProps<"a">, "href"> & { href: string };
 
 /**
  * One link for content data that mixes this app's pages and outside destinations. Paths starting with `/` go through
- * the router; `http(s)` links open in a new tab without leaking the opener; `mailto:` and `tel:` stay plain anchors.
+ * the router; `http(s)` links open in a new tab without leaking the opener, and say so to screen readers; `mailto:` and
+ * `tel:` stay plain anchors.
  */
 export function SiteLink({ href, children, ...props }: SiteLinkProps) {
   if (href.startsWith("/")) {
@@ -22,6 +25,7 @@ export function SiteLink({ href, children, ...props }: SiteLinkProps) {
   return (
     <a href={href} {...(isWeb ? { target: "_blank", rel: "noopener noreferrer" } : {})} {...props}>
       {children}
+      {isWeb && <span className="sr-only"> {m.common_new_tab()}</span>}
     </a>
   );
 }

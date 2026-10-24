@@ -1,102 +1,138 @@
 import { Link } from "@tanstack/react-router";
-import { LogOutIcon, UserIcon } from "lucide-react";
+import { LogInIcon, MenuIcon, UserIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "#/components/primitive/button/button";
 import { buttonVariants } from "#/components/primitive/button/button.styles";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "#/components/primitive/dropdown-menu/dropdown-menu";
 import { LocaleSwitcher } from "#/components/shared/locale-switcher/locale-switcher";
+import { LogoMark } from "#/components/shared/logo-mark/logo-mark";
+import { SiteLink } from "#/components/shared/site-link/site-link";
 import { ThemeToggle } from "#/components/shared/theme-toggle/theme-toggle";
 import { useLocaleLinks } from "#/hooks/use-locale-links";
-import { useSignOut } from "#/hooks/use-sign-out";
+import { CONTACT_LINK, PORTAL_HREF } from "#/lib/university/navigation";
+import { cn } from "#/lib/utils";
 import type { Viewer } from "#/orpc/session/contract";
 import { m } from "#/paraglide/messages";
+import { getLocale, locales } from "#/paraglide/runtime";
+import { AccountMenu } from "./account-menu";
+import { MainNav } from "./main-nav";
+import { ServiceSearch } from "./service-search";
 
-/*===== Navigation =====*/
+/*===== Styles =====*/
 
-// Message functions, not their text: called in render, so each request gets its own locale's labels.
-const NAV_ITEMS = [
-  { label: m.nav_home, to: "/" },
-  { label: m.nav_notes, to: "/notes" },
-] as const;
+const utilityLinkClasses = "inline-flex min-h-10 items-center gap-1.5 underline-offset-4 hover:underline";
 
-// The current page gets the primary underline; hover and focus tint the text.
-const navItemClasses =
-  "relative inline-flex h-16 items-center px-3 text-nav text-muted-foreground outline-none transition-colors duration-150 after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-primary after:opacity-0 hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid aria-[current=page]:text-foreground aria-[current=page]:after:opacity-100 motion-reduce:transition-none";
+/*===== Brand =====*/
 
-/*===== Account =====*/
-
-function AccountMenu({ viewer }: { viewer: Viewer }) {
-  const signOut = useSignOut();
+/**
+ * The emblem and the university's name, with its name in the other language under it. The English line is set in
+ * spaced capitals; spacing would break the joins of Persian letters, so the Persian line isn't.
+ */
+function Brand() {
+  const otherLocale = locales.find((locale) => locale !== getLocale());
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label={m.nav_account()} />}>
-        <UserIcon />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-56">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>
-            <span className="block text-foreground">{viewer.name}</span>
-            <span dir="ltr" className="block text-start">
-              {viewer.email}
-            </span>
-          </DropdownMenuLabel>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem disabled={signOut.isPending} onClick={() => signOut.mutate()}>
-          <LogOutIcon />
-          {m.nav_sign_out()}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Link to="/" className="flex shrink-0 items-center gap-2 rounded-sm text-heading sm:gap-3">
+      <span className="grid size-10 place-items-center rounded-sm bg-primary text-primary-foreground sm:size-12">
+        <LogoMark className="size-7 sm:size-8" />
+      </span>
+      <span className="flex flex-col">
+        <span className="text-title sm:text-h4">{m.site_name()}</span>
+        {otherLocale && (
+          <span
+            lang={otherLocale}
+            className={cn(
+              "hidden text-caption text-muted-foreground sm:block",
+              otherLocale === "en" && "tracking-wider uppercase",
+            )}
+          >
+            {m.site_name({}, { locale: otherLocale })}
+          </span>
+        )}
+      </span>
+    </Link>
   );
 }
 
 /*===== Site Header =====*/
 
-/** Brand, main navigation, language switcher, theme toggle and the account menu (or a sign-in button for visitors). */
+/**
+ * A pine utility bar (contact, the university portal), then the main bar: brand, the main menu, and the tools
+ * (systems search, theme, language, the account menu or sign-in). On phones the menu drops down under the bar and
+ * carries the theme and language controls.
+ */
 export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
   const localeLinks = useLocaleLinks();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="border-b bg-card">
-      <div className="mx-auto flex h-16 max-w-site items-center gap-4 px-4 sm:px-6">
-        <Link
-          to="/"
-          className="rounded-sm text-title text-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring focus-visible:outline-solid"
-        >
-          {m.site_name()}
-        </Link>
+    <header className="relative z-30">
+      {/*===== Utility Bar =====*/}
+      <div className="bg-band-deep text-caption text-on-band">
+        <div className="flex items-center justify-end gap-4 px-edge sm:justify-between">
+          <p className="hidden items-center gap-2 before:size-1.5 before:rounded-full before:bg-highlight sm:flex">
+            {m.nav_official_site()}
+          </p>
+          <ul className="flex gap-6">
+            <li>
+              <SiteLink href={CONTACT_LINK.href} className={utilityLinkClasses}>
+                {CONTACT_LINK.label()}
+              </SiteLink>
+            </li>
+            <li>
+              <SiteLink href={PORTAL_HREF} className={utilityLinkClasses}>
+                {m.nav_portal()}
+                <LogInIcon aria-hidden className="size-4 rtl:-scale-x-100" />
+              </SiteLink>
+            </li>
+          </ul>
+        </div>
+      </div>
 
-        <nav aria-label={m.nav_main()} className="flex items-center">
-          {NAV_ITEMS.map((item) => (
-            // The active link gets `aria-current="page"`, which the classes style. `exact` keeps "/" from matching
-            // every page.
-            <Link key={item.to} to={item.to} activeOptions={{ exact: true }} className={navItemClasses}>
-              {item.label()}
-            </Link>
-          ))}
-        </nav>
+      {/*===== Main Bar =====*/}
+      <div className="relative border-b bg-background-alt">
+        <div className="flex min-h-20 items-center justify-between gap-4 px-edge">
+          <Brand />
 
-        <div className="ms-auto flex shrink-0 items-center gap-1">
-          <LocaleSwitcher links={localeLinks} />
-          <ThemeToggle />
-          {viewer ? (
-            <AccountMenu viewer={viewer} />
-          ) : (
-            // A link styled as a button: `<Button render={<Link />}>` would announce it as a button (`role="button"`).
-            <Link to="/auth" className={buttonVariants({ size: "sm" })}>
-              {m.nav_sign_in()}
-            </Link>
-          )}
+          <MainNav
+            open={menuOpen}
+            footer={
+              <div className="mx-5 mt-4 flex items-center justify-between sm:hidden">
+                <LocaleSwitcher links={localeLinks} />
+                <ThemeToggle />
+              </div>
+            }
+          />
+
+          {/*------ Tools ------*/}
+          <div className="flex items-center gap-1 border-s ps-2 sm:ps-4">
+            <ServiceSearch />
+            <ThemeToggle className="max-sm:hidden" />
+            <LocaleSwitcher links={localeLinks} className="max-sm:hidden" />
+            {viewer ? (
+              <AccountMenu viewer={viewer} />
+            ) : (
+              // A link styled as a button: `<Button render={<Link />}>` would announce it as a button (`role="button"`).
+              <Link
+                to="/auth"
+                aria-label={m.nav_sign_in()}
+                className={buttonVariants({ variant: "tool", size: "icon-sm" })}
+              >
+                <UserIcon />
+              </Link>
+            )}
+            <Button
+              variant="tool"
+              size="icon-sm"
+              className="lg:hidden"
+              aria-label={menuOpen ? m.nav_menu_close() : m.nav_menu_open()}
+              aria-expanded={menuOpen}
+              aria-controls="site-nav"
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              {menuOpen ? <XIcon /> : <MenuIcon />}
+            </Button>
+          </div>
         </div>
       </div>
     </header>
