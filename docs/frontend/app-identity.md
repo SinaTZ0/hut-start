@@ -1,16 +1,21 @@
 # App Identity: Mood, Tone & Theme
 
-> **Template stub: delete this note once the project fills in Mood, Tone and Brand.** Until then, nothing here or in
-> the code is a design decision. The theme values (colours, type styles, radius, shadows) live in `src/styles.css` and the
-> primitives' `*.styles.ts`; what ships there is a neutral placeholder. When the project's design calls for something
-> different, change `styles.css` and the primitives, and keep Mood, Tone and Brand here in step with them.
+The site of Hamedan University of Technology (دانشگاه صنعتی همدان). Its look comes from the "Kaj" (کاج, pine)
+homepage in [reference/kaj/](./reference/kaj/): deep pine teal from the slopes of Alvand, a wheat-gold accent, and a
+cool off-white page. The theme values live in `src/styles.css` and the primitives' `*.styles.ts`; keep this page in
+step with them.
 
 ## Mood
 
-_Three to six words, each with one sentence on what it means for the UI._ Example:
-
-- **Calm**: generous whitespace, few colours and gentle shadows.
-- **Focused**: one clear call to action per view.
+- **Calm**: a cool off-white page, one font, hairline borders and soft shadows. Colour comes from the pine bands and
+  the photographs, not from decoration.
+- **Official**: a public university, not a campaign. Plain statements over slogans, figures set in ruled rows, and
+  the emblem on every page.
+- **Rooted**: the campus under Alvand is the first thing a visitor sees. Pine bands (`band`, `band-deep`) frame the
+  page at the top, the middle and the foot.
+- **Focused**: gold (`highlight`) marks the one action that matters on each band. Everything else is pine or neutral.
+- **Practical**: the systems students use every day (portal, email, library, the semester calendar) sit within one
+  click of the first screen.
 
 ## Tone (copy)
 
@@ -21,14 +26,26 @@ translation ([i18n.md](./i18n.md)).
 - Persian digits and the Persian thousands separator «٬»; Jalali dates. These come from the locale through the
   formatting helpers, never typed into a message. Phone numbers, e-mail addresses and URLs are set `dir="ltr"` in
   every language.
-- _Add the project's own rules: voice, words to avoid, how errors are phrased._
+- Say what something is or does, in short sentences: «دانشگاهی دولتی و مهندسی‌محور در دامنه الوند…», not superlatives.
+  The one place for a line with some lift is the hero («جایی برای یادگیری، پژوهش و ساختن.»).
+- Headings are short noun phrases («در یک نگاه», «گروه‌های آموزشی»); links and buttons name the destination or the
+  action («مشاهده تقویم», «راهنمای نودانشجویان»), never «اینجا کلیک کنید».
+- Dates and deadlines are relative where it helps («۳ روز دیگر», «در جریان») and always give the date as well.
+- English follows the university's own English name, "Hamedan University of Technology", and the same plain register.
 
 ## Brand
 
-_The logo and how it's used, the photography or illustration style, and anything the brand rules out._
-
-- **References**: _the design the project's look comes from, e.g. the reference homepage
-  (`docs/frontend/reference/`), plus any sites or screenshots whose feel to aim for._
+- **Logo**: the university emblem, a white transparent PNG. On light grounds it is drawn as a mask in `currentColor`
+  (pine); on bands it stays white. It always sits beside the visible university name, so it is decorative (`alt=""`).
+  Icon tiles that hold it are `rounded-sm`, 48px.
+- **Photography**: real photographs of the campus, its people and events. The hero is the campus with Alvand behind
+  it, edge to edge, under a pine scrim (`bg-hero-scrim`) that keeps the text on it readable. News and achievement
+  photos sit in fixed ratios (`aspect-wide`, `aspect-photo`, `video`) and zoom slightly on hover. Labels on photos are
+  `Badge variant="media"`.
+- **Rules out**: stock photography, illustrations, gradients as decoration, a second accent colour, and gold on large
+  areas.
+- **References**: the Kaj homepage source and screenshot in [reference/kaj/](./reference/kaj/), and its
+  [normalization table](./reference/kaj/normalization.md), which records every value that was snapped to a token.
 
 ## Theme
 
@@ -36,8 +53,13 @@ _The logo and how it's used, the photography or illustration style, and anything
   palette. A new colour or type style is declared in `src/styles.css` first.
 - Token names follow shadcn so the primitives keep working. **Naming trap**: the brand call-to-action fill is
   `highlight`; shadcn's `accent` is the quiet wash for hover and selected states.
+- Beyond shadcn's names: `background-alt` (alternating sections), `heading`, `border-strong` (card edge on hover),
+  `highlight-text` and `highlight-surface` (gold text and the gold wash on light grounds), and the band family:
+  `band`, `band-deep`, `on-band`, `on-band-soft`, `on-band-muted`, `band-line`, `band-line-strong`, `band-control`,
+  `band-hover`, `band-decor`. Text, borders and buttons on a band use the band tokens, never `primary` or
+  `foreground`.
 - **Dark mode** is the `.dark` class on `<html>` (the theme toggle). Recolour through the tokens, never by theme in
-  component code.
+  component code. The bands stay dark in both themes.
 - Icons are Lucide. Their stroke width is set in `styles.css`; change it with a `stroke-*` class, not the `strokeWidth`
   prop.
 
