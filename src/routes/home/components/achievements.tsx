@@ -4,6 +4,7 @@ import { Badge } from "#/components/primitive/badge/badge";
 import {
   Card,
   CardBody,
+  CardCall,
   CardContent,
   CardDescription,
   CardFooter,
@@ -57,7 +58,7 @@ function AchievementCard({ item, lead = false }: { item: Achievement; lead?: boo
         </CardContent>
       )}
       <CardFooter>
-        <TextLink>{m.home_read_more()}</TextLink>
+        <CardCall>{m.home_read_more()}</CardCall>
       </CardFooter>
     </>
   );
@@ -106,7 +107,7 @@ function ResearchUnits() {
                 <ItemDescription>{unit.description()}</ItemDescription>
               </ItemContent>
               <ItemActions>
-                <ExternalLinkIcon />
+                <ExternalLinkIcon data-icon="external" />
               </ItemActions>
             </Item>
           </li>

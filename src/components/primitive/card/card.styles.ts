@@ -86,16 +86,26 @@ const twBodyStyles = defineStyles({
   geometry: "py-(--card-spacing)",
 });
 
-// The card's call, pinned to the bottom so calls line up across a row of cards of different heights.
+// The card's last row, pinned to the bottom so calls line up across a row of cards of different heights. A hairline
+// inset to the text column sets it off from the content. Meta at the start (a date) is muted; the call goes at the end.
 const twFooterStyles = defineStyles({
-  layout: "mt-auto flex items-center gap-3",
-  geometry: "px-(--card-spacing)",
+  layout: "mt-auto flex items-center justify-between gap-3",
+  geometry: "mx-(--card-spacing) border-t pt-4",
+  typography: "text-caption",
+  appearance: "text-muted-foreground",
+  icon: "*:[time]:inline-flex *:[time]:items-center *:[time]:gap-1 [&>time>svg]:size-3.5",
+});
+
+// A link card's call: its label and a CardArrow, kept at the footer's end even when there is no meta before it.
+const twCallStyles = defineStyles({
+  layout: "ms-auto flex items-center gap-3",
+  typography: "text-body-sm font-bold",
+  appearance: "text-brand-text",
 });
 
 /*===== Arrow Styles =====*/
 
-// The round arrow that ends a compact row card: a quiet `accent` disc that fills pine while its card is hovered or
-// focused. A full-size card ends with a text call (`TextLink`) instead.
+// The round arrow of a link card's call: a quiet `accent` disc that fills pine while its card is hovered or focused.
 const twArrowStyles = defineStyles({
   layout: "grid shrink-0 place-items-center",
   geometry: "size-10 rounded-full",
@@ -104,8 +114,11 @@ const twArrowStyles = defineStyles({
   hover: "[a:hover_&]:bg-primary [a:hover_&]:text-primary-foreground",
   focus: "[a:focus-visible_&]:bg-primary [a:focus-visible_&]:text-primary-foreground",
   motion: "motion-reduce:transition-none",
-  // The forward arrow points left (RTL) and flips in LTR.
+  // The forward arrow points left (RTL) and flips in LTR. Like a text link's arrow, it nudges ahead while its card is
+  // hovered or focused; the external icon nudges up and out, the way it points.
   icon: "[&>svg]:size-4 ltr:[&>svg[data-icon=forward]]:-scale-x-100",
+  iconMotion:
+    "[&>svg]:transition-[translate] [&>svg]:duration-200 [&>svg]:ease-out motion-safe:[a:focus-visible_&>svg[data-icon=external]]:translate-x-0.5 motion-safe:[a:focus-visible_&>svg[data-icon=external]]:-translate-y-0.5 motion-safe:[a:focus-visible_&>svg[data-icon=forward]]:-translate-x-0.5 motion-safe:ltr:[a:focus-visible_&>svg[data-icon=forward]]:translate-x-0.5 motion-safe:[a:hover_&>svg[data-icon=external]]:translate-x-0.5 motion-safe:[a:hover_&>svg[data-icon=external]]:-translate-y-0.5 motion-safe:[a:hover_&>svg[data-icon=forward]]:-translate-x-0.5 motion-safe:ltr:[a:hover_&>svg[data-icon=forward]]:translate-x-0.5",
 });
 
 /*===== Media Styles =====*/
@@ -163,6 +176,7 @@ const cardActionClasses = joinStyles(twActionStyles);
 const cardContentClasses = joinStyles(twContentStyles);
 const cardBodyClasses = joinStyles(twBodyStyles);
 const cardFooterClasses = joinStyles(twFooterStyles);
+const cardCallClasses = joinStyles(twCallStyles);
 const cardArrowClasses = joinStyles(twArrowStyles);
 
 export {
@@ -176,6 +190,7 @@ export {
   cardContentClasses,
   cardBodyClasses,
   cardFooterClasses,
+  cardCallClasses,
   cardArrowClasses,
   twSize,
   twOrientation,

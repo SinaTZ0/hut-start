@@ -112,7 +112,11 @@ const twActionsStyles = defineStyles({
   hover: "[a:hover_&]:text-brand-text",
   focus: "[a:focus-visible_&]:text-brand-text",
   motion: "motion-reduce:transition-none",
-  icon: "[&>svg:not([class*='size-'])]:size-4",
+  icon: "[&>svg:not([class*='size-'])]:size-4 ltr:[&>svg[data-icon=forward]]:-scale-x-100",
+  // Like a text link's arrow, the icon nudges while its row is hovered or focused: a forward arrow ahead, an external
+  // icon up and out (the way it points, in both directions).
+  iconMotion:
+    "[&>svg]:transition-[translate] [&>svg]:duration-200 [&>svg]:ease-out motion-safe:[a:focus-visible_&>svg[data-icon=external]]:translate-x-0.5 motion-safe:[a:focus-visible_&>svg[data-icon=external]]:-translate-y-0.5 motion-safe:[a:focus-visible_&>svg[data-icon=forward]]:-translate-x-0.5 motion-safe:ltr:[a:focus-visible_&>svg[data-icon=forward]]:translate-x-0.5 motion-safe:[a:hover_&>svg[data-icon=external]]:translate-x-0.5 motion-safe:[a:hover_&>svg[data-icon=external]]:-translate-y-0.5 motion-safe:[a:hover_&>svg[data-icon=forward]]:-translate-x-0.5 motion-safe:ltr:[a:hover_&>svg[data-icon=forward]]:translate-x-0.5",
 });
 
 const twHeaderStyles = defineStyles({

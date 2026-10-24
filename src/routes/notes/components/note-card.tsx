@@ -1,16 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { Trash2Icon } from "lucide-react";
+import { ClockIcon, Trash2Icon } from "lucide-react";
 
 import { Button } from "#/components/primitive/button/button";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardMedia,
-  CardTitle,
-} from "#/components/primitive/card/card";
+import { Card, CardContent, CardFooter, CardHeader, CardMedia, CardTitle } from "#/components/primitive/card/card";
 import { toast } from "#/components/primitive/toast/toast";
 import { MediaImage } from "#/components/shared/media-image/media-image";
 import { describeApiFailure } from "#/lib/api-error";
@@ -20,6 +12,9 @@ import type { Note } from "#/orpc/note/contract";
 import { m } from "#/paraglide/messages";
 
 /*===== Note Card =====*/
+
+/** A note laid out like the site's content cards: image, title and body, then the date and the delete button below a
+ * hairline. */
 export function NoteCard({ note, onDeleted }: { note: Note; onDeleted: () => void }) {
   const remove = useMutation(
     orpc.note.delete.mutationOptions({
@@ -40,20 +35,23 @@ export function NoteCard({ note, onDeleted }: { note: Note; onDeleted: () => voi
       )}
       <CardHeader>
         <CardTitle>{note.title}</CardTitle>
-        <CardDescription>{formatDate(note.createdAt)}</CardDescription>
-        <CardAction>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={m.notes_delete_label({ title: note.title })}
-            disabled={remove.isPending}
-            onClick={() => remove.mutate({ id: note.id })}
-          >
-            <Trash2Icon />
-          </Button>
-        </CardAction>
       </CardHeader>
       {note.body && <CardContent className="whitespace-pre-line">{note.body}</CardContent>}
+      <CardFooter>
+        <time dateTime={note.createdAt.toISOString()}>
+          <ClockIcon aria-hidden />
+          {formatDate(note.createdAt)}
+        </time>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          aria-label={m.notes_delete_label({ title: note.title })}
+          disabled={remove.isPending}
+          onClick={() => remove.mutate({ id: note.id })}
+        >
+          <Trash2Icon />
+        </Button>
+      </CardFooter>
     </Card>
   );
 }

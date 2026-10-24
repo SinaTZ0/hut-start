@@ -3,8 +3,10 @@ import { ExternalLinkIcon, PlayIcon } from "lucide-react";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { TextLink } from "#/components/shared/text-link/text-link";
+import { textLinkExternalClasses } from "#/components/shared/text-link/text-link.styles";
 import { formatDate, formatNumber } from "#/lib/locale";
 import { DEPARTMENTS, SOCIAL_LINKS } from "#/lib/university/navigation";
+import { cn } from "#/lib/utils";
 import { m } from "#/paraglide/messages";
 import { DEPARTMENTS_HREF, newsHref, SPOTLIGHT, STATS } from "../content";
 import { isoToDate } from "../semester";
@@ -98,7 +100,7 @@ export function Glance() {
                 className="inline-flex min-h-10 items-center gap-1.5 text-on-band underline-offset-4 hover:underline"
               >
                 {m.home_glance_videos({ channel: VIDEO_CHANNEL.label() })}
-                <ExternalLinkIcon aria-hidden className="size-3.5" />
+                <ExternalLinkIcon aria-hidden className={cn(textLinkExternalClasses, "size-3.5")} />
               </SiteLink>
             )}
           </figcaption>

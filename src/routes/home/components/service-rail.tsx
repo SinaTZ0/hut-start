@@ -2,8 +2,10 @@ import { ArrowLeftIcon, ChevronDownIcon, MenuIcon } from "lucide-react";
 import { addTransitionType, startTransition, useId, useState, ViewTransition } from "react";
 
 import { SiteLink } from "#/components/shared/site-link/site-link";
+import { textLinkArrowClasses } from "#/components/shared/text-link/text-link.styles";
 import { NAV_SECTIONS } from "#/lib/university/navigation";
 import { STUDENT_SERVICES, TOP_SERVICES } from "#/lib/university/services";
+import { cn } from "#/lib/utils";
 import { m } from "#/paraglide/messages";
 
 /*===== Constants =====*/
@@ -108,7 +110,7 @@ export function ServiceRail() {
                   className={`flex h-full items-center justify-between gap-3 bg-band px-5 py-4 text-title text-on-band transition-colors duration-200 hover:bg-band-deep motion-reduce:transition-none ${cellFocusClasses}`}
                 >
                   {m.home_services_guide()}
-                  <ArrowLeftIcon aria-hidden className="size-4.5 text-highlight ltr:-scale-x-100" />
+                  <ArrowLeftIcon aria-hidden className={cn(textLinkArrowClasses, "size-4.5 text-highlight")} />
                 </SiteLink>
               </li>
             </ul>

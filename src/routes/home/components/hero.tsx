@@ -3,9 +3,11 @@ import { type ReactNode, ViewTransition } from "react";
 
 import { buttonVariants } from "#/components/primitive/button/button.styles";
 import { SiteLink } from "#/components/shared/site-link/site-link";
+import { textLinkArrowClasses } from "#/components/shared/text-link/text-link.styles";
 import { formatDate, formatDateRange, formatRelativeDays } from "#/lib/locale";
 import { NAV_SECTIONS } from "#/lib/university/navigation";
 import { SERVICES } from "#/lib/university/services";
+import { cn } from "#/lib/utils";
 import { m } from "#/paraglide/messages";
 import { SEMESTER } from "../content";
 import { type EventWithStatus, fromJalali } from "../semester";
@@ -119,7 +121,7 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
                 className="order-2 inline-flex min-h-10 items-center gap-2 text-body-sm font-semibold underline-offset-4 hover:underline md:order-none"
               >
                 {m.home_hero_view_calendar()}
-                <ArrowLeftIcon aria-hidden className="size-4.5 text-highlight ltr:-scale-x-100" />
+                <ArrowLeftIcon aria-hidden className={cn(textLinkArrowClasses, "size-4.5 text-highlight")} />
               </a>
             </div>
           </ViewTransition>

@@ -11,11 +11,12 @@ const twTabsStyles = defineStyles({
 
 const twListStyles = defineStyles({
   layout: "group/tabs-list inline-flex w-fit items-center justify-center group-data-vertical/tabs:flex-col",
-  geometry: "rounded-full p-1 data-[variant=line]:rounded-none",
+  geometry: "rounded-md p-1 data-[variant=line]:rounded-none",
   appearance: "text-muted-foreground",
 });
 
-// `default` is the pill switcher from the notices panel: a hairline track with the chosen tab filled pine.
+// `default` is the switcher from the notices panel: a hairline track with the chosen tab filled pine. The tab's radius
+// is the track's minus its padding, so the two corners stay concentric.
 // `data-variant` stays on the list as well, because TabsTrigger styles itself from it.
 const twVariant = defineStyles({
   default: {
@@ -35,7 +36,7 @@ const twTriggerStyles = defineStyles({
   layout:
     "relative inline-flex flex-1 items-center justify-center gap-1.5 group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start",
   // 40px keeps the tap target; the line variant is sized by its list.
-  geometry: "h-10 rounded-full border px-3",
+  geometry: "h-10 rounded-sm border px-3",
   geometryIcon: "has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2",
   typography: "text-caption font-semibold whitespace-nowrap",
   appearance: "border-transparent text-muted-foreground",

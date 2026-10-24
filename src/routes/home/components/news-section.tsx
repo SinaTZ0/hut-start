@@ -5,6 +5,7 @@ import { Badge } from "#/components/primitive/badge/badge";
 import {
   Card,
   CardBody,
+  CardCall,
   CardContent,
   CardDescription,
   CardFooter,
@@ -16,7 +17,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/primitive/tabs/tabs";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
-import { TextLink } from "#/components/shared/text-link/text-link";
+import { textLinkArrowClasses } from "#/components/shared/text-link/text-link.styles";
 import { formatDate, formatDateParts, formatRelativeDays } from "#/lib/locale";
 import { m } from "#/paraglide/messages";
 import {
@@ -36,23 +37,13 @@ const NOTICES_SHOWN = 4;
 
 /*===== Story =====*/
 
-/** A news card: photo, category and date, title. The featured one sits beside its photo and adds its summary. */
+/** A news card: photo, category, title, then the date and the call. The featured one sits beside its photo and adds
+ * its summary. */
 function Story({ item, featured = false }: { item: NewsItem; featured?: boolean }) {
   const text = (
     <>
       <CardHeader>
-        <CardKicker>
-          <span>{NEWS_CATEGORIES[item.category].title()}</span>
-          {item.date && (
-            <>
-              <span aria-hidden>/</span>
-              <time dateTime={item.date} className="inline-flex items-center gap-1">
-                <ClockIcon aria-hidden className="size-3.5" />
-                {formatDate(isoToDate(item.date), { day: "numeric", month: "long", year: "numeric" })}
-              </time>
-            </>
-          )}
-        </CardKicker>
+        <CardKicker>{NEWS_CATEGORIES[item.category].title()}</CardKicker>
         <CardTitle>
           <h3>{item.title()}</h3>
         </CardTitle>
@@ -63,7 +54,13 @@ function Story({ item, featured = false }: { item: NewsItem; featured?: boolean 
         </CardContent>
       )}
       <CardFooter>
-        <TextLink>{m.home_news_continue()}</TextLink>
+        {item.date && (
+          <time dateTime={item.date}>
+            <ClockIcon aria-hidden />
+            {formatDate(isoToDate(item.date), { day: "numeric", month: "long", year: "numeric" })}
+          </time>
+        )}
+        <CardCall>{m.home_news_continue()}</CardCall>
       </CardFooter>
     </>
   );
@@ -145,7 +142,7 @@ function Notices({ today }: { today: JDate }) {
       </div>
 
       <Tabs value={active} onValueChange={(value) => setActive(value as NewsCategory)} className="flex-1">
-        <TabsList aria-label={m.home_notices_tabs()} className="mx-5 mt-4 self-stretch sm:mx-6">
+        <TabsList aria-label={m.home_notices_tabs()} className="mx-5 mt-4 w-auto self-stretch sm:mx-6">
           {NOTICES.map((notices) => (
             <TabsTrigger key={notices.category} value={notices.category}>
               {NEWS_CATEGORIES[notices.category].title()}
@@ -168,7 +165,7 @@ function Notices({ today }: { today: JDate }) {
         className="flex min-h-14 items-center justify-between gap-3 border-t px-5 py-4 text-body-sm font-bold text-brand-text underline-offset-4 hover:underline sm:px-6"
       >
         {m.home_notices_more({ category: category.title() })}
-        <ArrowLeftIcon aria-hidden className="size-4 ltr:-scale-x-100" />
+        <ArrowLeftIcon aria-hidden className={textLinkArrowClasses} />
       </SiteLink>
     </aside>
   );

@@ -101,7 +101,7 @@ export function Welcome() {
                 <ItemDescription>{help.description()}</ItemDescription>
               </ItemContent>
               <ItemActions>
-                <ExternalLinkIcon />
+                <ExternalLinkIcon data-icon="external" />
               </ItemActions>
             </Item>
           </li>

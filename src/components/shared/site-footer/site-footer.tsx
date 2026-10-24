@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { LogoMark } from "#/components/shared/logo-mark/logo-mark";
 import { SiteLink } from "#/components/shared/site-link/site-link";
+import { textLinkArrowClasses, textLinkExternalClasses } from "#/components/shared/text-link/text-link.styles";
 import {
   CONTACT,
   CONTACT_LINK,
@@ -89,7 +90,7 @@ export function SiteFooter() {
                     href={link.href}
                     className="inline-flex min-h-10 items-center gap-1.5 rounded-sm border border-band-line px-3.5 text-caption text-on-band-soft transition-colors duration-200 hover:border-highlight hover:text-on-band motion-reduce:transition-none"
                   >
-                    <ExternalLinkIcon aria-hidden className="size-3.5" />
+                    <ExternalLinkIcon aria-hidden className={cn(textLinkExternalClasses, "size-3.5")} />
                     {link.label()}
                   </SiteLink>
                 </li>
@@ -157,7 +158,7 @@ export function SiteFooter() {
               className="mt-4 inline-flex min-h-10 items-center gap-2 font-bold text-highlight underline-offset-4 hover:underline"
             >
               {CONTACT_LINK.label()}
-              <ArrowLeftIcon aria-hidden className="size-4 ltr:-scale-x-100" />
+              <ArrowLeftIcon aria-hidden className={textLinkArrowClasses} />
             </SiteLink>
           </div>
         </div>

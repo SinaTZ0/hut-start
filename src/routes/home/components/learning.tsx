@@ -1,10 +1,11 @@
-import { ArrowLeftIcon, BookOpenIcon } from "lucide-react";
+import { ArrowLeftIcon, BookOpenIcon, ClockIcon } from "lucide-react";
 
 import {
   Card,
-  CardArrow,
   CardBody,
+  CardCall,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardKicker,
   CardMedia,
@@ -12,12 +13,17 @@ import {
 } from "#/components/primitive/card/card";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
+import { textLinkArrowClasses } from "#/components/shared/text-link/text-link.styles";
+import { formatDate } from "#/lib/locale";
+import { cn } from "#/lib/utils";
 import { m } from "#/paraglide/messages";
 import { LEARNING_ITEMS, NEWS_CATEGORIES, newsHref } from "../content";
+import { isoToDate } from "../semester";
 
 /*===== Learning =====*/
 
-/** A pine panel with one link to the incubator; the events and short courses listed beside it as link rows. */
+/** A pine panel with one link to the incubator; the events and short courses listed beside it as compact cards, each
+ * ending like a news card: the date (when it has one) and the call below a hairline. */
 export function Learning() {
   return (
     <section aria-labelledby="home-learning" className="grid grid-cols-1 gap-10 lg:grid-cols-3">
@@ -42,7 +48,7 @@ export function Learning() {
           className="mt-auto flex min-h-10 items-center justify-between gap-3 border-t border-band-line pt-5 text-body-sm font-bold text-highlight underline-offset-4 hover:underline"
         >
           {m.nav_research_incubator()}
-          <ArrowLeftIcon aria-hidden className="size-4.5 ltr:-scale-x-100" />
+          <ArrowLeftIcon aria-hidden className={cn(textLinkArrowClasses, "size-4.5")} />
         </SiteLink>
       </div>
 
@@ -56,15 +62,23 @@ export function Learning() {
                   <img src={item.image} alt="" loading="lazy" />
                 </CardMedia>
               )}
-              <CardBody className="sm:flex-row sm:items-center">
-                <CardHeader className="flex-1">
+              <CardBody>
+                <CardHeader>
                   <CardKicker>{NEWS_CATEGORIES[item.category].title()}</CardKicker>
                   <CardTitle>
                     <h3>{item.title()}</h3>
                   </CardTitle>
                   {item.summary && <CardDescription>{item.summary()}</CardDescription>}
                 </CardHeader>
-                <CardArrow className="me-4 hidden sm:grid" />
+                <CardFooter>
+                  {item.date && (
+                    <time dateTime={item.date}>
+                      <ClockIcon aria-hidden />
+                      {formatDate(isoToDate(item.date), { day: "numeric", month: "long", year: "numeric" })}
+                    </time>
+                  )}
+                  <CardCall>{m.home_read_more()}</CardCall>
+                </CardFooter>
               </CardBody>
             </Card>
           </li>

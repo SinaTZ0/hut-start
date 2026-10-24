@@ -25,6 +25,16 @@ const twArrowStyles = defineStyles({
   motion: "motion-reduce:transition-none",
 });
 
+// The external icon's nudge: up and out, the way its arrow points (it doesn't flip with the direction). For a link that
+// leaves for another site; size the icon at the call site.
+const twExternalStyles = defineStyles({
+  geometry: "shrink-0",
+  interaction: "transition-[translate] duration-200 ease-out",
+  hover: "motion-safe:[a:hover_&]:translate-x-0.5 motion-safe:[a:hover_&]:-translate-y-0.5",
+  focus: "motion-safe:[a:focus-visible_&]:translate-x-0.5 motion-safe:[a:focus-visible_&]:-translate-y-0.5",
+  motion: "motion-reduce:transition-none",
+});
+
 /*===== Tones =====*/
 
 // Links underline on hover and focus and keep their colour. `band` is for pine bands; `highlight` is the gold link on
@@ -49,5 +59,6 @@ const textLinkVariants = cva(joinStyles(twTextLinkStyles), {
 });
 
 const textLinkArrowClasses = joinStyles(twArrowStyles);
+const textLinkExternalClasses = joinStyles(twExternalStyles);
 
-export { textLinkVariants, textLinkArrowClasses, twTone };
+export { textLinkVariants, textLinkArrowClasses, textLinkExternalClasses, twTone };

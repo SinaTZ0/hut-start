@@ -1,14 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { ClockIcon, Trash2Icon } from "lucide-react";
+
 import placeholderImage from "#/assets/placeholder.svg";
 import { Button } from "#/components/primitive/button/button";
 import { SiteLink } from "#/components/shared/site-link/site-link";
-import { TextLink } from "#/components/shared/text-link/text-link";
 import {
   Card,
   CardAction,
-  CardArrow,
   CardBody,
+  CardCall,
   CardContent,
   CardDescription,
   CardFooter,
@@ -106,8 +107,9 @@ export const LinkWithMedia: Story = {
   ),
 };
 
-// The content card anatomy: media, kicker (category, then muted meta), title, and the call pinned to the bottom. A
-// full-size card ends with a text call; a compact row ends with the arrow disc.
+// The content card anatomy: media, kicker (the category), title, then below a hairline the date and the call, pinned to
+// the bottom. A compact horizontal card ends the same way; one with no date keeps the call at the end. A card that isn't
+// a link puts its buttons where the call would be.
 export const ContentCards: Story = {
   render: (args) => (
     <div className="grid max-w-3xl gap-5">
@@ -118,15 +120,15 @@ export const ContentCards: Story = {
               <img src={placeholderImage} alt="" />
             </CardMedia>
             <CardHeader>
-              <CardKicker>
-                <span>دانشگاه</span>
-                <span aria-hidden>/</span>
-                <time dateTime="2026-10-11">۱۹ مهر ۱۴۰۵</time>
-              </CardKicker>
+              <CardKicker>دانشگاه</CardKicker>
               <CardTitle>{title}</CardTitle>
             </CardHeader>
             <CardFooter>
-              <TextLink>ادامه خبر</TextLink>
+              <time dateTime="2026-10-11">
+                <ClockIcon aria-hidden />
+                ۱۹ مهر ۱۴۰۵
+              </time>
+              <CardCall>ادامه خبر</CardCall>
             </CardFooter>
           </Card>
         ))}
@@ -135,14 +137,31 @@ export const ContentCards: Story = {
         <CardMedia className="aspect-wide sm:aspect-4/3 sm:w-44">
           <img src={placeholderImage} alt="" />
         </CardMedia>
-        <CardBody className="sm:flex-row sm:items-center">
-          <CardHeader className="flex-1">
+        <CardBody>
+          <CardHeader>
             <CardKicker>مرکز رشد</CardKicker>
             <CardTitle>نشست تخصصی هدایت شغلی</CardTitle>
             <CardDescription>گفت‌وگوی دانشجویان با مدیران صنعت</CardDescription>
           </CardHeader>
-          <CardArrow className="me-4 hidden sm:grid" />
+          <CardFooter>
+            <CardCall>بیشتر بخوانید</CardCall>
+          </CardFooter>
         </CardBody>
+      </Card>
+      <Card {...args} className="max-w-sm">
+        <CardHeader>
+          <CardTitle>یادداشت نمونه</CardTitle>
+        </CardHeader>
+        <CardContent>متن کوتاه یادداشت.</CardContent>
+        <CardFooter>
+          <time dateTime="2026-10-11">
+            <ClockIcon aria-hidden />
+            ۱۹ مهر ۱۴۰۵
+          </time>
+          <Button variant="ghost" size="icon-sm" aria-label="حذف">
+            <Trash2Icon />
+          </Button>
+        </CardFooter>
       </Card>
     </div>
   ),
@@ -173,7 +192,7 @@ export const WithFooter: Story = {
         <CardDescription>توضیح کوتاه</CardDescription>
       </CardHeader>
       <CardContent>محتوای کارت</CardContent>
-      <CardFooter>
+      <CardFooter className="justify-start">
         <Button>ادامه</Button>
         <Button variant="ghost">انصراف</Button>
       </CardFooter>

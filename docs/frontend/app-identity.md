@@ -47,6 +47,22 @@ translation ([i18n.md](./i18n.md)).
 - **References**: the Kaj homepage source and screenshot in [reference/kaj/](./reference/kaj/), and its
   [normalization table](./reference/kaj/normalization.md), which records every value that was snapped to a token.
 
+## Motion
+
+The site answers the visitor with small, quick movements: everything clickable responds to hover, keyboard focus and
+being used, but nothing moves on its own or calls attention to itself.
+
+- **Every interactive thing responds**, subtly. A link card lifts (darker edge, `shadow-md`), its photo zooms to 1.03
+  and its arrow disc fills pine; a forward arrow nudges ahead a few pixels; a row takes the `accent` wash; a disclosure
+  chevron turns; a panel or list that opens slides or fades in ([view-transitions.md](./view-transitions.md)). A new
+  component gets the same kind of response.
+- **Small and short**: colour and shadow over 200ms, movement and scale over 300ms, `ease-out`. Distances stay within a
+  few pixels and scale within 1.03. No bounce, spring, parallax, looping or attention-seeking animation, and nothing
+  that delays an action.
+- **Hover and focus match**: whatever a hover shows, keyboard focus shows too.
+- **Reduced motion** turns the movement off (`motion-safe:` on the movement, `motion-reduce:transition-none`); colour
+  changes may stay.
+
 ## Theme
 
 - Use the theme's Tailwind classes (`bg-primary`, `text-muted-foreground`, `text-h2`…), never raw hex or the Tailwind

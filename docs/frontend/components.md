@@ -93,9 +93,11 @@ type-checking. A group with a distinct sub-concern can take a capitalized suffix
 ## Card or Item
 
 - A **Card** stands on its own surface, with its own edge and the card lift on hover: a news story, an achievement, a
-  learning row. A content card reads media, then a CardHeader with CardKicker (the category, then muted meta) and
-  CardTitle, then a CardFooter holding the call: a `TextLink` on a full-size card, a CardArrow on a compact row
-  (`size="sm"`). A photo label goes in CardMedia as a `Badge variant="media"`, which pins itself to the corner.
+  learning row. A content card reads media, then a CardHeader with CardKicker (the category) and CardTitle, then a
+  CardFooter below a hairline: the date (a `<time>` with a clock icon) at its start and a CardCall (label and arrow) at
+  its end. Compact horizontal cards (`size="sm"`) end the same way, and a card without a date keeps the call at the end.
+  A card that isn't a link (a note) puts its buttons where the call would be. A photo label goes in CardMedia as a
+  `Badge variant="media"`, which pins itself to the corner.
 - An **Item** is a row in a list that shares one surface: help links, research units, search results. Wrap rows in an
   ItemGroup (`stack`, `divided` or `tiled`) with each Item in an `<li>`; a row that is a link takes the `accent` wash.
   An icon tile is `ItemMedia variant="icon"`, and a link that leaves for another system ends with an external icon in

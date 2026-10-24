@@ -8,6 +8,7 @@ import {
   cardActionClasses,
   cardArrowClasses,
   cardBodyClasses,
+  cardCallClasses,
   cardContentClasses,
   cardDescriptionClasses,
   cardFooterClasses,
@@ -25,7 +26,8 @@ export type CardProps = useRender.ComponentProps<"div"> & VariantProps<typeof ca
 /**
  * A styled surface whose parts share the size's spacing.
  * A content card reads, in order: CardMedia, a CardHeader holding CardKicker, CardTitle (and CardDescription), and a
- * CardFooter with the call: a `TextLink` on a full-size card, a CardArrow on a compact row (`size="sm"`).
+ * CardFooter below a hairline with the date at its start and a CardCall at its end. A compact row (`size="sm"`) ends
+ * with a CardArrow alone.
  * A whole card that is a link renders as that link: `render={<SiteLink href="…" />}`. The link card then gets the
  * card lift, and its CardTitle, CardMedia and any trailing arrow react to the card's hover and keyboard focus.
  * Keep other links and buttons out of a link card. `data-size` is kept on the root because CardTitle scales its text
@@ -79,13 +81,23 @@ function CardBody({ className, ...props }: ComponentProps<"div">) {
   return <div data-slot="card-body" {...props} className={cn(cardBodyClasses, className)} />;
 }
 
-/** The card's last row, pinned to the bottom: the call of a link card, or a card's buttons. */
+/** The card's last row below a hairline, pinned to the bottom: muted meta and a CardCall, or a card's buttons. */
 function CardFooter({ className, ...props }: ComponentProps<"div">) {
   return <div data-slot="card-footer" {...props} className={cn(cardFooterClasses, className)} />;
 }
 
+/** A link card's call at the footer's end: the label, then a CardArrow. */
+function CardCall({ className, children, external, ...props }: ComponentProps<"span"> & { external?: boolean }) {
+  return (
+    <span data-slot="card-call" {...props} className={cn(cardCallClasses, className)}>
+      {children}
+      <CardArrow external={external} />
+    </span>
+  );
+}
+
 /**
- * The round arrow that ends a compact link card; it fills pine while the card is hovered or focused.
+ * The round arrow of a link card's call; it fills pine while the card is hovered or focused.
  * `external` for a card that leads to another system rather than more of this site's content.
  */
 function CardArrow({ className, external = false, ...props }: ComponentProps<"span"> & { external?: boolean }) {
@@ -121,6 +133,7 @@ export {
   CardTitle,
   CardAction,
   CardArrow,
+  CardCall,
   CardDescription,
   CardContent,
 };
