@@ -2,8 +2,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { Card, CardContent, CardHeader, CardTitle } from "#/components/primitive/card/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/primitive/tabs/tabs";
+import { LogoMark } from "#/components/shared/logo-mark/logo-mark";
+import { SectionHead } from "#/components/shared/section-head/section-head";
 import { redirectToParam } from "#/lib/search-params";
 import { pageMeta } from "#/lib/seo";
 import { orpc } from "#/orpc/client";
@@ -46,14 +47,25 @@ function AuthPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md px-4 py-12">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <h1 className="text-h2">{m.auth_heading()}</h1>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+    <div className="mx-auto max-w-site px-gutter py-section">
+      {/* The split card of the home page's welcome: the emblem and heading on pine, the forms beside them. */}
+      <div className="mx-auto grid max-w-4xl overflow-hidden rounded-lg border bg-card lg:grid-cols-2">
+        <div className="flex flex-col gap-8 bg-band px-5 py-8 text-on-band sm:p-10">
+          <span className="grid size-12 place-items-center rounded-sm border border-band-line">
+            <LogoMark />
+          </span>
+          <SectionHead
+            as="h1"
+            tone="band"
+            id="auth-title"
+            kicker={m.site_name()}
+            title={m.auth_heading()}
+            lede={m.auth_lede()}
+            className="mb-0"
+          />
+        </div>
+
+        <div className="px-5 py-8 sm:p-10">
           <Tabs defaultValue="sign-in">
             <TabsList className="mb-6 w-full">
               <TabsTrigger value="sign-in">{m.auth_tab_sign_in()}</TabsTrigger>
@@ -66,8 +78,8 @@ function AuthPage() {
               <SignUpForm onSuccess={() => void goOn()} />
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
