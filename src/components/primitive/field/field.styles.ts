@@ -67,7 +67,7 @@ const twLabelStyles = defineStyles({
   state: "has-data-checked:border-primary has-data-checked:bg-accent",
   layoutCard: "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col",
   geometryCard:
-    "has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border-[1.5px] *:data-[slot=field]:px-4 *:data-[slot=field]:py-3",
+    "has-[>[data-slot=field]]:rounded-sm has-[>[data-slot=field]]:border *:data-[slot=field]:px-4 *:data-[slot=field]:py-3",
   hoverCard: "has-[>[data-slot=field]]:not-has-[:disabled,[data-disabled]]:hover:bg-accent",
   // The card draws the ring for the control inside it.
   focusCard:

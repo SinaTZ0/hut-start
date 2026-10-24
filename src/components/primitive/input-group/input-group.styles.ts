@@ -9,13 +9,13 @@ const twGroupStyles = defineStyles({
   // Block-aligned addons and textareas stack vertically, so the fixed height gives way.
   layoutBlock:
     "has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto",
-  // Same chrome as Input: 44px, 1.5px `input` edge.
-  geometry: "h-11 rounded-sm border-[1.5px]",
+  // Same chrome as Input: 44px, 1px `input` edge.
+  geometry: "h-11 rounded-sm border",
   // The input yields padding on the side an addon occupies.
   geometryAddon:
     "has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pe-1.5 has-[>[data-align=inline-start]]:[&>input]:ps-1.5",
-  appearance: "border-input bg-card",
-  interaction: "transition-colors duration-150 outline-none",
+  appearance: "border-input bg-background shadow-sm",
+  interaction: "transition-colors duration-200 outline-none",
   hover: "hover:border-muted-foreground",
   // The group draws the control's focus ring, so the ring wraps the addons too.
   focus:
@@ -98,14 +98,15 @@ const twTextStyles = defineStyles({
 // Controls drop their own field chrome because the group draws it.
 const twInputStyles = defineStyles({
   layout: "h-full flex-1",
-  // Rounded like the group (minus its 1.5px border) so nothing paints square corners over it.
-  geometry: "rounded-[calc(var(--radius-sm)-1.5px)] border-0",
+  // Rounded like the group (minus its 1px border) so nothing paints square corners over it.
+  geometry: "rounded-[calc(var(--radius-sm)-1px)] border-0",
   appearance: "bg-transparent shadow-none",
   focus: "focus-visible:outline-none",
   disabled: "disabled:bg-transparent",
   // Chrome fills autofilled inputs with its own color, which shows as a box inside the group.
   // An inset shadow in the group's background is the reliable way to cover it.
-  stateAutofill: "autofill:shadow-[inset_0_0_0_100px_var(--card)] autofill:[-webkit-text-fill-color:var(--foreground)]",
+  stateAutofill:
+    "autofill:shadow-[inset_0_0_0_100px_var(--background)] autofill:[-webkit-text-fill-color:var(--foreground)]",
 });
 
 const twTextareaStyles = defineStyles({

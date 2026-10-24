@@ -11,8 +11,8 @@ const twAlertStyles = defineStyles({
   // Leaves room at the end for the absolutely positioned AlertAction.
   geometryAction: "has-data-[slot=alert-action]:pe-24",
   typography: "text-start text-body-sm",
-  // The icon takes the tone colour; 20px sits centred on the first line of the 30px title.
-  icon: "*:[svg]:row-span-2 *:[svg]:translate-y-1 *:[svg]:text-(--tone) *:[svg:not([class*='size-'])]:size-5",
+  // The icon takes the tone colour; 20px sits centred on the first line of the 27px title.
+  icon: "*:[svg]:row-span-2 *:[svg]:translate-y-0.75 *:[svg]:text-(--tone) *:[svg:not([class*='size-'])]:size-5",
 });
 
 // Notices: a tinted ground and a hairline in the tone colour, a title and icon in it, and the message in `ink`.

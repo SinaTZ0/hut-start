@@ -1,5 +1,5 @@
 import { type VariantProps } from "class-variance-authority";
-import { cn } from "cn";
+import { cn } from "#/lib/utils";
 import { ArrowLeftIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -16,7 +16,7 @@ export type TextLinkProps = VariantProps<typeof textLinkVariants> & {
 };
 
 /**
- * A forward text link: a `brand-text` label and a trailing `arrow-left` that nudges ahead on hover and focus, such as
+ * A forward text link: a label that underlines and a trailing arrow that nudges ahead on hover and focus, such as
  * «همه اطلاعیه‌ها» or «بیشتر بخوانید».
  */
 export function TextLink({ href, tone, className, children }: TextLinkProps) {

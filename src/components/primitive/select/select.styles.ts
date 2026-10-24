@@ -8,13 +8,13 @@ const twTriggerStyles = defineStyles({
   // The selected value renders as a single clamped row, even when an item contains an icon.
   layoutValue:
     "*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5",
-  // Same chrome as Input: 1.5px `input` edge.
-  geometry: "rounded-sm border-[1.5px] py-2 ps-4 pe-3",
+  // Same chrome as Input: 1px `input` edge.
+  geometry: "rounded-sm border py-2 ps-3.5 pe-3",
   // The `body` style at 16px also keeps iOS Safari from zooming in on focus.
-  typography: "text-body whitespace-nowrap",
-  appearance: "border-input bg-card data-placeholder:text-muted-foreground",
+  typography: "text-base whitespace-nowrap",
+  appearance: "border-input bg-background shadow-sm data-placeholder:text-muted-foreground",
   hover: "hover:border-muted-foreground",
-  interaction: "transition-colors duration-150 outline-none select-none",
+  interaction: "transition-colors duration-200 outline-none select-none",
   focus:
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid",
   disabled: "disabled:cursor-not-allowed disabled:opacity-45",

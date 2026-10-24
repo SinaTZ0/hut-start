@@ -8,8 +8,8 @@ const twSharedStyles = defineStyles({
   // A pill of three words at most, so it never wraps or grows.
   geometry: "h-6 overflow-hidden rounded-full border border-transparent px-3 py-0.5",
   geometryIcon: "has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2",
-  typography: "text-caption whitespace-nowrap",
-  interaction: "transition-colors duration-150",
+  typography: "text-caption font-semibold whitespace-nowrap",
+  interaction: "transition-colors duration-200",
   focus:
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid",
   invalid: "aria-invalid:border-destructive",
@@ -18,19 +18,20 @@ const twSharedStyles = defineStyles({
 
 /*===== Appearance =====*/
 
-// `default` is the quiet wash; `gold` marks one featured item per card. Status tones always pair with an icon.
+// `default` is the quiet category chip; `highlight` marks one featured item per card; `media` is the label set on a
+// photo («خبر ویژه», «در کانون توجه»). Status tones always pair with an icon or a word.
 const twVariant = defineStyles({
   default: {
-    appearance: "bg-accent text-brand-text",
-    hover: "[a]:hover:bg-accent/70",
+    appearance: "bg-accent text-heading",
+    hover: "[a]:hover:bg-border",
   },
-  gold: {
-    appearance: "bg-gold text-gold-foreground",
-    hover: "[a]:hover:bg-gold-hover",
+  highlight: {
+    appearance: "bg-highlight text-highlight-foreground",
+    hover: "[a]:hover:bg-highlight-hover",
   },
-  secondary: {
-    appearance: "bg-secondary text-secondary-foreground",
-    hover: "[a]:hover:bg-accent",
+  media: {
+    typography: "font-bold",
+    appearance: "bg-band-deep text-on-band",
   },
   outline: {
     appearance: "border-border text-foreground",

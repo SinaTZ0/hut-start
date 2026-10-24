@@ -43,8 +43,13 @@ export const Small: Story = {
   args: { size: "sm" },
 };
 
-// A whole card that is a link: hover or tab to it for the card lift, media zoom and title tint. The second card's
-// image is a poster, so it shows from the top instead of being cropped in the middle.
+// A feature card, such as the featured story: more room and a larger title.
+export const Feature: Story = {
+  args: { size: "lg" },
+};
+
+// A whole card that is a link: hover or tab to it for the card lift (a darker edge and a shadow) and the media zoom.
+// The second card's image is a poster, so it shows from the top instead of being cropped in the middle.
 export const LinkWithMedia: Story = {
   render: (args) => (
     <div className="grid max-w-3xl gap-5 sm:grid-cols-2">

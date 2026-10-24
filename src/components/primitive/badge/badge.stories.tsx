@@ -42,9 +42,20 @@ export const WithIcon: Story = {
         <CircleCheckIcon data-icon="inline-start" />
         ثبت شد
       </Badge>
-      <Badge variant="gold">
+      <Badge variant="highlight">
         <StarIcon data-icon="inline-start" />
         ویژه
+      </Badge>
+    </div>
+  ),
+};
+
+// `media` labels a photo: it sits in a corner of the image, on the pine that the photos' scrim shares.
+export const OnMedia: Story = {
+  render: () => (
+    <div className="relative aspect-wide w-80 rounded-md bg-accent">
+      <Badge variant="media" className="absolute start-3 top-3">
+        خبر ویژه
       </Badge>
     </div>
   ),

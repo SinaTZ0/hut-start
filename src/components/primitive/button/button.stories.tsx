@@ -77,6 +77,21 @@ export const Sizes: Story = {
   ),
 };
 
+// On a pine band the gold button is the one call to action, and `outline-band` sits beside it.
+export const OnBand: Story = {
+  render: (args) => (
+    <div className="flex flex-wrap items-center gap-3 rounded-lg bg-band p-8">
+      <Button {...args} variant="highlight" size="lg">
+        آشنایی با دانشگاه
+        <ArrowLeftIcon data-icon="inline-end" className="ltr:-scale-x-100" />
+      </Button>
+      <Button {...args} variant="outline-band" size="lg">
+        راهنمای نودانشجویان
+      </Button>
+    </div>
+  ),
+};
+
 // `lg` is for hero and call-to-action bands, and the full-width submit of a form.
 export const PrimaryAction: Story = {
   render: (args) => (
@@ -99,12 +114,12 @@ export const WithIcon: Story = {
       </Button>
       <Button {...args} variant="outline">
         بیشتر بخوانید
-        {/* Arrow points left: "forward" in RTL. */}
-        <ArrowLeftIcon data-icon="inline-end" />
+        {/* Arrow points left: "forward" in RTL, flipped in LTR. */}
+        <ArrowLeftIcon data-icon="inline-end" className="ltr:-scale-x-100" />
       </Button>
       <Button {...args} variant="highlight">
         پذیرش و ثبت‌نام
-        <ArrowLeftIcon data-icon="inline-end" />
+        <ArrowLeftIcon data-icon="inline-end" className="ltr:-scale-x-100" />
       </Button>
     </div>
   ),

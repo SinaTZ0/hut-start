@@ -20,8 +20,18 @@ type Story = StoryObj<typeof meta>;
 
 /*===== Stories =====*/
 
-// Hover or tab to the link: the label tints one step and the arrow nudges 4px forward.
+// Hover or tab to the link: the label underlines and the arrow nudges 4px forward.
 export const Playground: Story = {};
+
+// On a pine band: `band` for an ordinary link, `highlight` for the gold one.
+export const OnBand: Story = {
+  render: (args) => (
+    <div className="flex flex-wrap gap-6 rounded-lg bg-band p-8">
+      <TextLink {...args} tone="band" />
+      <TextLink {...args} tone="highlight" />
+    </div>
+  ),
+};
 
 // Without `href` the text link is a call inside a link card: it reacts to the card's hover instead of its own.
 export const CallInsideLink: Story = {

@@ -6,31 +6,35 @@ import { composeStyles, defineStyles, joinStyles } from "../styles";
 // Parts space themselves with `--card-spacing`, so a size only has to change that one variable.
 const twCardStyles = defineStyles({
   layout: "group/card flex flex-col gap-(--card-spacing) overflow-hidden",
-  geometry: "rounded-lg py-(--card-spacing)",
+  geometry: "rounded-md border py-(--card-spacing)",
   // The footer brings its own padding, so the card drops its bottom padding.
   geometryFooter: "has-data-[slot=card-footer]:pb-0",
   // Edge-to-edge media replaces the card's top padding; the card's `overflow-hidden` rounds its corners.
   geometryMedia:
-    "has-[>[data-slot=card-media]:first-child]:pt-0 has-[>img:first-child]:pt-0 *:[img:first-child]:rounded-t-lg *:[img:last-child]:rounded-b-lg",
+    "has-[>[data-slot=card-media]:first-child]:pt-0 has-[>img:first-child]:pt-0 *:[img:first-child]:rounded-t-md *:[img:last-child]:rounded-b-md",
   typography: "text-body-sm",
-  // Cards rest on a hairline plus `shadow-sm`.
-  appearance: "bg-card text-card-foreground shadow-sm ring-1 ring-border",
-  // The card lift, for a card rendered as a link (`render={<SiteLink … />}`): `shadow-md` and a faint `accent` wash.
-  // The wash mixes `accent` into `card` instead of using `bg-accent/40`, which would show the darker page through
-  // the card in dark mode.
-  interaction: "transition-[background-color,box-shadow] duration-200 ease-out outline-none",
-  hover: "[a&]:hover:bg-[color-mix(in_oklab,var(--accent)_40%,var(--card))] [a&]:hover:shadow-md",
+  // Cards rest flat on a hairline.
+  appearance: "border-border bg-card text-card-foreground",
+  // The card lift, for a card rendered as a link (`render={<SiteLink … />}`): the edge darkens to `border-strong` and
+  // the card takes `shadow-md`. It is the one hover for every content card (news, achievements, learning rows).
+  interaction: "transition-[border-color,box-shadow] duration-200 ease-out outline-none",
+  hover: "[a&]:hover:border-border-strong [a&]:hover:shadow-md",
   focus:
-    "focus-visible:bg-[color-mix(in_oklab,var(--accent)_40%,var(--card))] focus-visible:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid",
+    "focus-visible:border-border-strong focus-visible:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid",
   motion: "motion-reduce:transition-none",
 });
 
+// `default` is a content card (20px, 24px from `sm`); `lg` is a feature card, such as the featured story or the lead
+// achievement (32px from `sm`), whose title is set one step larger.
 const twSize = defineStyles({
   default: {
-    geometry: "[--card-spacing:--spacing(5)]",
+    geometry: "[--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)]",
   },
   sm: {
     geometry: "[--card-spacing:--spacing(4)]",
+  },
+  lg: {
+    geometry: "[--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(8)]",
   },
 });
 
@@ -39,17 +43,13 @@ const twSize = defineStyles({
 const twHeaderStyles = defineStyles({
   layout:
     "group/card-header @container/card-header grid auto-rows-min items-start gap-1 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto]",
-  geometry: "rounded-t-lg px-(--card-spacing) [.border-b]:pb-(--card-spacing)",
+  geometry: "rounded-t-md px-(--card-spacing) [.border-b]:pb-(--card-spacing)",
 });
 
-// The title tint: inside a hovered or focused link card, the title takes `brand-text`. `[a:hover_&]` matches any
-// link ancestor, so it never fires on a plain card.
+// Card titles keep their colour on hover: the card's edge and shadow carry it.
 const twTitleStyles = defineStyles({
-  typography: "font-heading text-h4 group-data-[size=sm]/card:text-title",
-  interaction: "transition-colors duration-150 ease-out",
-  hover: "[a:hover_&]:text-brand-text",
-  focus: "[a:focus-visible_&]:text-brand-text",
-  motion: "motion-reduce:transition-none",
+  typography: "font-heading text-title group-data-[size=lg]/card:text-h3",
+  appearance: "text-heading",
 });
 
 const twDescriptionStyles = defineStyles({
@@ -67,17 +67,17 @@ const twContentStyles = defineStyles({
 
 const twFooterStyles = defineStyles({
   layout: "flex items-center",
-  geometry: "rounded-b-lg border-t p-(--card-spacing)",
+  geometry: "rounded-b-md border-t p-(--card-spacing)",
   appearance: "bg-muted",
 });
 
 /*===== Media Styles =====*/
 
-// The media frame clips its image so the media zoom stays inside it. `bg-muted` shows while the image loads and
+// The media frame clips its image so the media zoom stays inside it. `bg-accent` shows while the image loads and
 // around a contained poster.
 const twMediaStyles = defineStyles({
   layout: "relative shrink-0 overflow-hidden",
-  appearance: "bg-muted",
+  appearance: "bg-accent",
   geometry: "[&_img]:size-full",
   // The media zoom: the photo scales to 1.03 inside a hovered or focused link card.
   interaction: "[&_img]:transition-[scale] [&_img]:duration-300 [&_img]:ease-out",
