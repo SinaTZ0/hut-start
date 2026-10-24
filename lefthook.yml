@@ -1,0 +1,23 @@
+# Git hooks, installed by `pnpm install` (the `prepare` script). Skip once with `git commit --no-verify`.
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: lint
+      glob: "*.{js,mjs,cjs,jsx,ts,tsx}"
+      # The untouched shadcn source and the vendored agent skills are reference only and aren't linted (`.oxlintrc.json`).
+      exclude:
+        - "src/components/ui/**"
+        - ".agents/**"
+        - ".claude/**"
+      run: pnpm exec oxlint {staged_files}
+    - name: format
+      run: pnpm exec prettier --write --ignore-unknown {staged_files}
+      # Re-stages what Prettier changed, so the commit holds the formatted files.
+      stage_fixed: true
+
+# Conventional Commits (`feat: …`, `fix(scope): …`), checked by commitlint (`commitlint.config.js`).
+commit-msg:
+  jobs:
+    - name: commitlint
+      run: pnpm exec commitlint --edit {1}
