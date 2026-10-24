@@ -1,10 +1,20 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeftIcon } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, ViewTransition } from "react";
 
-import { buttonVariants } from "#/components/primitive/button/button.styles";
 import { absoluteUrl, jsonLd, pageMeta } from "#/lib/seo";
 import { m } from "#/paraglide/messages";
 import { localizeHref } from "#/paraglide/runtime";
+import { Achievements } from "./components/achievements";
+import { Arc } from "./components/arc";
+import { Glance } from "./components/glance";
+import { Hero } from "./components/hero";
+import { Learning } from "./components/learning";
+import { NewsSection } from "./components/news-section";
+import { SemesterSection } from "./components/semester-section";
+import { ServiceRail } from "./components/service-rail";
+import { Welcome } from "./components/welcome";
+import { SEMESTER } from "./content";
+import { semesterState, todayInTehran } from "./semester";
 
 /*===== Route =====*/
 export const Route = createFileRoute("/_site-layout/")({
@@ -23,17 +33,58 @@ export const Route = createFileRoute("/_site-layout/")({
   component: Home,
 });
 
+/*===== Styles =====*/
+
+// The centred content column every section uses. The card-heavy middle run gets more air (`py-section-lg`).
+const columnClasses = "mx-auto max-w-site px-gutter";
+
 /*===== Home =====*/
+
+/**
+ * The university's front door: the campus photo with the daily systems, news and notices, the semester, the glance
+ * band, achievements, events and courses, and a welcome for new students.
+ */
 function Home() {
+  // Today in Tehran, once per page view. The server and the browser agree on it except across midnight.
+  const today = useMemo(() => todayInTehran(), []);
+  const semester = useMemo(() => semesterState({ events: SEMESTER.events, today }), [today]);
+
   return (
-    <section className="mx-auto flex max-w-site flex-col items-start gap-6 px-4 py-20 sm:px-6">
-      <h1 className="text-display">{m.site_name()}</h1>
-      <p className="max-w-xl text-body-lg text-muted-foreground">{m.home_intro()}</p>
-      <Link to="/notes" className={buttonVariants({ variant: "highlight", size: "lg" })}>
-        {m.home_go_to_notes()}
-        {/* Points forward: left in Persian, flipped to point right in English. */}
-        <ArrowLeftIcon data-icon="inline-end" className="ltr:-scale-x-100" />
-      </Link>
-    </section>
+    <>
+      <Hero next={semester.nextMilestone}>
+        <ServiceRail />
+      </Hero>
+
+      {/* When the systems list opens under the rail on phones, these glide down instead of jumping (`home-slide`). */}
+      <ViewTransition default="home-slide">
+        <Arc />
+      </ViewTransition>
+      <ViewTransition default="home-slide">
+        <div className={`${columnClasses} py-section`}>
+          <NewsSection today={today} />
+        </div>
+      </ViewTransition>
+      <ViewTransition default="home-slide">
+        <div className="border-y bg-background-alt">
+          <div className={`${columnClasses} py-section`}>
+            <SemesterSection state={semester} />
+          </div>
+        </div>
+      </ViewTransition>
+
+      <Glance />
+
+      <div className={`${columnClasses} py-section-lg`}>
+        <Achievements />
+      </div>
+      <div className="border-y bg-background-alt">
+        <div className={`${columnClasses} py-section-lg`}>
+          <Learning />
+        </div>
+      </div>
+      <div className={`${columnClasses} py-section-lg`}>
+        <Welcome />
+      </div>
+    </>
   );
 }

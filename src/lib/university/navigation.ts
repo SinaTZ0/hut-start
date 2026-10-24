@@ -21,47 +21,66 @@ export type NavSection = {
 
 /*------ Departments ------*/
 
-export type Department = { id: string; name: () => string; href: string; labHref: string };
+/** `name` is the department's subject («مهندسی برق»), `short` the word that tells it apart («برق»). */
+export type Department = { id: string; name: () => string; short: () => string; href: string; labHref: string };
 
 export const DEPARTMENTS: Department[] = [
-  { id: "ee", name: m.site_dept_ee, href: "http://ee.hut.ac.ir/", labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-برق" },
+  {
+    id: "ee",
+    name: m.site_dept_ee,
+    short: m.site_dept_ee_short,
+    href: "http://ee.hut.ac.ir/",
+    labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-برق",
+  },
   {
     id: "ce",
     name: m.site_dept_ce,
+    short: m.site_dept_ce_short,
     href: "http://ce.hut.ac.ir/",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-کامپیوتر",
   },
   {
     id: "mech",
     name: m.site_dept_mech,
+    short: m.site_dept_mech_short,
     href: "http://mech.hut.ac.ir/",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-مکانیک",
   },
   {
     id: "bme",
     name: m.site_dept_bme,
+    short: m.site_dept_bme_short,
     href: "http://bme.hut.ac.ir/",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-پزشکی",
   },
   {
     id: "materials",
     name: m.site_dept_materials,
+    short: m.site_dept_materials_short,
     href: "http://materials.hut.ac.ir/",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-مواد",
   },
   {
     id: "chem",
     name: m.site_dept_chem,
+    short: m.site_dept_chem_short,
     href: "http://chemeng.hut.ac.ir/",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-شیمی",
   },
   {
     id: "mining",
     name: m.site_dept_mining,
+    short: m.site_dept_mining_short,
     href: "http://me.hut.ac.ir/",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-معدن",
   },
-  { id: "bs", name: m.site_dept_bs, href: "http://bs.hut.ac.ir/", labHref: "https://hut.ac.ir/آزمایشگاه-علوم-پایه" },
+  {
+    id: "bs",
+    name: m.site_dept_bs,
+    short: m.site_dept_bs_short,
+    href: "http://bs.hut.ac.ir/",
+    labHref: "https://hut.ac.ir/آزمایشگاه-علوم-پایه",
+  },
 ];
 
 /*------ Shared Links ------*/
@@ -212,12 +231,15 @@ export const NAV_SECTIONS: NavSection[] = [
 
 /*------ Footer ------*/
 
+/** The university's suggestions and complaints form. */
+export const SUGGESTIONS_LINK: NavLink = { label: m.nav_suggestions, href: "https://hut.ac.ir/فرم نظرات پیشنهادات" };
+
 export const FOOTER_LINKS: NavLink[] = [
   { label: m.nav_sitemap, href: "https://hut.ac.ir/fa/نقشه-سایت" },
   CONTACT_LINK,
   PHONEBOOK_LINK,
   { label: m.nav_ethics, href: "https://hut.ac.ir/documents/38165/453653/نظامنامه+اخلاق+آموزش.pdf" },
-  { label: m.nav_suggestions, href: "https://hut.ac.ir/فرم نظرات پیشنهادات" },
+  SUGGESTIONS_LINK,
   { label: m.nav_alumni, href: "https://hut.ac.ir/web/دانش-آموختگان" },
   RECRUITMENT_LINK,
 ];

@@ -5,6 +5,7 @@ import { cn } from "#/lib/utils";
 import type { ComponentProps } from "react";
 import {
   cardActionClasses,
+  cardBodyClasses,
   cardContentClasses,
   cardDescriptionClasses,
   cardFooterClasses,
@@ -25,15 +26,19 @@ export type CardProps = useRender.ComponentProps<"div"> & VariantProps<typeof ca
  * Keep other links and buttons out of a link card. `data-size` is kept on the root because CardTitle scales its text
  * from it.
  */
-function Card({ className, size = "default", render, ...props }: CardProps) {
+function Card({ className, size = "default", orientation = "vertical", render, ...props }: CardProps) {
   return useRender({
     defaultTagName: "div",
     props: mergeProps<"div">(
-      { "data-size": size, className: cn(cardVariants({ size }), className) } as ComponentProps<"div">,
+      {
+        "data-size": size,
+        "data-orientation": orientation,
+        className: cn(cardVariants({ size, orientation }), className),
+      } as ComponentProps<"div">,
       props,
     ),
     render,
-    state: { slot: "card", size },
+    state: { slot: "card", size, orientation },
   });
 }
 
@@ -59,6 +64,11 @@ function CardContent({ className, ...props }: ComponentProps<"div">) {
   return <div data-slot="card-content" {...props} className={cn(cardContentClasses, className)} />;
 }
 
+/** The text column beside the media in a horizontal card (`orientation="horizontal"`). */
+function CardBody({ className, ...props }: ComponentProps<"div">) {
+  return <div data-slot="card-body" {...props} className={cn(cardBodyClasses, className)} />;
+}
+
 function CardFooter({ className, ...props }: ComponentProps<"div">) {
   return <div data-slot="card-footer" {...props} className={cn(cardFooterClasses, className)} />;
 }
@@ -76,4 +86,4 @@ function CardMedia({ className, fit, ...props }: CardMediaProps) {
   return <div data-slot="card-media" {...props} className={cn(cardMediaVariants({ fit }), className)} />;
 }
 
-export { Card, CardMedia, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent };
+export { Card, CardMedia, CardHeader, CardBody, CardFooter, CardTitle, CardAction, CardDescription, CardContent };

@@ -26,6 +26,16 @@ const twCardStyles = defineStyles({
 
 // `default` is a content card (20px, 24px from `sm`); `lg` is a feature card, such as the featured story or the lead
 // achievement (32px from `sm`), whose title is set one step larger.
+// `horizontal` sets the media beside a CardBody from `sm` up (stacked on phones). The body carries the padding, so the
+// media runs the card's full height.
+const twOrientation = defineStyles({
+  vertical: {},
+  horizontal: {
+    layout: "gap-0 sm:flex-row",
+    geometry: "py-0",
+  },
+});
+
 const twSize = defineStyles({
   default: {
     geometry: "[--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)]",
@@ -63,6 +73,12 @@ const twActionStyles = defineStyles({
 
 const twContentStyles = defineStyles({
   geometry: "px-(--card-spacing)",
+});
+
+// The text column of a horizontal card: header, content and the rest, spaced like a vertical card.
+const twBodyStyles = defineStyles({
+  layout: "flex min-w-0 flex-1 flex-col gap-(--card-spacing)",
+  geometry: "py-(--card-spacing)",
 });
 
 const twFooterStyles = defineStyles({
@@ -104,8 +120,9 @@ const twMediaFit = defineStyles({
 const cardVariants = cva(joinStyles(twCardStyles), {
   variants: {
     size: composeStyles(twSize),
+    orientation: composeStyles(twOrientation),
   },
-  defaultVariants: { size: "default" },
+  defaultVariants: { size: "default", orientation: "vertical" },
 });
 
 const cardMediaVariants = cva(joinStyles(twMediaStyles), {
@@ -120,6 +137,7 @@ const cardTitleClasses = joinStyles(twTitleStyles);
 const cardDescriptionClasses = joinStyles(twDescriptionStyles);
 const cardActionClasses = joinStyles(twActionStyles);
 const cardContentClasses = joinStyles(twContentStyles);
+const cardBodyClasses = joinStyles(twBodyStyles);
 const cardFooterClasses = joinStyles(twFooterStyles);
 
 export {
@@ -130,7 +148,9 @@ export {
   cardDescriptionClasses,
   cardActionClasses,
   cardContentClasses,
+  cardBodyClasses,
   cardFooterClasses,
   twSize,
+  twOrientation,
   twMediaFit,
 };

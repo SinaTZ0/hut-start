@@ -3,7 +3,17 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import placeholderImage from "#/assets/placeholder.svg";
 import { Button } from "#/components/primitive/button/button";
 import { SiteLink } from "#/components/shared/site-link/site-link";
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardMedia, CardTitle } from "./card";
+import {
+  Card,
+  CardAction,
+  CardBody,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardMedia,
+  CardTitle,
+} from "./card";
 import { twMediaFit, twSize } from "./card.styles";
 
 const sizeOptions = Object.keys(twSize) as Array<keyof typeof twSize>;
@@ -46,6 +56,24 @@ export const Small: Story = {
 // A feature card, such as the featured story: more room and a larger title.
 export const Feature: Story = {
   args: { size: "lg" },
+};
+
+// A horizontal card: the media beside the text from `sm` up, stacked on phones. The body carries the padding.
+export const Horizontal: Story = {
+  render: (args) => (
+    <Card {...args} orientation="horizontal" render={<SiteLink href="#news" />} className="max-w-3xl">
+      <CardMedia className="aspect-video sm:aspect-auto sm:w-1/2">
+        <img src={placeholderImage} alt="تصویر نمونه" />
+      </CardMedia>
+      <CardBody>
+        <CardHeader>
+          <CardTitle>انتصاب رئیس دانشگاه به عضویت شورای علمی بنیاد نخبگان استان</CardTitle>
+          <CardDescription>۱۹ مهر ۱۴۰۵</CardDescription>
+        </CardHeader>
+        <CardContent>متن کوتاهی درباره این خبر.</CardContent>
+      </CardBody>
+    </Card>
+  ),
 };
 
 // A whole card that is a link: hover or tab to it for the card lift (a darker edge and a shadow) and the media zoom.

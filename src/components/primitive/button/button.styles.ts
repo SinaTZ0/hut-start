@@ -1,4 +1,5 @@
 import { cva } from "class-variance-authority";
+import { cn } from "#/lib/utils";
 import { composeStyles, defineStyles, joinStyles } from "../styles";
 
 /*===== Shared Styles =====*/
@@ -122,7 +123,7 @@ const twSize = defineStyles({
 
 /*===== Class Composition =====*/
 
-const buttonVariants = cva(joinStyles(twSharedStyles), {
+const buttonCva = cva(joinStyles(twSharedStyles), {
   variants: {
     variant: composeStyles(twVariant),
     size: composeStyles(twSize),
@@ -132,5 +133,11 @@ const buttonVariants = cva(joinStyles(twSharedStyles), {
     size: "default",
   },
 });
+
+/**
+ * The button's classes, already merged: a variant's edge colour replaces the base `border-transparent`. Links styled as
+ * buttons (`className={buttonVariants(…)}`) use them without passing through `cn`, so the merge happens here.
+ */
+const buttonVariants = (props?: Parameters<typeof buttonCva>[0]) => cn(buttonCva(props));
 
 export { buttonVariants, twVariant, twSize };

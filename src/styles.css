@@ -76,6 +76,11 @@
   --spacing-section: clamp(3.5rem, 7vw, 6rem);
   --spacing-section-lg: calc(var(--spacing-section) + 1.5rem);
 
+  /* The home hero fills the first screen under the header (utility bar + main bar), but never below 560px; the arc
+     under it scales with the width. */
+  --spacing-hero: max(35rem, calc(100svh - 7.5rem));
+  --spacing-arc: clamp(0.875rem, 2.2vw, 2rem);
+
   /* News cards and phone learning rows (16:7), the glance photo (16:10) */
   --aspect-wide: 16 / 7;
   --aspect-photo: 16 / 10;
@@ -352,6 +357,39 @@
   max-height: calc(100dvh - 7.5rem);
 }
 
+/*------ Home ------*/
+
+/* The campus photo keeps the building and the mountains in frame */
+@utility object-hero {
+  object-position: center 35%;
+}
+
+/* The semester track: one cell per day (`--days`), cut by a 2px gap with a repeating mask from the start side. On
+   phones a cell is a week, so the gaps don't merge into a grey blur. */
+@utility term-track {
+  --cell: calc(700% / var(--days));
+  mask-image: repeating-linear-gradient(
+    var(--toward-end),
+    #000 0 calc(var(--cell) - 2px),
+    transparent calc(var(--cell) - 2px) var(--cell)
+  );
+
+  @media (width >= 48rem) {
+    --cell: calc(100% / var(--days));
+  }
+}
+
+/* A stretch of the track from `--from` to `--to` (0–1 of the semester) */
+@utility term-segment {
+  inset-inline-start: calc(var(--from) * 100%);
+  width: calc((var(--to) - var(--from)) * 100%);
+}
+
+/* The 3px "today" line at `--at` (0–1), centred on its day */
+@utility term-marker {
+  inset-inline-start: calc(var(--at) * 100% - 1.5px);
+}
+
 /*===== Base =====*/
 
 @layer base {
@@ -444,6 +482,50 @@
   from {
     opacity: 0;
     transform: translateX(calc(var(--page-shift) * -1));
+  }
+}
+
+/*------ Home Systems Panel ------*/
+/* The rest of the systems open from the rail (`home-open`): up from its top edge on wide screens, where the panel sits
+   above the rail, and down on phones, where it sits under it. What the panel pushes aside glides (`home-slide`). The
+   page itself (`root`) swaps without a cross-fade, so no text ghosts. */
+::view-transition-group(.home-open),
+::view-transition-group(.home-slide) {
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+::view-transition-new(.home-open):only-child {
+  animation: 300ms cubic-bezier(0.2, 0.7, 0.2, 1) both home-open;
+}
+::view-transition-old(.home-open):only-child {
+  animation: 200ms cubic-bezier(0.4, 0, 0.6, 1) reverse both home-open;
+}
+
+@media (width >= 48rem) {
+  ::view-transition-new(.home-open):only-child,
+  ::view-transition-old(.home-open):only-child {
+    animation-name: home-rise;
+  }
+}
+
+:root:active-view-transition-type(home-services)::view-transition-old(root),
+:root:active-view-transition-type(home-services)::view-transition-new(root) {
+  animation: none;
+}
+
+@keyframes home-open {
+  from {
+    clip-path: inset(0 0 100% 0);
+    translate: 0 -0.5rem;
+    opacity: 0.4;
+  }
+}
+@keyframes home-rise {
+  from {
+    clip-path: inset(100% 0 0 0);
+    translate: 0 0.5rem;
+    opacity: 0.4;
   }
 }
 
