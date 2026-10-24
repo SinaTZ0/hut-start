@@ -30,3 +30,6 @@
 # Storybook
 /storybook-static/
 *storybook.log
+
+# Local design exports used when customizing the template; not committed
+/target/
