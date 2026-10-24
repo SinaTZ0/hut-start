@@ -6,10 +6,21 @@ import {
   CardBody,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
+  CardKicker,
   CardMedia,
   CardTitle,
 } from "#/components/primitive/card/card";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "#/components/primitive/item/item";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { TextLink } from "#/components/shared/text-link/text-link";
@@ -23,7 +34,6 @@ import {
   newsHref,
   RESEARCH_UNITS,
 } from "../content";
-import { CardArrow } from "./card-arrow";
 
 /*===== Constants =====*/
 
@@ -31,14 +41,12 @@ const RESEARCH = NAV_SECTIONS.find((section) => section.id === "research");
 
 /*===== Achievement Card =====*/
 
-/** The lead achievement as a tall card; the others as a photo beside the text, the photo on the end side. */
+/** The lead achievement as a tall card; the others as a photo beside the text. */
 function AchievementCard({ item, lead = false }: { item: Achievement; lead?: boolean }) {
   const text = (
     <>
       <CardHeader>
-        <p className="flex items-center gap-2 text-caption font-bold text-brand-text before:size-1.5 before:rounded-full before:bg-highlight">
-          {item.tag()}
-        </p>
+        <CardKicker>{item.tag()}</CardKicker>
         <CardTitle>
           <h3>{item.title()}</h3>
         </CardTitle>
@@ -48,12 +56,9 @@ function AchievementCard({ item, lead = false }: { item: Achievement; lead?: boo
           <CardDescription>{item.summary()}</CardDescription>
         </CardContent>
       )}
-      <CardContent className="mt-auto">
-        <p className="flex items-center justify-between border-t pt-3 text-caption font-bold text-brand-text">
-          {m.home_read_more()}
-          <CardArrow icon="external" />
-        </p>
-      </CardContent>
+      <CardFooter>
+        <TextLink>{m.home_read_more()}</TextLink>
+      </CardFooter>
     </>
   );
 
@@ -64,13 +69,9 @@ function AchievementCard({ item, lead = false }: { item: Achievement; lead?: boo
       orientation={lead ? "vertical" : "horizontal"}
     >
       {item.image && (
-        <CardMedia className={lead ? "aspect-2/1" : "aspect-2/1 sm:order-last sm:aspect-auto sm:w-2/5"}>
+        <CardMedia className={lead ? "aspect-2/1" : "aspect-2/1 sm:aspect-auto sm:w-2/5"}>
           <img src={item.image} alt="" loading="lazy" />
-          {lead && (
-            <Badge variant="media" className="absolute start-4 top-4">
-              {m.home_achievements_spotlight()}
-            </Badge>
-          )}
+          {lead && <Badge variant="media">{m.home_achievements_spotlight()}</Badge>}
         </CardMedia>
       )}
       {lead ? text : <CardBody>{text}</CardBody>}
@@ -93,26 +94,24 @@ function ResearchUnits() {
           </TextLink>
         )}
       </div>
-      <ul className="grid grid-cols-1 overflow-hidden sm:grid-cols-2 lg:col-span-2">
+      <ItemGroup variant="tiled" className="grid-cols-1 sm:grid-cols-2 lg:col-span-2">
         {RESEARCH_UNITS.map((unit) => (
-          <li key={unit.href} className="-ms-px -mt-px border-s border-t">
-            <SiteLink
-              href={unit.href}
-              className="group/unit flex h-full items-start gap-4 px-5 py-6 transition-colors duration-200 hover:bg-accent focus-visible:-outline-offset-4 motion-reduce:transition-none sm:px-7 sm:py-8"
-            >
-              <unit.icon aria-hidden className="mt-0.5 size-7 shrink-0 text-highlight-text" />
-              <span className="min-w-0 flex-1">
-                <span className="block text-h4 text-heading">{unit.label()}</span>
-                <span className="block text-body-sm text-muted-foreground">{unit.description()}</span>
-              </span>
-              <ExternalLinkIcon
-                aria-hidden
-                className="mt-1.5 size-4 shrink-0 text-muted-foreground transition-colors duration-200 group-hover/unit:text-brand-text motion-reduce:transition-none"
-              />
-            </SiteLink>
+          <li key={unit.href}>
+            <Item size="lg" render={<SiteLink href={unit.href} />}>
+              <ItemMedia variant="icon">
+                <unit.icon />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{unit.label()}</ItemTitle>
+                <ItemDescription>{unit.description()}</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <ExternalLinkIcon />
+              </ItemActions>
+            </Item>
           </li>
         ))}
-      </ul>
+      </ItemGroup>
     </div>
   );
 }

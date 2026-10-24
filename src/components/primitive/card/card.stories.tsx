@@ -3,14 +3,17 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import placeholderImage from "#/assets/placeholder.svg";
 import { Button } from "#/components/primitive/button/button";
 import { SiteLink } from "#/components/shared/site-link/site-link";
+import { TextLink } from "#/components/shared/text-link/text-link";
 import {
   Card,
   CardAction,
+  CardArrow,
   CardBody,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
+  CardKicker,
   CardMedia,
   CardTitle,
 } from "./card";
@@ -103,6 +106,48 @@ export const LinkWithMedia: Story = {
   ),
 };
 
+// The content card anatomy: media, kicker (category, then muted meta), title, and the call pinned to the bottom. A
+// full-size card ends with a text call; a compact row ends with the arrow disc.
+export const ContentCards: Story = {
+  render: (args) => (
+    <div className="grid max-w-3xl gap-5">
+      <div className="grid gap-5 sm:grid-cols-2">
+        {["عنوان یک مطلب نمونه", "مطلب دوم با عنوانی بلندتر که به دو خط می‌رسد"].map((title) => (
+          <Card key={title} {...args} render={<SiteLink href="#news" />}>
+            <CardMedia className="aspect-wide">
+              <img src={placeholderImage} alt="" />
+            </CardMedia>
+            <CardHeader>
+              <CardKicker>
+                <span>دانشگاه</span>
+                <span aria-hidden>/</span>
+                <time dateTime="2026-10-11">۱۹ مهر ۱۴۰۵</time>
+              </CardKicker>
+              <CardTitle>{title}</CardTitle>
+            </CardHeader>
+            <CardFooter>
+              <TextLink>ادامه خبر</TextLink>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+      <Card {...args} size="sm" orientation="horizontal" render={<SiteLink href="#news" />}>
+        <CardMedia className="aspect-wide sm:aspect-4/3 sm:w-44">
+          <img src={placeholderImage} alt="" />
+        </CardMedia>
+        <CardBody className="sm:flex-row sm:items-center">
+          <CardHeader className="flex-1">
+            <CardKicker>مرکز رشد</CardKicker>
+            <CardTitle>نشست تخصصی هدایت شغلی</CardTitle>
+            <CardDescription>گفت‌وگوی دانشجویان با مدیران صنعت</CardDescription>
+          </CardHeader>
+          <CardArrow className="me-4 hidden sm:grid" />
+        </CardBody>
+      </Card>
+    </div>
+  ),
+};
+
 export const MediaFit: Story = {
   render: (args) => (
     <div className="grid max-w-4xl gap-5 sm:grid-cols-3">
@@ -129,7 +174,8 @@ export const WithFooter: Story = {
       </CardHeader>
       <CardContent>محتوای کارت</CardContent>
       <CardFooter>
-        <Button className="w-full">ادامه</Button>
+        <Button>ادامه</Button>
+        <Button variant="ghost">انصراف</Button>
       </CardFooter>
     </Card>
   ),

@@ -3,6 +3,7 @@ import { useDeferredValue, useId, useState } from "react";
 
 import { Button } from "#/components/primitive/button/button";
 import { Input } from "#/components/primitive/input/input";
+import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "#/components/primitive/item/item";
 import { Label } from "#/components/primitive/label/label";
 import { Popover, PopoverContent, PopoverTrigger } from "#/components/primitive/popover/popover";
 import { SiteLink } from "#/components/shared/site-link/site-link";
@@ -40,26 +41,25 @@ export function ServiceSearch() {
         />
 
         {/*------ Results ------*/}
-        <ul aria-live="polite" className="grid max-h-90 gap-0.5 overflow-y-auto">
+        <ItemGroup aria-live="polite" className="max-h-90 overflow-y-auto">
           {results.map((service) => (
             <li key={service.id}>
-              <SiteLink
-                href={service.href}
-                className="flex items-start gap-3 rounded-sm px-3 py-2 text-foreground transition-colors duration-200 hover:bg-accent motion-reduce:transition-none"
-              >
-                <service.icon aria-hidden className="mt-0.5 size-5 shrink-0 text-brand-text" />
-                <span>
-                  <span className="block text-title">{service.title()}</span>
-                  <span className="block text-caption text-muted-foreground">
+              <Item size="sm" render={<SiteLink href={service.href} />}>
+                <ItemMedia>
+                  <service.icon />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{service.title()}</ItemTitle>
+                  <ItemDescription>
                     {service.description()}
                     {service.internalOnly && ` (${m.nav_internal_only()})`}
-                  </span>
-                </span>
-              </SiteLink>
+                  </ItemDescription>
+                </ItemContent>
+              </Item>
             </li>
           ))}
           {results.length === 0 && <li className="px-3 py-2 text-muted-foreground">{m.nav_search_empty()}</li>}
-        </ul>
+        </ItemGroup>
       </PopoverContent>
     </Popover>
   );

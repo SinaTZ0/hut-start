@@ -7,7 +7,9 @@ import {
   CardBody,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
+  CardKicker,
   CardMedia,
   CardTitle,
 } from "#/components/primitive/card/card";
@@ -39,8 +41,8 @@ function Story({ item, featured = false }: { item: NewsItem; featured?: boolean 
   const text = (
     <>
       <CardHeader>
-        <p className="flex flex-wrap items-center gap-2 text-caption text-muted-foreground">
-          <span className="font-bold text-brand-text">{NEWS_CATEGORIES[item.category].title()}</span>
+        <CardKicker>
+          <span>{NEWS_CATEGORIES[item.category].title()}</span>
           {item.date && (
             <>
               <span aria-hidden>/</span>
@@ -50,7 +52,7 @@ function Story({ item, featured = false }: { item: NewsItem; featured?: boolean 
               </time>
             </>
           )}
-        </p>
+        </CardKicker>
         <CardTitle>
           <h3>{item.title()}</h3>
         </CardTitle>
@@ -60,9 +62,9 @@ function Story({ item, featured = false }: { item: NewsItem; featured?: boolean 
           <CardDescription>{item.summary()}</CardDescription>
         </CardContent>
       )}
-      <CardContent className="mt-auto">
+      <CardFooter>
         <TextLink>{m.home_news_continue()}</TextLink>
-      </CardContent>
+      </CardFooter>
     </>
   );
 
@@ -76,11 +78,7 @@ function Story({ item, featured = false }: { item: NewsItem; featured?: boolean 
       {item.image && (
         <CardMedia className={featured ? "aspect-video sm:aspect-auto sm:min-h-70 sm:flex-1" : "aspect-wide"}>
           <img src={item.image} alt="" loading="lazy" />
-          {featured && (
-            <Badge variant="media" className="absolute start-3.5 top-3.5">
-              {m.home_news_featured()}
-            </Badge>
-          )}
+          {featured && <Badge variant="media">{m.home_news_featured()}</Badge>}
         </CardMedia>
       )}
       {featured ? <CardBody className="justify-center sm:flex-1">{text}</CardBody> : text}

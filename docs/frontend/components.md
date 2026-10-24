@@ -90,6 +90,17 @@ type-checking. A group with a distinct sub-concern can take a capitalized suffix
 - Export the variant maps as `twVariant`, `twSize`, and so on, so stories build their controls from them
   (`Object.keys(twVariant)`).
 
+## Card or Item
+
+- A **Card** stands on its own surface, with its own edge and the card lift on hover: a news story, an achievement, a
+  learning row. A content card reads media, then a CardHeader with CardKicker (the category, then muted meta) and
+  CardTitle, then a CardFooter holding the call: a `TextLink` on a full-size card, a CardArrow on a compact row
+  (`size="sm"`). A photo label goes in CardMedia as a `Badge variant="media"`, which pins itself to the corner.
+- An **Item** is a row in a list that shares one surface: help links, research units, search results. Wrap rows in an
+  ItemGroup (`stack`, `divided` or `tiled`) with each Item in an `<li>`; a row that is a link takes the `accent` wash.
+  An icon tile is `ItemMedia variant="icon"`, and a link that leaves for another system ends with an external icon in
+  ItemActions.
+
 ## Lint Rules
 
 `pnpm lint` runs [`@shadcn/lint`](https://github.com/shadcn-ui/lint) (configured in `.oxlintrc.json`):

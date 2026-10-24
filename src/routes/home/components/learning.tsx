@@ -1,12 +1,19 @@
 import { ArrowLeftIcon, BookOpenIcon } from "lucide-react";
 
-import { Badge } from "#/components/primitive/badge/badge";
-import { Card, CardBody, CardDescription, CardHeader, CardMedia, CardTitle } from "#/components/primitive/card/card";
+import {
+  Card,
+  CardArrow,
+  CardBody,
+  CardDescription,
+  CardHeader,
+  CardKicker,
+  CardMedia,
+  CardTitle,
+} from "#/components/primitive/card/card";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { m } from "#/paraglide/messages";
 import { LEARNING_ITEMS, NEWS_CATEGORIES, newsHref } from "../content";
-import { CardArrow } from "./card-arrow";
 
 /*===== Learning =====*/
 
@@ -51,7 +58,7 @@ export function Learning() {
               )}
               <CardBody className="sm:flex-row sm:items-center">
                 <CardHeader className="flex-1">
-                  <Badge className="mb-1">{NEWS_CATEGORIES[item.category].title()}</Badge>
+                  <CardKicker>{NEWS_CATEGORIES[item.category].title()}</CardKicker>
                   <CardTitle>
                     <h3>{item.title()}</h3>
                   </CardTitle>

@@ -1,15 +1,18 @@
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { type VariantProps } from "class-variance-authority";
+import { ArrowLeftIcon, ExternalLinkIcon } from "lucide-react";
 import { cn } from "#/lib/utils";
 import type { ComponentProps } from "react";
 import {
   cardActionClasses,
+  cardArrowClasses,
   cardBodyClasses,
   cardContentClasses,
   cardDescriptionClasses,
   cardFooterClasses,
   cardHeaderClasses,
+  cardKickerClasses,
   cardMediaVariants,
   cardTitleClasses,
   cardVariants,
@@ -21,6 +24,8 @@ export type CardProps = useRender.ComponentProps<"div"> & VariantProps<typeof ca
 
 /**
  * A styled surface whose parts share the size's spacing.
+ * A content card reads, in order: CardMedia, a CardHeader holding CardKicker, CardTitle (and CardDescription), and a
+ * CardFooter with the call: a `TextLink` on a full-size card, a CardArrow on a compact row (`size="sm"`).
  * A whole card that is a link renders as that link: `render={<SiteLink href="…" />}`. The link card then gets the
  * card lift, and its CardTitle, CardMedia and any trailing arrow react to the card's hover and keyboard focus.
  * Keep other links and buttons out of a link card. `data-size` is kept on the root because CardTitle scales its text
@@ -52,6 +57,11 @@ function CardTitle({ className, ...props }: ComponentProps<"div">) {
   return <div data-slot="card-title" {...props} className={cn(cardTitleClasses, className)} />;
 }
 
+/** The category above a title; later children (a date, a separator) are set as muted meta. */
+function CardKicker({ className, ...props }: ComponentProps<"p">) {
+  return <p data-slot="card-kicker" {...props} className={cn(cardKickerClasses, className)} />;
+}
+
 function CardDescription({ className, ...props }: ComponentProps<"div">) {
   return <div data-slot="card-description" {...props} className={cn(cardDescriptionClasses, className)} />;
 }
@@ -69,8 +79,23 @@ function CardBody({ className, ...props }: ComponentProps<"div">) {
   return <div data-slot="card-body" {...props} className={cn(cardBodyClasses, className)} />;
 }
 
+/** The card's last row, pinned to the bottom: the call of a link card, or a card's buttons. */
 function CardFooter({ className, ...props }: ComponentProps<"div">) {
   return <div data-slot="card-footer" {...props} className={cn(cardFooterClasses, className)} />;
+}
+
+/**
+ * The round arrow that ends a compact link card; it fills pine while the card is hovered or focused.
+ * `external` for a card that leads to another system rather than more of this site's content.
+ */
+function CardArrow({ className, external = false, ...props }: ComponentProps<"span"> & { external?: boolean }) {
+  const Icon = external ? ExternalLinkIcon : ArrowLeftIcon;
+
+  return (
+    <span data-slot="card-arrow" aria-hidden {...props} className={cn(cardArrowClasses, className)}>
+      <Icon data-icon={external ? "external" : "forward"} />
+    </span>
+  );
 }
 
 /*===== Media =====*/
@@ -86,4 +111,16 @@ function CardMedia({ className, fit, ...props }: CardMediaProps) {
   return <div data-slot="card-media" {...props} className={cn(cardMediaVariants({ fit }), className)} />;
 }
 
-export { Card, CardMedia, CardHeader, CardBody, CardFooter, CardTitle, CardAction, CardDescription, CardContent };
+export {
+  Card,
+  CardMedia,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  CardKicker,
+  CardTitle,
+  CardAction,
+  CardArrow,
+  CardDescription,
+  CardContent,
+};

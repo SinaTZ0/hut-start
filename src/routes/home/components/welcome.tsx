@@ -8,6 +8,15 @@ import {
 } from "lucide-react";
 
 import { buttonVariants } from "#/components/primitive/button/button.styles";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "#/components/primitive/item/item";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { SUGGESTIONS_LINK } from "#/lib/university/navigation";
@@ -80,30 +89,24 @@ export function Welcome() {
       </div>
 
       {/*===== Help =====*/}
-      <ul className="grid auto-rows-fr">
+      <ItemGroup variant="divided" className="grid auto-rows-fr">
         {HELP.map((help) => (
-          <li key={help.href} className="not-first:border-t">
-            <SiteLink
-              href={help.href}
-              className="group/help flex h-full items-center gap-4 px-5 py-6 transition-colors duration-200 hover:bg-accent focus-visible:-outline-offset-4 motion-reduce:transition-none sm:px-10 sm:py-7"
-            >
-              <span
-                aria-hidden
-                className="grid size-11 shrink-0 place-items-center rounded-sm border bg-card text-brand-text"
-              >
-                <help.icon className="size-5.5" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-title text-heading underline-offset-4 group-hover/help:text-brand-text group-hover/help:underline">
-                  {help.title()}
-                </span>
-                <span className="block text-caption text-muted-foreground">{help.description()}</span>
-              </span>
-              <ExternalLinkIcon aria-hidden className="size-4 shrink-0 text-muted-foreground" />
-            </SiteLink>
+          <li key={help.href}>
+            <Item size="lg" render={<SiteLink href={help.href} />}>
+              <ItemMedia variant="icon">
+                <help.icon />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{help.title()}</ItemTitle>
+                <ItemDescription>{help.description()}</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <ExternalLinkIcon />
+              </ItemActions>
+            </Item>
           </li>
         ))}
-      </ul>
+      </ItemGroup>
     </section>
   );
 }

@@ -7,8 +7,6 @@ import { composeStyles, defineStyles, joinStyles } from "../styles";
 const twCardStyles = defineStyles({
   layout: "group/card flex flex-col gap-(--card-spacing) overflow-hidden",
   geometry: "rounded-md border py-(--card-spacing)",
-  // The footer brings its own padding, so the card drops its bottom padding.
-  geometryFooter: "has-data-[slot=card-footer]:pb-0",
   // Edge-to-edge media replaces the card's top padding; the card's `overflow-hidden` rounds its corners.
   geometryMedia:
     "has-[>[data-slot=card-media]:first-child]:pt-0 has-[>img:first-child]:pt-0 *:[img:first-child]:rounded-t-md *:[img:last-child]:rounded-b-md",
@@ -62,6 +60,13 @@ const twTitleStyles = defineStyles({
   appearance: "text-heading",
 });
 
+// The line above a title: the category in `brand-text`, then any meta (a date, a separator) in muted text.
+const twKickerStyles = defineStyles({
+  layout: "flex flex-wrap items-center gap-2",
+  typography: "text-caption font-bold *:not-first:font-normal",
+  appearance: "text-brand-text *:not-first:text-muted-foreground",
+});
+
 const twDescriptionStyles = defineStyles({
   typography: "text-body-sm",
   appearance: "text-muted-foreground",
@@ -81,10 +86,26 @@ const twBodyStyles = defineStyles({
   geometry: "py-(--card-spacing)",
 });
 
+// The card's call, pinned to the bottom so calls line up across a row of cards of different heights.
 const twFooterStyles = defineStyles({
-  layout: "flex items-center",
-  geometry: "rounded-b-md border-t p-(--card-spacing)",
-  appearance: "bg-muted",
+  layout: "mt-auto flex items-center gap-3",
+  geometry: "px-(--card-spacing)",
+});
+
+/*===== Arrow Styles =====*/
+
+// The round arrow that ends a compact row card: a quiet `accent` disc that fills pine while its card is hovered or
+// focused. A full-size card ends with a text call (`TextLink`) instead.
+const twArrowStyles = defineStyles({
+  layout: "grid shrink-0 place-items-center",
+  geometry: "size-10 rounded-full",
+  appearance: "bg-accent text-heading",
+  interaction: "transition-colors duration-200",
+  hover: "[a:hover_&]:bg-primary [a:hover_&]:text-primary-foreground",
+  focus: "[a:focus-visible_&]:bg-primary [a:focus-visible_&]:text-primary-foreground",
+  motion: "motion-reduce:transition-none",
+  // The forward arrow points left (RTL) and flips in LTR.
+  icon: "[&>svg]:size-4 ltr:[&>svg[data-icon=forward]]:-scale-x-100",
 });
 
 /*===== Media Styles =====*/
@@ -95,6 +116,8 @@ const twMediaStyles = defineStyles({
   layout: "relative shrink-0 overflow-hidden",
   appearance: "bg-accent",
   geometry: "[&_img]:size-full",
+  // A badge in the frame is the photo's label («خبر ویژه»), pinned to its top-start corner.
+  layoutBadge: "*:data-[slot=badge]:absolute *:data-[slot=badge]:start-4 *:data-[slot=badge]:top-4",
   // The media zoom: the photo scales to 1.03 inside a hovered or focused link card.
   interaction: "[&_img]:transition-[scale] [&_img]:duration-300 [&_img]:ease-out",
   hover: "motion-safe:[a:hover_&_img]:scale-[1.03]",
@@ -134,22 +157,26 @@ const cardMediaVariants = cva(joinStyles(twMediaStyles), {
 
 const cardHeaderClasses = joinStyles(twHeaderStyles);
 const cardTitleClasses = joinStyles(twTitleStyles);
+const cardKickerClasses = joinStyles(twKickerStyles);
 const cardDescriptionClasses = joinStyles(twDescriptionStyles);
 const cardActionClasses = joinStyles(twActionStyles);
 const cardContentClasses = joinStyles(twContentStyles);
 const cardBodyClasses = joinStyles(twBodyStyles);
 const cardFooterClasses = joinStyles(twFooterStyles);
+const cardArrowClasses = joinStyles(twArrowStyles);
 
 export {
   cardVariants,
   cardMediaVariants,
   cardHeaderClasses,
   cardTitleClasses,
+  cardKickerClasses,
   cardDescriptionClasses,
   cardActionClasses,
   cardContentClasses,
   cardBodyClasses,
   cardFooterClasses,
+  cardArrowClasses,
   twSize,
   twOrientation,
   twMediaFit,
