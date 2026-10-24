@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, CalendarIcon, ExternalLinkIcon, MapPinIcon } from "lucide-react";
-import { type ReactNode, ViewTransition } from "react";
+import type { ReactNode } from "react";
 
 import { buttonVariants } from "#/components/primitive/button/button.styles";
 import { SiteLink } from "#/components/shared/site-link/site-link";
@@ -87,44 +87,40 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
 
         {/*===== Foot of the Photo =====*/}
         <div className="mt-auto">
-          <ViewTransition default="home-slide">
-            <div className="mt-10 mb-4 flex flex-col items-start gap-4 md:my-0 md:ms-auto md:w-fit">
-              <p className="inline-flex items-center gap-1.5 text-caption text-on-band-soft text-shadow-photo">
-                <MapPinIcon aria-hidden className="size-4 text-highlight" />
-                {m.home_hero_place()}
-              </p>
-              <p aria-hidden className="hidden flex-col border-s-2 border-highlight ps-4 text-body-sm md:flex">
-                <span>{m.home_hero_motto_root()}</span>
-                <strong className="text-h3 text-on-band">{m.home_hero_motto_future()}</strong>
-              </p>
-            </div>
-          </ViewTransition>
+          <div className="mt-10 mb-4 flex flex-col items-start gap-4 md:my-0 md:ms-auto md:w-fit">
+            <p className="inline-flex items-center gap-1.5 text-caption text-on-band-soft text-shadow-photo">
+              <MapPinIcon aria-hidden className="size-4 text-highlight" />
+              {m.home_hero_place()}
+            </p>
+            <p aria-hidden className="hidden flex-col border-s-2 border-highlight ps-4 text-body-sm md:flex">
+              <span>{m.home_hero_motto_root()}</span>
+              <strong className="text-h3 text-on-band">{m.home_hero_motto_future()}</strong>
+            </p>
+          </div>
 
           {/*------ Next Milestone ------*/}
-          <ViewTransition default="home-slide">
-            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-band-line pt-6">
-              <CalendarIcon aria-hidden className="size-5 text-highlight" />
-              <span className="text-caption font-bold text-highlight">{m.home_hero_notice()}</span>
-              <p className="order-1 min-w-0 basis-full md:order-none md:flex-1 md:basis-auto">
-                {next ? (
-                  <>
-                    <strong className="font-extrabold">{next.label()}</strong>
-                    {next.cohort && <span className="text-body-sm text-on-band-muted"> ({next.cohort()})</span>}
-                    <span className="block text-body-sm text-on-band-muted md:ms-3 md:inline">{eventTiming(next)}</span>
-                  </>
-                ) : (
-                  <strong className="font-extrabold">{m.home_hero_calendar_fallback({ term: SEMESTER.name() })}</strong>
-                )}
-              </p>
-              <a
-                href="#home-calendar"
-                className="order-2 inline-flex min-h-10 items-center gap-2 text-body-sm font-semibold underline-offset-4 hover:underline md:order-none"
-              >
-                {m.home_hero_view_calendar()}
-                <ArrowLeftIcon aria-hidden className={cn(textLinkArrowClasses, "size-4.5 text-highlight")} />
-              </a>
-            </div>
-          </ViewTransition>
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-band-line pt-6">
+            <CalendarIcon aria-hidden className="size-5 text-highlight" />
+            <span className="text-caption font-bold text-highlight">{m.home_hero_notice()}</span>
+            <p className="order-1 min-w-0 basis-full md:order-none md:flex-1 md:basis-auto">
+              {next ? (
+                <>
+                  <strong className="font-extrabold">{next.label()}</strong>
+                  {next.cohort && <span className="text-body-sm text-on-band-muted"> ({next.cohort()})</span>}
+                  <span className="block text-body-sm text-on-band-muted md:ms-3 md:inline">{eventTiming(next)}</span>
+                </>
+              ) : (
+                <strong className="font-extrabold">{m.home_hero_calendar_fallback({ term: SEMESTER.name() })}</strong>
+              )}
+            </p>
+            <a
+              href="#home-calendar"
+              className="order-2 inline-flex min-h-10 items-center gap-2 text-body-sm font-semibold underline-offset-4 hover:underline md:order-none"
+            >
+              {m.home_hero_view_calendar()}
+              <ArrowLeftIcon aria-hidden className={cn(textLinkArrowClasses, "size-4.5 text-highlight")} />
+            </a>
+          </div>
 
           <div className="mt-6">{children}</div>
         </div>

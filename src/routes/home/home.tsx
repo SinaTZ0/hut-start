@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, ViewTransition } from "react";
+import { useMemo } from "react";
 
 import { absoluteUrl, jsonLd, pageMeta } from "#/lib/seo";
 import { m } from "#/paraglide/messages";
@@ -55,22 +55,15 @@ function Home() {
         <ServiceRail />
       </Hero>
 
-      {/* When the systems list opens under the rail on phones, these glide down instead of jumping (`home-slide`). */}
-      <ViewTransition default="home-slide">
-        <Arc />
-      </ViewTransition>
-      <ViewTransition default="home-slide">
+      <Arc />
+      <div className={`${columnClasses} py-section`}>
+        <NewsSection today={today} />
+      </div>
+      <div className="border-y bg-background-alt">
         <div className={`${columnClasses} py-section`}>
-          <NewsSection today={today} />
+          <SemesterSection state={semester} />
         </div>
-      </ViewTransition>
-      <ViewTransition default="home-slide">
-        <div className="border-y bg-background-alt">
-          <div className={`${columnClasses} py-section`}>
-            <SemesterSection state={semester} />
-          </div>
-        </div>
-      </ViewTransition>
+      </div>
 
       <Glance />
 

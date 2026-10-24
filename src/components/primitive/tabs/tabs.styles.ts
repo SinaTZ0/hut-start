@@ -3,14 +3,19 @@ import { composeStyles, defineStyles, joinStyles } from "../styles";
 
 /*===== Tabs Styles =====*/
 
+// Horizontal tabs are a one-column grid with every panel in the second row: while the panels cross-fade, the outgoing
+// and the incoming one share that cell instead of stacking. `content-start` keeps a stretched root from growing the
+// list's row.
 const twTabsStyles = defineStyles({
-  layout: "group/tabs flex gap-2 data-horizontal:flex-col",
+  layout: "group/tabs flex gap-2 data-horizontal:grid data-horizontal:grid-cols-1 data-horizontal:content-start",
 });
 
 /*===== List Styles =====*/
 
 const twListStyles = defineStyles({
-  layout: "group/tabs-list inline-flex w-fit items-center justify-center group-data-vertical/tabs:flex-col",
+  // `isolate` keeps the sliding indicator (`-z-10`) above the list's own background.
+  layout:
+    "group/tabs-list relative isolate inline-flex w-fit items-center justify-center group-data-vertical/tabs:flex-col",
   geometry: "rounded-md p-1 data-[variant=line]:rounded-none",
   appearance: "text-muted-foreground",
 });
@@ -46,7 +51,10 @@ const twTriggerStyles = defineStyles({
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid",
   disabled:
     "disabled:pointer-events-none disabled:opacity-45 aria-disabled:pointer-events-none aria-disabled:opacity-45",
-  state: "data-active:bg-primary data-active:text-primary-foreground data-active:hover:text-primary-foreground",
+  // The pine fill is the list's sliding indicator once it has measured the tab. Until then (before hydration) the
+  // active tab fills itself, in the same place, so nothing jumps when the indicator takes over.
+  state:
+    "data-active:bg-primary data-active:text-primary-foreground group-has-data-[slot=tabs-indicator]/tabs-list:data-active:bg-transparent data-active:hover:text-primary-foreground",
   // The line variant drops the active fill and shows the current-nav marker instead: `brand-text` over a gold
   // underline (`after:`).
   stateLine:
@@ -56,12 +64,30 @@ const twTriggerStyles = defineStyles({
   icon: "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 });
 
+/*===== Indicator Styles =====*/
+
+// The pine fill behind the active tab of a `default` list; it slides to the chosen tab. Base UI measures the tab
+// against the list's physical left edge, so the position uses physical `left` in both directions.
+const twIndicatorStyles = defineStyles({
+  layout: "absolute -z-10",
+  geometry: "top-(--active-tab-top) left-(--active-tab-left) h-(--active-tab-height) w-(--active-tab-width) rounded-sm",
+  appearance: "bg-primary",
+  interaction: "transition-[left,top,width,height] duration-300 ease-out",
+  motion: "motion-reduce:transition-none",
+});
+
 /*===== Content Styles =====*/
 
+// The chosen panel fades in and slides a few pixels from the side of the tab it replaces (Base UI's physical
+// `data-activation-direction`, so the shift is physical too); the old one fades out faster, the other way.
 const twContentStyles = defineStyles({
-  layout: "flex-1",
+  layout: "flex-1 data-horizontal:col-start-1 data-horizontal:row-start-2",
   typography: "text-body-sm",
   focus: "outline-none",
+  interaction: "transition-[opacity,translate] duration-300 ease-out data-ending-style:duration-150",
+  state:
+    "data-ending-style:opacity-0 data-starting-style:opacity-0 data-[activation-direction=left]:data-ending-style:translate-x-3 data-[activation-direction=left]:data-starting-style:-translate-x-3 data-[activation-direction=right]:data-ending-style:-translate-x-3 data-[activation-direction=right]:data-starting-style:translate-x-3",
+  motion: "motion-reduce:transition-none",
 });
 
 /*===== Class Composition =====*/
@@ -76,6 +102,7 @@ const tabsListVariants = cva(joinStyles(twListStyles), {
 });
 
 const tabsTriggerClasses = joinStyles(twTriggerStyles);
+const tabsIndicatorClasses = joinStyles(twIndicatorStyles);
 const tabsContentClasses = joinStyles(twContentStyles);
 
-export { tabsClasses, tabsListVariants, tabsTriggerClasses, tabsContentClasses, twVariant };
+export { tabsClasses, tabsListVariants, tabsTriggerClasses, tabsIndicatorClasses, tabsContentClasses, twVariant };

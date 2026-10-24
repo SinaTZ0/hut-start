@@ -54,8 +54,11 @@ being used, but nothing moves on its own or calls attention to itself.
 
 - **Every interactive thing responds**, subtly. A link card lifts (darker edge, `shadow-md`), its photo zooms to 1.03
   and its arrow disc fills pine; a forward arrow nudges ahead a few pixels; a row takes the `accent` wash; a disclosure
-  chevron turns; a panel or list that opens slides or fades in ([view-transitions.md](./view-transitions.md)). A new
-  component gets the same kind of response.
+  chevron turns; a tab switcher's pill slides to the chosen tab while its content cross-fades in from that side; a panel that opens grows out of its trigger while
+  what follows glides aside (the Collapsible primitive). A new component gets the same kind of response.
+- **CSS transitions, not snapshots**: motion inside a page is a CSS transition on the real element, through the
+  primitives (Tabs' indicator and panels, Collapsible's height). It stays sharp, can be interrupted mid-way and needs no library.
+  View transitions are kept for moving between pages ([view-transitions.md](./view-transitions.md)).
 - **Small and short**: colour and shadow over 200ms, movement and scale over 300ms, `ease-out`. Distances stay within a
   few pixels and scale within 1.03. No bounce, spring, parallax, looping or attention-seeking animation, and nothing
   that delays an action.

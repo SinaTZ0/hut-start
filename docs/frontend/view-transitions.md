@@ -76,9 +76,12 @@ different scroll positions, both pages would glide up or down across the screen.
 - **Morph an element between pages:** give it the same `view-transition-name` on both pages, built from the record's
   id (`note-42`), since a name must be unique on the page. The page fade then animates that element from its old box
   to its new one.
-- **Animate changes on the same page** (a filtered list, a deleted item): React's `<ViewTransition>` works for state
-  updates you start with `startTransition`. Query refetches don't run in a Transition, so a list that changes after an
-  invalidation doesn't animate on its own.
+- **Animate changes on the same page** with CSS transitions first: a panel that opens is a Collapsible, a tab switcher
+  slides its indicator ([app-identity.md](./app-identity.md#motion)). A view transition animates bitmaps of the page,
+  so round ends stretch and blur, the whole page is captured, and a second one skips the one running, which makes
+  quick clicks jump. Reach for React's `<ViewTransition>` only when CSS can't follow the change, such as a filtered
+  or reordered list. It works for state updates you start with `startTransition`; query refetches don't run in a
+  Transition, so a list that changes after an invalidation doesn't animate on its own.
 
 ## Don'ts
 

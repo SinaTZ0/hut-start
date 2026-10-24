@@ -485,50 +485,6 @@
   }
 }
 
-/*------ Home Systems Panel ------*/
-/* The rest of the systems open from the rail (`home-open`): up from its top edge on wide screens, where the panel sits
-   above the rail, and down on phones, where it sits under it. What the panel pushes aside glides (`home-slide`). The
-   page itself (`root`) swaps without a cross-fade, so no text ghosts. */
-::view-transition-group(.home-open),
-::view-transition-group(.home-slide) {
-  animation-duration: 300ms;
-  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-::view-transition-new(.home-open):only-child {
-  animation: 300ms cubic-bezier(0.2, 0.7, 0.2, 1) both home-open;
-}
-::view-transition-old(.home-open):only-child {
-  animation: 200ms cubic-bezier(0.4, 0, 0.6, 1) reverse both home-open;
-}
-
-@media (width >= 48rem) {
-  ::view-transition-new(.home-open):only-child,
-  ::view-transition-old(.home-open):only-child {
-    animation-name: home-rise;
-  }
-}
-
-:root:active-view-transition-type(home-services)::view-transition-old(root),
-:root:active-view-transition-type(home-services)::view-transition-new(root) {
-  animation: none;
-}
-
-@keyframes home-open {
-  from {
-    clip-path: inset(0 0 100% 0);
-    translate: 0 -0.5rem;
-    opacity: 0.4;
-  }
-}
-@keyframes home-rise {
-  from {
-    clip-path: inset(100% 0 0 0);
-    translate: 0 0.5rem;
-    opacity: 0.4;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   /* Colour transitions and hover lifts are removed entirely */
   *,

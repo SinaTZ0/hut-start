@@ -1,7 +1,13 @@
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 import { type VariantProps } from "class-variance-authority";
 import { cn } from "#/lib/utils";
-import { tabsClasses, tabsContentClasses, tabsListVariants, tabsTriggerClasses } from "./tabs.styles";
+import {
+  tabsClasses,
+  tabsContentClasses,
+  tabsIndicatorClasses,
+  tabsListVariants,
+  tabsTriggerClasses,
+} from "./tabs.styles";
 
 /*===== Tabs =====*/
 
@@ -20,14 +26,18 @@ function Tabs({ className, orientation = "horizontal", ...props }: TabsPrimitive
 
 export type TabsListProps = TabsPrimitive.List.Props & VariantProps<typeof tabsListVariants>;
 
-function TabsList({ className, variant = "default", ...props }: TabsListProps) {
+/** The tab row. A `default` list brings its own sliding indicator, so every switcher animates the same way. */
+function TabsList({ className, variant = "default", children, ...props }: TabsListProps) {
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
       data-variant={variant}
       className={cn(tabsListVariants({ variant }), className)}
       {...props}
-    />
+    >
+      {children}
+      {variant === "default" && <TabsPrimitive.Indicator data-slot="tabs-indicator" className={tabsIndicatorClasses} />}
+    </TabsPrimitive.List>
   );
 }
 
