@@ -40,7 +40,7 @@ const twVariant = defineStyles({
 
 const twTitleStyles = defineStyles({
   layout: "group-has-[>svg]/alert:col-start-2",
-  typography: "text-h4 [&_a]:underline [&_a]:underline-offset-3",
+  typography: "text-title [&_a]:underline [&_a]:underline-offset-3",
   appearance: "text-(--tone)",
   hover: "[&_a]:hover:text-foreground",
 });

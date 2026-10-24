@@ -39,7 +39,7 @@ const twCloseStyles = defineStyles({
 
 const twHeaderStyles = defineStyles({ layout: "flex flex-col gap-1", geometry: "p-6 pe-16" });
 const twFooterStyles = defineStyles({ layout: "mt-auto flex flex-col gap-2", geometry: "p-6" });
-const twTitleStyles = defineStyles({ typography: "font-heading text-h4", appearance: "text-foreground" });
+const twTitleStyles = defineStyles({ typography: "font-heading text-title", appearance: "text-foreground" });
 const twDescriptionStyles = defineStyles({ typography: "text-body-sm", appearance: "text-muted-foreground" });
 
 export const sheetOverlayClasses = joinStyles(twOverlayStyles);

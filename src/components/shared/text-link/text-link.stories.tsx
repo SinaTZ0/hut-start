@@ -30,7 +30,7 @@ export const CallInsideLink: Story = {
       href="#news"
       className="block max-w-xs rounded-md bg-card p-5 shadow-sm ring-1 ring-border outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid"
     >
-      <span className="block text-h4">عنوان یک کارت</span>
+      <span className="block text-title">عنوان یک کارت</span>
       <TextLink className="mt-2">ادامه مطلب</TextLink>
     </a>
   ),

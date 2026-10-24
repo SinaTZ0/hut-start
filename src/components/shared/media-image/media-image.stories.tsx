@@ -44,17 +44,17 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /*===== Stories =====*/
-export const Card: Story = { args: { className: "w-full rounded-xl" } };
+export const Card: Story = { args: { className: "w-full rounded-md" } };
 
 export const Thumb: Story = { args: { variant: "thumb", className: "size-20 rounded-full" } };
 
 /** The `full` variant keeps the photo's own aspect ratio instead of cropping it. */
-export const FullKeepsAspectRatio: Story = { args: { variant: "full", className: "h-auto w-full rounded-xl" } };
+export const FullKeepsAspectRatio: Story = { args: { variant: "full", className: "h-auto w-full rounded-md" } };
 
 /** A broken URL leaves the blurred placeholder behind, so the box is never empty. */
 export const PlaceholderWhileLoading: Story = {
   args: {
     media: { ...sampleMedia, urls: { ...sampleMedia.urls, card: "/demo/does-not-exist.jpg" } },
-    className: "w-full rounded-xl",
+    className: "w-full rounded-md",
   },
 };

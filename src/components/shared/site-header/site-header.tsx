@@ -71,7 +71,7 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
       <div className="mx-auto flex h-16 max-w-site items-center gap-4 px-4 sm:px-6">
         <Link
           to="/"
-          className="rounded-sm text-h4 text-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring focus-visible:outline-solid"
+          className="rounded-sm text-title text-foreground outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring focus-visible:outline-solid"
         >
           {m.site_name()}
         </Link>

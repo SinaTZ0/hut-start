@@ -32,7 +32,7 @@ function NotesPage() {
       <Card className="self-start lg:w-88 lg:shrink-0">
         <CardHeader>
           <CardTitle>
-            <h1 className="text-h3">{m.notes_new_heading({ name: viewer.name })}</h1>
+            <h1 className="text-h4">{m.notes_new_heading({ name: viewer.name })}</h1>
           </CardTitle>
         </CardHeader>
         <CardContent>

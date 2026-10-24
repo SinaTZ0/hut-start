@@ -3,8 +3,9 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/vazirmatn";
 
-/* Tokens follow docs/frontend/app-identity.md. Names follow shadcn; the one call to action per view is `highlight`, and
-   shadcn's `accent` is the quiet wash for hover and selected states. */
+/* Tokens follow docs/frontend/app-identity.md, and their values come from the Kaj homepage, snapped to one scale in
+   docs/frontend/reference/kaj/normalization.md. Names follow shadcn; the one call to action per view is `highlight`,
+   and shadcn's `accent` is the quiet wash for hover and selected states. */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -12,65 +13,71 @@
 
 @theme {
   /* Persian needs tall lines; these match caption, body-sm, body and body-lg below */
-  --text-xs--line-height: calc(20 / 12);
-  --text-sm--line-height: calc(22 / 13);
-  --text-base--line-height: calc(26 / 15);
-  --text-lg--line-height: calc(28 / 16);
+  --text-xs--line-height: 1.7;
+  --text-sm--line-height: 2;
+  --text-base--line-height: 1.8;
+  --text-lg--line-height: 1.9;
 
-  /* The app's type styles as `text-<name>`: size, line height and weight together. Small sizes and medium weights
-     keep the page quiet; display, h1 and h2 drop one step on phones, below. */
-  --text-display: 2.75rem;
-  --text-display--line-height: 4.25rem;
-  --text-display--font-weight: 700;
-  --text-stat: 2.25rem;
-  --text-stat--line-height: 3rem;
-  --text-stat--font-weight: 700;
-  --text-h1: 2rem;
-  --text-h1--line-height: 3.25rem;
-  --text-h1--font-weight: 700;
-  --text-h2: 1.5rem;
-  --text-h2--line-height: 2.5rem;
-  --text-h2--font-weight: 600;
-  --text-h3: 1.125rem;
-  --text-h3--line-height: 1.875rem;
-  --text-h3--font-weight: 600;
-  --text-h4: 0.9375rem;
-  --text-h4--line-height: 1.625rem;
-  --text-h4--font-weight: 600;
-  --text-body-lg: 1rem;
-  --text-body-lg--line-height: 1.75rem;
+  /* The app's type styles as `text-<name>`: size, line height and weight together. Display, h1, h2 and the stats
+     scale with the viewport, so they need no phone step. */
+  --text-display: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
+  --text-display--line-height: 1.3;
+  --text-display--font-weight: 900;
+  --text-h1: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+  --text-h1--line-height: 1.45;
+  --text-h1--font-weight: 800;
+  --text-h2: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  --text-h2--line-height: 1.4;
+  --text-h2--font-weight: 800;
+  --text-h3: 1.375rem;
+  --text-h3--line-height: 1.6;
+  --text-h3--font-weight: 800;
+  --text-h4: 1.125rem;
+  --text-h4--line-height: 1.6;
+  --text-h4--font-weight: 800;
+  /* Card and row titles: body size at heading weight */
+  --text-title: 0.9375rem;
+  --text-title--line-height: 1.8;
+  --text-title--font-weight: 800;
+  --text-stat: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+  --text-stat--line-height: 1.3;
+  --text-stat--font-weight: 800;
+  --text-stat-sm: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  --text-stat-sm--line-height: 1.25;
+  --text-stat-sm--font-weight: 800;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.9;
   --text-body: 0.9375rem;
-  --text-body--line-height: 1.625rem;
+  --text-body--line-height: 1.8;
   --text-body-sm: 0.8125rem;
-  --text-body-sm--line-height: 1.375rem;
+  --text-body-sm--line-height: 2;
   --text-caption: 0.75rem;
-  --text-caption--line-height: 1.25rem;
-  --text-caption--font-weight: 500;
-  --text-button: 0.8125rem;
-  --text-button--line-height: 1.375rem;
-  --text-button--font-weight: 600;
-  --text-kicker: 0.75rem;
-  --text-kicker--line-height: 1.25rem;
+  --text-caption--line-height: 1.7;
+  --text-kicker: 0.8125rem;
+  --text-kicker--line-height: 1.8;
   --text-kicker--font-weight: 600;
   --text-nav: 0.8125rem;
-  --text-nav--line-height: 1.375rem;
-  --text-nav--font-weight: 500;
+  --text-nav--line-height: 1.8;
+  --text-nav--font-weight: 600;
+  --text-button: 0.9375rem;
+  --text-button--line-height: 1.8;
+  --text-button--font-weight: 700;
 
-  /* Layout: `max-w-site` is the 1200px content width */
-  --container-site: 75rem;
-}
+  /* Text on photographs (the hero) */
+  --text-shadow-photo: 0 1px 12px rgb(8 31 33 / 0.6);
 
-/* Under 600px the three largest styles drop one step. Overriding the variables here, instead of pairing breakpoint
-   classes in every route, keeps `text-display` / `text-h1` / `text-h2` correct wherever they're used. */
-@media (width < 600px) {
-  :root {
-    --text-display: 2rem;
-    --text-display--line-height: 3.25rem;
-    --text-h1: 1.625rem;
-    --text-h1--line-height: 2.5rem;
-    --text-h2: 1.375rem;
-    --text-h2--line-height: 2.25rem;
-  }
+  /*------ Layout ------*/
+  /* `max-w-site` is the 1240px content width. `px-gutter` pads it; full-bleed bands (header, hero) keep only
+     `px-edge`. `py-section` separates sections, `py-section-lg` the roomy ones (achievements). */
+  --container-site: 77.5rem;
+  --spacing-gutter: clamp(1rem, 4vw, 2.5rem);
+  --spacing-edge: clamp(1rem, 4vw, 4.5rem);
+  --spacing-section: clamp(3.5rem, 7vw, 6rem);
+  --spacing-section-lg: calc(var(--spacing-section) + 1.5rem);
+
+  /* News cards and phone learning rows (16:7), the glance photo (16:10) */
+  --aspect-wide: 16 / 7;
+  --aspect-photo: 16 / 10;
 }
 
 /*===== Theme Mapping =====*/
@@ -115,10 +122,15 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
   /*------ Brand roles ------*/
+  --color-background-alt: var(--background-alt);
+  --color-heading: var(--heading);
+  --color-border-strong: var(--border-strong);
   --color-brand-text: var(--brand-text);
   --color-highlight: var(--highlight);
   --color-highlight-hover: var(--highlight-hover);
   --color-highlight-foreground: var(--highlight-foreground);
+  --color-highlight-text: var(--highlight-text);
+  --color-highlight-surface: var(--highlight-surface);
   --color-success: var(--success);
   --color-success-surface: var(--success-surface);
   --color-warning: var(--warning);
@@ -126,134 +138,196 @@
   --color-info: var(--info);
   --color-info-surface: var(--info-surface);
 
+  /*------ Band ------*/
+  /* The pine bands (utility bar, hero, glance, learning, welcome, footer) and what sits on them */
+  --color-band: var(--band);
+  --color-band-deep: var(--band-deep);
+  --color-on-band: var(--on-band);
+  --color-on-band-soft: var(--on-band-soft);
+  --color-on-band-muted: var(--on-band-muted);
+  --color-band-decor: var(--band-decor);
+  --color-band-line: var(--band-line);
+  --color-band-line-strong: var(--band-line-strong);
+  --color-band-control: var(--band-control);
+  --color-band-hover: var(--band-hover);
+
   /*------ Radius ------*/
-  /* sm 8 (inputs, thumbnails), md 12 (buttons, notices, tiles), lg 18 (feature cards, media). xl and up stay at
-     least lg so the scale never shrinks. */
-  --radius-sm: 0.5rem;
+  /* xs 2 (hairline bars), sm 10 (buttons, inputs, tiles, thumbnails), md 16 (cards, popovers), lg 22 (the large
+     panels a section is built on). xl and up stay at lg so a stray class never leaves the scale. */
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.625rem;
   --radius-md: var(--radius);
-  --radius-lg: 1.125rem;
-  --radius-xl: 1.125rem;
-  --radius-2xl: 2rem;
-  --radius-3xl: 2.5rem;
-  --radius-4xl: 3rem;
+  --radius-lg: 1.375rem;
+  --radius-xl: 1.375rem;
+  --radius-2xl: 1.375rem;
+  --radius-3xl: 1.375rem;
+  --radius-4xl: 1.375rem;
 
   /*------ Shadow ------*/
-  /* Cards rest on sm and lift to md on hover */
+  /* Controls rest on sm; cards lift to md on hover, and popovers, the rail and the drawer sit on it */
   --shadow-sm: var(--elevation-sm);
   --shadow-md: var(--elevation-md);
+  /* The gold rings around the semester's play marker */
+  --shadow-play: 0 0 0 8px color-mix(in srgb, var(--highlight) 28%, transparent);
+  --shadow-play-hover: 0 0 0 12px color-mix(in srgb, var(--highlight) 22%, transparent);
 }
 
 /*===== Light Theme =====*/
 
-/* Placeholder palette: neutral grays and one primary. Replace these per project (docs/frontend/app-identity.md). */
+/* Pine teal and wheat gold on a cool off-white page */
 :root {
-  --radius: 0.625rem;
+  --radius: 1rem;
 
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0.008 326);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0.008 326);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0.008 326);
-  --primary: oklch(0.52 0.105 223.128);
-  --primary-hover: #1d4ed8;
-  --primary-foreground: oklch(0.984 0.019 200.873);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.96 0.003 325.6);
-  --muted-foreground: oklch(0.542 0.034 322.5);
-  --accent: oklch(0.96 0.003 325.6);
-  --accent-foreground: oklch(0.212 0.019 322.12);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-surface: #fde8e8;
-  --border: oklch(0.922 0.005 325.62);
-  --input: oklch(0.922 0.005 325.62);
-  --ring: oklch(0.711 0.019 323.02);
+  --background: #f6f8f5;
+  --background-alt: #fbfcfa;
+  --foreground: #15292b;
+  --heading: #103d40;
+  --card: #ffffff;
+  --card-foreground: #15292b;
+  --popover: #ffffff;
+  --popover-foreground: #15292b;
+  --primary: #103d40;
+  --primary-hover: #0b2f32;
+  --primary-foreground: #f3f6f4;
+  --secondary: #f0f4f1;
+  --secondary-foreground: #103d40;
+  --muted: #f0f4f1;
+  --muted-foreground: #5a6b6a;
+  --accent: #e8f0ec;
+  --accent-foreground: #15292b;
+  --destructive: #b3261e;
+  --destructive-surface: #fbe9e7;
+  --border: #dfe6e2;
+  --border-strong: #c8d3ce;
+  /* Control edges need 3:1, which `border` (1.3:1) doesn't reach */
+  --input: #7a8d89;
+  --ring: #1f7a72;
 
-  --brand-text: #1d4ed8;
-  --highlight: #f59e0b;
-  --highlight-hover: #d97706;
-  --highlight-foreground: #18181b;
+  --brand-text: #1b6a64;
+  --highlight: #e7bc65;
+  --highlight-hover: #f0cd84;
+  --highlight-foreground: #0b2f32;
+  /* Kaj's gold-deep #9a6b14, darkened to reach 4.5:1 on every light ground */
+  --highlight-text: #8f6312;
+  --highlight-surface: color-mix(in srgb, var(--highlight) 22%, var(--card));
 
-  --success: #15803d;
-  --success-surface: #e3f5e9;
-  --warning: #92400e;
-  --warning-surface: #fdf3dc;
-  --info: #1e40af;
-  --info-surface: #e3ecfb;
+  --success: #2c6a3a;
+  --success-surface: #e4f1e5;
+  --warning: #8a4b0a;
+  --warning-surface: #fbeedb;
+  --info: #1f5a8a;
+  --info-surface: #e3edf5;
 
-  --elevation-sm: 0 1px 2px #0000000a, 0 2px 8px -2px #0000000d;
-  --elevation-md: 0 1px 2px #0000000a, 0 12px 28px -12px #00000029;
+  --band: #103d40;
+  --band-deep: #0b2f32;
+  --on-band: #f3f6f4;
+  --on-band-soft: #dde7e4;
+  --on-band-muted: #a9c0bd;
+  --band-decor: rgb(255 255 255 / 8%);
+  --band-line: rgb(255 255 255 / 14%);
+  --band-line-strong: rgb(255 255 255 / 22%);
+  --band-control: rgb(255 255 255 / 60%);
+  --band-hover: rgb(255 255 255 / 8%);
 
-  --chart-1: oklch(0.811 0.111 293.571);
-  --chart-2: oklch(0.606 0.25 292.717);
-  --chart-3: oklch(0.541 0.281 293.009);
-  --chart-4: oklch(0.491 0.27 292.581);
-  --chart-5: oklch(0.432 0.232 292.759);
+  --elevation-sm: 0 1px 2px rgb(16 61 64 / 4%);
+  --elevation-md: 0 1px 2px rgb(16 61 64 / 4%), 0 8px 24px -12px rgb(16 61 64 / 12%);
 
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0.008 326);
-  --sidebar-primary: oklch(0.609 0.126 221.723);
-  --sidebar-primary-foreground: oklch(0.984 0.019 200.873);
-  --sidebar-accent: oklch(0.96 0.003 325.6);
-  --sidebar-accent-foreground: oklch(0.212 0.019 322.12);
-  --sidebar-border: oklch(0.922 0.005 325.62);
-  --sidebar-ring: oklch(0.711 0.019 323.02);
+  --chart-1: #1f7a72;
+  --chart-2: #e7bc65;
+  --chart-3: #103d40;
+  --chart-4: #8f6312;
+  --chart-5: #a9c0bd;
+
+  --sidebar: #fbfcfa;
+  --sidebar-foreground: #15292b;
+  --sidebar-primary: #103d40;
+  --sidebar-primary-foreground: #f3f6f4;
+  --sidebar-accent: #e8f0ec;
+  --sidebar-accent-foreground: #15292b;
+  --sidebar-border: #dfe6e2;
+  --sidebar-ring: #1f7a72;
 }
 
 /*===== Dark Theme =====*/
 
+/* The same hues at night. The bands stay dark and barely move. */
 .dark {
-  --background: oklch(0.145 0.008 326);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.212 0.019 322.12);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.212 0.019 322.12);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.45 0.085 224.283);
-  --primary-hover: #93c5fd;
-  --primary-foreground: oklch(0.984 0.019 200.873);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.263 0.024 320.12);
-  --muted-foreground: oklch(0.711 0.019 323.02);
-  --accent: oklch(0.263 0.024 320.12);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-surface: #3b1717;
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.542 0.034 322.5);
+  --background: #0d1a1b;
+  --background-alt: #0f1e20;
+  --foreground: #e3ebe8;
+  --heading: #eef4f1;
+  --card: #142628;
+  --card-foreground: #e3ebe8;
+  --popover: #142628;
+  --popover-foreground: #e3ebe8;
+  /* Kaj keeps pine-900 here, which nearly vanishes on the dark page; pine-700 keeps a filled control visible */
+  --primary: #1b6a64;
+  --primary-hover: #1f7a72;
+  --primary-foreground: #f3f6f4;
+  --secondary: #1b3436;
+  --secondary-foreground: #eef4f1;
+  --muted: #112123;
+  --muted-foreground: #9db0ad;
+  --accent: #1b3436;
+  --accent-foreground: #e3ebe8;
+  --destructive: #f2a49b;
+  --destructive-surface: #3a1715;
+  --border: #22393b;
+  --border-strong: #2e4a4c;
+  --input: #5a7678;
+  --ring: #7fd0c3;
 
-  --brand-text: #93c5fd;
-  --highlight: #fbbf24;
-  --highlight-hover: #fcd34d;
-  --highlight-foreground: #18181b;
+  --brand-text: #7fd0c3;
+  --highlight: #e7bc65;
+  --highlight-hover: #f0cd84;
+  --highlight-foreground: #0b2f32;
+  --highlight-text: #e7bc65;
 
-  --success: #86efac;
-  --success-surface: #12301d;
-  --warning: #fcd34d;
-  --warning-surface: #33280e;
-  --info: #93c5fd;
-  --info-surface: #142238;
+  --success: #8fd19e;
+  --success-surface: #13291b;
+  --warning: #f0c674;
+  --warning-surface: #2d2310;
+  --info: #8cc3ec;
+  --info-surface: #10233a;
 
-  --elevation-sm: 0 1px 2px #00000059, 0 2px 8px -2px #00000040;
-  --elevation-md: 0 1px 2px #00000059, 0 14px 30px -12px #00000080;
+  --band: #0f3436;
+  --band-deep: #081f21;
 
-  --chart-1: oklch(0.811 0.111 293.571);
-  --chart-2: oklch(0.606 0.25 292.717);
-  --chart-3: oklch(0.541 0.281 293.009);
-  --chart-4: oklch(0.491 0.27 292.581);
-  --chart-5: oklch(0.432 0.232 292.759);
+  --elevation-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --elevation-md: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px -12px rgb(0 0 0 / 50%);
 
-  --sidebar: oklch(0.212 0.019 322.12);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.715 0.143 215.221);
-  --sidebar-primary-foreground: oklch(0.302 0.056 229.695);
-  --sidebar-accent: oklch(0.263 0.024 320.12);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.542 0.034 322.5);
+  --chart-1: #7fd0c3;
+  --chart-2: #e7bc65;
+  --chart-3: #2a8a80;
+  --chart-4: #c99a45;
+  --chart-5: #9db0ad;
+
+  --sidebar: #0f1e20;
+  --sidebar-foreground: #e3ebe8;
+  --sidebar-primary: #1b6a64;
+  --sidebar-primary-foreground: #f3f6f4;
+  --sidebar-accent: #1b3436;
+  --sidebar-accent-foreground: #e3ebe8;
+  --sidebar-border: #22393b;
+  --sidebar-ring: #7fd0c3;
+}
+
+/*===== Utilities =====*/
+
+/* The hero's scrim over the campus photo: deep pine rising from the foot, a side wash behind the copy on the start
+   side, and a light shade under the header. `--toward-end` turns the side wash with the text direction. */
+:root {
+  --toward-end: to right;
+}
+:root[dir="rtl"] {
+  --toward-end: to left;
+}
+
+@utility bg-hero-scrim {
+  background-image:
+    linear-gradient(to top, var(--band-deep) 0%, rgb(11 47 50 / 90%) 28%, rgb(11 47 50 / 45%) 55%, transparent 78%),
+    linear-gradient(var(--toward-end), rgb(11 47 50 / 72%) 0%, rgb(11 47 50 / 40%) 40%, transparent 65%),
+    linear-gradient(to bottom, rgb(11 47 50 / 50%) 0%, transparent 40%);
 }
 
 /*===== Base =====*/
@@ -263,7 +337,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-body text-foreground;
   }
   html {
     @apply font-sans antialiased;
@@ -275,7 +349,10 @@
   h2,
   h3,
   h4 {
-    @apply font-heading font-semibold;
+    @apply font-heading text-heading;
+    /* A plain declaration, not `font-extrabold`: that sets `--tw-font-weight`, which would beat the weight each
+       `text-<name>` style carries (display is 900) */
+    font-weight: 800;
     /* Balanced line breaks keep short Persian headings from ending on a lone word */
     text-wrap: balance;
   }

@@ -45,7 +45,7 @@ const twHeaderStyles = defineStyles({
 // The title tint: inside a hovered or focused link card, the title takes `brand-text`. `[a:hover_&]` matches any
 // link ancestor, so it never fires on a plain card.
 const twTitleStyles = defineStyles({
-  typography: "font-heading text-h3 group-data-[size=sm]/card:text-h4",
+  typography: "font-heading text-h4 group-data-[size=sm]/card:text-title",
   interaction: "transition-colors duration-150 ease-out",
   hover: "[a:hover_&]:text-brand-text",
   focus: "[a:focus-visible_&]:text-brand-text",

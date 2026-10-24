@@ -15,7 +15,7 @@ const twLegendStyles = defineStyles({
 // `data-variant` stays on the legend as well, because FieldDescription tightens its spacing after a legend.
 const twLegendVariant = defineStyles({
   legend: {
-    typography: "text-h4",
+    typography: "text-title",
   },
   label: {
     typography: "text-body-sm",

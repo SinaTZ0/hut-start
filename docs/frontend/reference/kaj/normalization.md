@@ -128,7 +128,7 @@ learning on phones) and `aspect-photo` 16 / 10 (glance photo), plus Tailwind's `
 | ----------------------------------------- | -------------------------------------------- |
 | `--shadow` (card hover, rail, popover, drawer, tooltip) | `elevation-md`                  |
 | first layer of `--shadow` only            | `elevation-sm` (inputs, resting controls)    |
-| play button `0 0 0 8px gold/28` → `12px gold/22` on hover | `ring-play`, `ring-play-hover`  |
+| play button `0 0 0 8px gold/28` → `12px gold/22` on hover | `shadow-play`, `shadow-play-hover` |
 | hero `text-shadow` (three values)         | one `text-shadow-photo` **→**                |
 | hero gradient scrim (arbitrary `bg-[linear-gradient…]`) | `@utility bg-hero-scrim` in `styles.css` |
 
@@ -156,7 +156,7 @@ learning on phones) and `aspect-photo` 16 / 10 (glance photo), plus Tailwind's `
 | -------------------------------------------------------------- | ---------------------------------------------------------- |
 | 10px text in three places                                      | `caption` 12px (above)                                     |
 | Gold text `#9a6b14` on `bg` 4.38 : 1, on `surface-2` 4.22 : 1, on `chip` 4.04 : 1 (needs 4.5) | `highlight-text` `#8f6312`: 4.57 – 5.30 on every light ground |
-| Search input edge `line-strong` on white 1.54 : 1 (controls need 3 : 1) | new `input` token `#7f928e` (3.28 on white); dark value checked in step 3 |
+| Search input edge `line-strong` on white 1.54 : 1 (controls need 3 : 1) | `input` token `#7a8d89` (3.0–3.5 on every light ground), dark `#5a7678` (3.2 on `card`, 3.6 on `background`) |
 | Header icon buttons 32px on phones                             | 40px                                                       |
 
 Every other text pair passes in both themes. The lowest are `text-muted` on `chip` at 4.83, gold-deep on white at
