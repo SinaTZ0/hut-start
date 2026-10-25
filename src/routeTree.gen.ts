@@ -18,6 +18,7 @@ import { Route as notes_layoutNotesLayoutRouteImport } from './routes/notes_layo
 import { Route as authAuthRouteImport } from './routes/auth/auth'
 import { Route as rpcRpcRouteImport } from './routes/rpc/rpc'
 import { Route as notesNotesRouteImport } from './routes/notes/notes'
+import { Route as departments_departmentSlugDepartmentsDepartmentSlugRouteImport } from './routes/departments_departmentSlug/departments-department-slug'
 import { Route as api_authApiAuthRouteImport } from './routes/api_auth/api-auth'
 
 const site_layoutSiteLayoutRoute = site_layoutSiteLayoutRouteImport.update({
@@ -63,6 +64,12 @@ const notesNotesRoute = notesNotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => notes_layoutNotesLayoutRoute,
 } as any)
+const departments_departmentSlugDepartmentsDepartmentSlugRoute =
+  departments_departmentSlugDepartmentsDepartmentSlugRouteImport.update({
+    id: '/departments/$departmentSlug',
+    path: '/departments/$departmentSlug',
+    getParentRoute: () => site_layoutSiteLayoutRoute,
+  } as any)
 const api_authApiAuthRoute = api_authApiAuthRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof authAuthRoute
   '/rpc/$': typeof rpcRpcRoute
   '/notes': typeof notesNotesRoute
+  '/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
   '/api/auth/$': typeof api_authApiAuthRoute
 }
 export interface FileRoutesByTo {
@@ -87,6 +95,7 @@ export interface FileRoutesByTo {
   '/auth': typeof authAuthRoute
   '/rpc/$': typeof rpcRpcRoute
   '/notes': typeof notesNotesRoute
+  '/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
   '/api/auth/$': typeof api_authApiAuthRoute
 }
 export interface FileRoutesById {
@@ -100,6 +109,7 @@ export interface FileRoutesById {
   '/_site-layout/auth': typeof authAuthRoute
   '/rpc/$': typeof rpcRpcRoute
   '/_site-layout/_notes-layout/notes': typeof notesNotesRoute
+  '/_site-layout/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
   '/api/auth/$': typeof api_authApiAuthRoute
 }
 export interface FileRouteTypes {
@@ -112,6 +122,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/rpc/$'
     | '/notes'
+    | '/departments/$departmentSlug'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/rpc/$'
     | '/notes'
+    | '/departments/$departmentSlug'
     | '/api/auth/$'
   id:
     | '__root__'
@@ -134,6 +146,7 @@ export interface FileRouteTypes {
     | '/_site-layout/auth'
     | '/rpc/$'
     | '/_site-layout/_notes-layout/notes'
+    | '/_site-layout/departments/$departmentSlug'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof notesNotesRouteImport
       parentRoute: typeof notes_layoutNotesLayoutRoute
     }
+    '/_site-layout/departments/$departmentSlug': {
+      id: '/_site-layout/departments/$departmentSlug'
+      path: '/departments/$departmentSlug'
+      fullPath: '/departments/$departmentSlug'
+      preLoaderRoute: typeof departments_departmentSlugDepartmentsDepartmentSlugRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -239,12 +259,15 @@ interface site_layoutSiteLayoutRouteChildren {
   homeHomeRoute: typeof homeHomeRoute
   notes_layoutNotesLayoutRoute: typeof notes_layoutNotesLayoutRouteWithChildren
   authAuthRoute: typeof authAuthRoute
+  departments_departmentSlugDepartmentsDepartmentSlugRoute: typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
 }
 
 const site_layoutSiteLayoutRouteChildren: site_layoutSiteLayoutRouteChildren = {
   homeHomeRoute: homeHomeRoute,
   notes_layoutNotesLayoutRoute: notes_layoutNotesLayoutRouteWithChildren,
   authAuthRoute: authAuthRoute,
+  departments_departmentSlugDepartmentsDepartmentSlugRoute:
+    departments_departmentSlugDepartmentsDepartmentSlugRoute,
 }
 
 const site_layoutSiteLayoutRouteWithChildren =

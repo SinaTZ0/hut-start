@@ -13,6 +13,7 @@ export const cn = createCn({
       "font-size": [
         {
           text: [
+            "display-xl",
             "display",
             "h1",
             "h2",

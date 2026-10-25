@@ -495,5 +495,122 @@
   ],
   "media_error_too_many_pixels": "The image dimensions are too large. Choose a smaller image.",
   "media_error_unsupported": "This image format isn't supported. Upload a JPG or PNG image.",
-  "media_error_unreadable": "This file isn't a valid image. Try another one."
+  "media_error_unreadable": "This file isn't a valid image. Try another one.",
+  "common_breadcrumb": "Breadcrumb",
+  "common_more": "More",
+  "department_title": "Department of {name}",
+  "department_cta_fields": "Fields and curriculum",
+  "department_cta_faculty": "Faculty",
+  "department_stat_students": "Students",
+  "department_stat_faculty": "Faculty members",
+  "department_stat_bsc": "BSc specialisations",
+  "department_stat_msc": "MSc specialisations",
+  "department_stat_labs": "Labs and workshops",
+  "department_about_title": "About the department",
+  "department_timeline_label": "History",
+  "department_timeline_today": "Today",
+  "department_head": "Head of department",
+  "department_phone": "Phone",
+  "department_email": "Email",
+  "department_office": "Office",
+  "department_homepage": "Personal page",
+  "department_publications": "Publications",
+  "department_member_phone": "Call {name}",
+  "department_member_email": "Email {name}",
+  "department_member_homepage": "{name}'s personal page",
+  "department_member_scholar": "{name} on Google Scholar",
+  "department_honorific_doctor": "Dr {name}",
+  "department_honorific_engineer": "{name}",
+  "department_rank_all": "All",
+  "department_rank_professor": "Professor",
+  "department_rank_associate": "Associate professor",
+  "department_rank_assistant": "Assistant professor",
+  "department_rank_lecturer": "Lecturer",
+  "department_fields_title": "Fields of study",
+  "department_degree_bsc": "BSc",
+  "department_degree_msc": "MSc",
+  "department_degree_msc_short": "MSc",
+  "department_field_closed": "Not offered",
+  "department_faculty_title": "Faculty",
+  "department_faculty_filter": "Academic rank",
+  "department_faculty_empty": "The faculty list hasn't been added yet.",
+  "department_labs_title": "Labs and workshops",
+  "department_labs_contact": "For bookings and arrangements",
+  "department_labs_page": "The department's labs page",
+  "department_documents_title": "Curriculum",
+  "department_track_plan": "Curriculum",
+  "department_track_chart": "Course chart",
+  "department_track_plan_label": "{track} curriculum",
+  "department_track_chart_label": "{track} course chart",
+  "department_others": "Other departments",
+  "department_updated": "Last updated",
+  "department_not_found_title": "Department not found",
+  "department_not_found_details": "Check the address, or find the department in the list of departments.",
+  "department_not_found_back": "All departments",
+  "department_fields_lede": [
+    {
+      "declarations": ["input count", "local countPlural = count: plural", "local countText = count: number"],
+      "selectors": ["countPlural"],
+      "match": {
+        "countPlural=one": "{countText} field, two degrees. Each card shows the degrees it admits students to.",
+        "countPlural=other": "{countText} fields, two degrees. Each card shows the degrees it admits students to."
+      }
+    }
+  ],
+  "department_field_number": [
+    {
+      "declarations": ["input number", "local numberText = number: number"],
+      "match": {
+        "": "Field {numberText}"
+      }
+    }
+  ],
+  "department_field_tracks": [
+    {
+      "declarations": ["input count", "local countPlural = count: plural", "local countText = count: number"],
+      "selectors": ["countPlural"],
+      "match": {
+        "countPlural=one": "{countText} specialisation",
+        "countPlural=other": "{countText} specialisations"
+      }
+    }
+  ],
+  "department_documents_archived": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "Earlier editions ({countText})"
+      }
+    }
+  ],
+  "department_timeline_now": [
+    {
+      "declarations": ["input bsc", "input msc", "local bscText = bsc: number", "local mscText = msc: number"],
+      "match": {
+        "": "{bscText} BSc and {mscText} MSc specialisations"
+      }
+    }
+  ],
+  "department_cta_areas": "Subject areas",
+  "department_areas_title": "Subject areas",
+  "department_areas_lede": [
+    {
+      "declarations": ["input count", "local countPlural = count: plural", "local countText = count: number"],
+      "selectors": ["countPlural"],
+      "match": {
+        "countPlural=one": "{countText} subject area, taught to students of every programme at the university.",
+        "countPlural=other": "{countText} subject areas, taught to students of every programme at the university."
+      }
+    }
+  ],
+  "department_timeline_now_faculty": [
+    {
+      "declarations": ["input count", "local countPlural = count: plural", "local countText = count: number"],
+      "selectors": ["countPlural"],
+      "match": {
+        "countPlural=one": "{countText} faculty member",
+        "countPlural=other": "{countText} faculty members"
+      }
+    }
+  ]
 }

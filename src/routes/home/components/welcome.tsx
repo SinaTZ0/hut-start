@@ -19,10 +19,9 @@ import {
 } from "#/components/primitive/item/item";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
-import { SUGGESTIONS_LINK } from "#/lib/university/navigation";
+import { DEPARTMENTS_HREF, SUGGESTIONS_LINK } from "#/lib/university/navigation";
 import { SERVICES } from "#/lib/university/services";
 import { m } from "#/paraglide/messages";
-import { DEPARTMENTS_HREF } from "../content";
 
 /*===== Constants =====*/
 

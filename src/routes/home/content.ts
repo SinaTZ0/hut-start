@@ -210,8 +210,6 @@ export const SPOTLIGHT: NewsItem = {
   category: "student",
 };
 
-export const DEPARTMENTS_HREF = "https://hut.ac.ir/groups";
-
 /*------ Achievements ------*/
 // Replaced by an `achievement.list` procedure.
 

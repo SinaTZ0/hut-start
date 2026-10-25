@@ -4,7 +4,8 @@ import { composeStyles, defineStyles, joinStyles } from "../styles";
 /*===== Group Styles =====*/
 
 // Rows are joined into one surface rather than standing apart like cards. `stack` keeps them apart by a hairline gap
-// (search results), `divided` rules a line between them (the welcome help list), and `tiled` lays them in a grid
+// (search results), `divided` rules a line between them (the welcome help list), `ruled` also rules the top and the
+// bottom, for a list that stands on the page without a panel (a department's files), and `tiled` lays them in a grid
 // whose cells share their edges (research units); set the columns on the group.
 const twGroupStyles = defineStyles({
   layout: "group/item-group",
@@ -16,6 +17,11 @@ const twGroupVariant = defineStyles({
   },
   divided: {
     layout: "flex flex-col",
+    appearance: "*:not-first:border-t",
+  },
+  ruled: {
+    layout: "flex flex-col",
+    geometry: "border-y",
     appearance: "*:not-first:border-t",
   },
   tiled: {

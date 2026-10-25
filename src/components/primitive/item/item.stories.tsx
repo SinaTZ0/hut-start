@@ -85,6 +85,26 @@ export const Divided: Story = {
   ),
 };
 
+// Rows ruled top and bottom with no panel behind them, like a department's curriculum files.
+export const Ruled: Story = {
+  render: () => (
+    <ItemGroup variant="ruled" className="max-w-lg">
+      {["چارت درسی کارشناسی، ورودی ۱۴۰۳ به بعد", "روند و شیوه انتخاب گرایش"].map((title) => (
+        <li key={title}>
+          <Item render={<SiteLink href="#item" />}>
+            <ItemMedia>
+              <FileTextIcon />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>{title}</ItemTitle>
+            </ItemContent>
+          </Item>
+        </li>
+      ))}
+    </ItemGroup>
+  ),
+};
+
 // Cells sharing their edges in a grid, like the research units.
 export const Tiled: Story = {
   render: () => (

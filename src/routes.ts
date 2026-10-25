@@ -6,6 +6,7 @@ export const routes = rootRoute("__root.tsx", [
   layout("site_layout/site-layout.tsx", [
     index("home/home.tsx"),
     route("/auth", "auth/auth.tsx"),
+    route("/departments/$departmentSlug", "departments_departmentSlug/departments-department-slug.tsx"),
     layout("notes_layout/notes-layout.tsx", [route("/notes", "notes/notes.tsx")]),
   ]),
 

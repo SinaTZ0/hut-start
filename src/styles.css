@@ -21,6 +21,10 @@
   /* The app's type styles as `text-<name>`: size, line height and weight together. Display, h1, h2 and the stats
      scale with the viewport, so they need no phone step. Every name is also listed in `cn` (src/lib/utils.ts), so
      merging doesn't mistake it for a text colour. */
+  /* A department's name over its drawing: the one title set larger than the home hero's */
+  --text-display-xl: clamp(3.25rem, 1.6rem + 7vw, 8rem);
+  --text-display-xl--line-height: 1.2;
+  --text-display-xl--font-weight: 900;
   --text-display: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
   --text-display--line-height: 1.3;
   --text-display--font-weight: 900;
@@ -86,9 +90,13 @@
   --spacing-hero: max(35rem, calc(100svh - 6.5rem));
   --spacing-arc: clamp(0.875rem, 2.2vw, 2rem);
 
-  /* News cards and phone learning rows (16:7), the glance photo (16:10) */
+  /* News cards and phone learning rows (16:7), the glance photo (16:10), a person's photo (4:5, the `portrait` media) */
   --aspect-wide: 16 / 7;
   --aspect-photo: 16 / 10;
+  --aspect-portrait: 4 / 5;
+
+  /* A department page's drawing behind its hero: tall on phones, about 21:9 on wide screens */
+  --spacing-art-hero: clamp(32.5rem, 62vw, 53.75rem);
 }
 
 /*===== Theme Mapping =====*/
@@ -240,6 +248,11 @@
   --band-control: rgb(255 255 255 / 60%);
   --band-hover: rgb(255 255 255 / 8%);
 
+  /* The signature drawings (app-identity.md → Brand): one ink, faint enough that text on it still reads. `art-ink` is
+     for the page, `art-band` for a pine band. */
+  --art-ink: color-mix(in srgb, var(--heading) 46%, transparent);
+  --art-band: color-mix(in srgb, var(--on-band) 13%, transparent);
+
   --elevation-sm: 0 1px 2px rgb(16 61 64 / 4%);
   --elevation-md: 0 1px 2px rgb(16 61 64 / 4%), 0 8px 24px -12px rgb(16 61 64 / 12%);
 
@@ -303,6 +316,10 @@
 
   --band: #0f3436;
   --band-deep: #081f21;
+
+  /* Pale lines on the dark page, quieter than in light: light ink on dark reads stronger */
+  --art-ink: color-mix(in srgb, var(--heading) 20%, transparent);
+  --art-band: color-mix(in srgb, var(--on-band) 9%, transparent);
 
   --elevation-sm: 0 1px 2px rgb(0 0 0 / 30%);
   --elevation-md: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px -12px rgb(0 0 0 / 50%);
@@ -388,6 +405,58 @@
 /* The 3px "today" line at `--at` (0–1), centred on its day */
 @utility term-marker {
   inset-inline-start: calc(var(--at) * 100% - 1.5px);
+}
+
+/*------ Departments ------*/
+
+/* A department's signature drawing (`--art`, the URL of a transparent WebP whose lines are opaque) used as a mask, so
+   the theme's ink colours it. Behind the hero it fades out downward and stays faint under the title: the title sits on
+   the drawing's empty side, at the start, so the art is mirrored in left-to-right pages instead of the fade. */
+@utility art-sheet {
+  background-color: var(--art-ink);
+  mask-image:
+    var(--art), linear-gradient(to bottom, #000 35%, transparent 96%),
+    linear-gradient(to left, rgb(0 0 0 / 20%) 30%, #000 62%);
+  mask-size:
+    cover,
+    100% 100%,
+    100% 100%;
+  mask-position: left top;
+  mask-repeat: no-repeat;
+  mask-composite: intersect;
+}
+
+/* The same on a pine band, behind a whole section */
+@utility art-band {
+  background-color: var(--art-band);
+  mask-image: var(--art), linear-gradient(to bottom, #000 35%, transparent 96%);
+  mask-size:
+    cover,
+    100% 100%;
+  mask-position: center top;
+  mask-repeat: no-repeat;
+  mask-composite: intersect;
+}
+
+/* A small drawing (a field's vignette) in `currentColor` */
+@utility mask-art {
+  mask: var(--art) center / contain no-repeat;
+  background-color: currentColor;
+}
+
+/* A draughtsman's rule in `currentColor`: a baseline, a short tick every 8px and a long one every 40px, counted from
+   the start side */
+@utility ruler {
+  background-image:
+    repeating-linear-gradient(var(--toward-end), currentColor 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(var(--toward-end), currentColor 0 1px, transparent 1px 8px),
+    linear-gradient(currentColor, currentColor);
+  background-size:
+    100% 100%,
+    100% 45%,
+    100% 1px;
+  background-position: bottom;
+  background-repeat: no-repeat;
 }
 
 /*===== Base =====*/

@@ -485,5 +485,114 @@
   ],
   "media_error_too_many_pixels": "ابعاد عکس خیلی بزرگ است. عکسی با ابعاد کوچک‌تر انتخاب کنید.",
   "media_error_unsupported": "فرمت عکس پشتیبانی نمی‌شود. لطفاً عکس را با فرمت JPG یا PNG بارگذاری کنید.",
-  "media_error_unreadable": "این فایل عکس سالمی نیست. عکس دیگری را امتحان کنید."
+  "media_error_unreadable": "این فایل عکس سالمی نیست. عکس دیگری را امتحان کنید.",
+  "common_breadcrumb": "مسیر صفحه",
+  "common_more": "بیشتر",
+  "department_title": "گروه {name}",
+  "department_cta_fields": "گرایش‌ها و چارت درسی",
+  "department_cta_faculty": "اعضای هیئت علمی",
+  "department_stat_students": "دانشجوی فعال",
+  "department_stat_faculty": "عضو هیئت علمی",
+  "department_stat_bsc": "گرایش کارشناسی",
+  "department_stat_msc": "گرایش کارشناسی ارشد",
+  "department_stat_labs": "آزمایشگاه و کارگاه",
+  "department_about_title": "معرفی گروه",
+  "department_timeline_label": "تاریخچه گروه",
+  "department_timeline_today": "امروز",
+  "department_head": "مدیر گروه",
+  "department_phone": "تلفن",
+  "department_email": "رایانامه",
+  "department_office": "دفتر",
+  "department_homepage": "صفحه شخصی",
+  "department_publications": "مقاله‌ها",
+  "department_member_phone": "تماس با {name}",
+  "department_member_email": "رایانامه به {name}",
+  "department_member_homepage": "صفحه شخصی {name}",
+  "department_member_scholar": "{name} در گوگل اسکالر",
+  "department_honorific_doctor": "دکتر {name}",
+  "department_honorific_engineer": "مهندس {name}",
+  "department_rank_all": "همه",
+  "department_rank_professor": "استاد",
+  "department_rank_associate": "دانشیار",
+  "department_rank_assistant": "استادیار",
+  "department_rank_lecturer": "مربی",
+  "department_fields_title": "گرایش‌ها",
+  "department_degree_bsc": "کارشناسی",
+  "department_degree_msc": "کارشناسی ارشد",
+  "department_degree_msc_short": "ارشد",
+  "department_field_closed": "پذیرش ندارد",
+  "department_faculty_title": "اعضای هیئت علمی",
+  "department_faculty_filter": "رتبه علمی",
+  "department_faculty_empty": "فهرست اعضای هیئت علمی هنوز ثبت نشده است.",
+  "department_labs_title": "آزمایشگاه‌ها و کارگاه",
+  "department_labs_contact": "برای رزرو و هماهنگی",
+  "department_labs_page": "صفحه آزمایشگاه‌های گروه",
+  "department_documents_title": "چارت و برنامه درسی",
+  "department_track_plan": "برنامه درسی",
+  "department_track_chart": "چارت",
+  "department_track_plan_label": "برنامه درسی {track}",
+  "department_track_chart_label": "چارت درسی {track}",
+  "department_others": "گروه‌های آموزشی دیگر",
+  "department_updated": "آخرین به‌روزرسانی",
+  "department_not_found_title": "این گروه آموزشی پیدا نشد",
+  "department_not_found_details": "نشانی را بررسی کنید، یا گروه را از فهرست گروه‌های آموزشی پیدا کنید.",
+  "department_not_found_back": "فهرست گروه‌های آموزشی",
+  "department_fields_lede": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} حوزه و دو مقطع. هر کارت نشان می‌دهد آن حوزه در کدام مقطع دانشجو می‌پذیرد."
+      }
+    }
+  ],
+  "department_field_number": [
+    {
+      "declarations": ["input number", "local numberText = number: number"],
+      "match": {
+        "": "حوزه {numberText}"
+      }
+    }
+  ],
+  "department_field_tracks": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} گرایش"
+      }
+    }
+  ],
+  "department_documents_archived": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "نسخه‌های پیشین ({countText})"
+      }
+    }
+  ],
+  "department_timeline_now": [
+    {
+      "declarations": ["input bsc", "input msc", "local bscText = bsc: number", "local mscText = msc: number"],
+      "match": {
+        "": "{bscText} گرایش کارشناسی، {mscText} گرایش ارشد"
+      }
+    }
+  ],
+  "department_cta_areas": "حوزه‌های آموزشی",
+  "department_areas_title": "حوزه‌های آموزشی",
+  "department_areas_lede": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} حوزه، که گروه دروس آن‌ها را برای دانشجویان همه رشته‌های دانشگاه ارائه می‌کند."
+      }
+    }
+  ],
+  "department_timeline_now_faculty": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} عضو هیئت علمی"
+      }
+    }
+  ]
 }

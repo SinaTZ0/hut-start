@@ -42,8 +42,17 @@ translation ([i18n.md](./i18n.md)).
   it, edge to edge, under a pine scrim (`bg-hero-scrim`) that keeps the text on it readable. News and achievement
   photos sit in fixed ratios (`aspect-wide`, `aspect-photo`, `video`) and zoom slightly on hover. Labels on photos are
   `Badge variant="media"`.
-- **Rules out**: stock photography, illustrations, gradients as decoration, a second accent colour, and gold on large
-  areas.
+- **Signature drawings**: each department has its own engineering sketch in the manner of a Da Vinci notebook (fine
+  ink lines, cross-hatching, construction circles, dimension lines, exploded views; for electrical engineering a
+  dynamo, a transformer, a Volta pile and field lines). Each is one transparent WebP in
+  `public/images/departments/<slug>/` used as a CSS mask, so it takes a single theme colour: `art-ink` (ink on paper in
+  light, pale lines in dark) behind a page's hero (`art-sheet`), `art-band` on a pine band (`art-band`), and
+  `currentColor` for a small vignette (`mask-art`). The drawing sits at the top of the page or on a band, never behind
+  body text, fades out downward and stays faint under the title. Its empty side is the start, so English mirrors it. It
+  never moves. The department page echoes it in type: section numbers in gold, a ruler (`ruler`) after each heading,
+  and figures hung from dimension lines.
+- **Rules out**: stock photography, illustrations other than the signature drawings, gradients as decoration, a second
+  accent colour, and gold on large areas.
 - **References**: the Kaj homepage source and screenshot in [reference/kaj/](./reference/kaj/), and its
   [normalization table](./reference/kaj/normalization.md), which records every value that was snapped to a token.
 

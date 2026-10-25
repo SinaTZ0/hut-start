@@ -21,6 +21,9 @@ export type NavSection = {
 
 /*------ Departments ------*/
 
+/** The university's list of departments. */
+export const DEPARTMENTS_HREF = "https://hut.ac.ir/groups";
+
 /** `name` is the department's subject («مهندسی برق»), `short` the word that tells it apart («برق»). */
 export type Department = { id: string; name: () => string; short: () => string; href: string; labHref: string };
 
@@ -29,56 +32,57 @@ export const DEPARTMENTS: Department[] = [
     id: "ee",
     name: m.site_dept_ee,
     short: m.site_dept_ee_short,
-    href: "http://ee.hut.ac.ir/",
+    // Served by this app (`/departments/$departmentSlug`); the others follow as their pages are seeded.
+    href: "/departments/ee",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-برق",
   },
   {
     id: "ce",
     name: m.site_dept_ce,
     short: m.site_dept_ce_short,
-    href: "http://ce.hut.ac.ir/",
+    href: "/departments/ce",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-کامپیوتر",
   },
   {
     id: "mech",
     name: m.site_dept_mech,
     short: m.site_dept_mech_short,
-    href: "http://mech.hut.ac.ir/",
+    href: "/departments/mech",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-مکانیک",
   },
   {
     id: "bme",
     name: m.site_dept_bme,
     short: m.site_dept_bme_short,
-    href: "http://bme.hut.ac.ir/",
+    href: "/departments/bme",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-پزشکی",
   },
   {
     id: "materials",
     name: m.site_dept_materials,
     short: m.site_dept_materials_short,
-    href: "http://materials.hut.ac.ir/",
+    href: "/departments/materials",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-مواد",
   },
   {
     id: "chem",
     name: m.site_dept_chem,
     short: m.site_dept_chem_short,
-    href: "http://chemeng.hut.ac.ir/",
+    href: "/departments/chem",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-شیمی",
   },
   {
     id: "mining",
     name: m.site_dept_mining,
     short: m.site_dept_mining_short,
-    href: "http://me.hut.ac.ir/",
+    href: "/departments/mining",
     labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-معدن",
   },
   {
     id: "bs",
     name: m.site_dept_bs,
     short: m.site_dept_bs_short,
-    href: "http://bs.hut.ac.ir/",
+    href: "/departments/bs",
     labHref: "https://hut.ac.ir/آزمایشگاه-علوم-پایه",
   },
 ];
@@ -139,7 +143,7 @@ export const NAV_SECTIONS: NavSection[] = [
     groups: [
       {
         title: m.nav_education_departments,
-        href: "https://hut.ac.ir/groups",
+        href: DEPARTMENTS_HREF,
         links: DEPARTMENTS.map((department) => ({ label: department.name, href: department.href })),
       },
       {

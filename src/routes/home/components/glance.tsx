@@ -5,10 +5,10 @@ import { SiteLink } from "#/components/shared/site-link/site-link";
 import { TextLink } from "#/components/shared/text-link/text-link";
 import { textLinkExternalClasses } from "#/components/shared/text-link/text-link.styles";
 import { formatDate, formatNumber } from "#/lib/locale";
-import { DEPARTMENTS, SOCIAL_LINKS } from "#/lib/university/navigation";
+import { DEPARTMENTS, DEPARTMENTS_HREF, SOCIAL_LINKS } from "#/lib/university/navigation";
 import { cn } from "#/lib/utils";
 import { m } from "#/paraglide/messages";
-import { DEPARTMENTS_HREF, newsHref, SPOTLIGHT, STATS } from "../content";
+import { newsHref, SPOTLIGHT, STATS } from "../content";
 import { isoToDate } from "../semester";
 
 /*===== Constants =====*/
