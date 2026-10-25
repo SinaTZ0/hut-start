@@ -1,7 +1,9 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 
 import { absoluteUrl, jsonLd, pageMeta } from "#/lib/seo";
+import { orpc } from "#/orpc/client";
 import { m } from "#/paraglide/messages";
 import { localizeHref } from "#/paraglide/runtime";
 import { Achievements } from "./components/achievements";
@@ -16,8 +18,12 @@ import { Welcome } from "./components/welcome";
 import { SEMESTER } from "./content";
 import { semesterState, todayInTehran } from "./semester";
 
+/*===== Query =====*/
+const homeFeedQuery = () => orpc.homeFeed.get.queryOptions();
+
 /*===== Route =====*/
 export const Route = createFileRoute("/_site-layout/")({
+  loader: ({ context }) => context.queryClient.ensureQueryData(homeFeedQuery()),
   // A public page: the full set of tags, plus structured data that tells search engines the site's name.
   head: (args) => ({
     ...pageMeta({ args }),
@@ -45,6 +51,7 @@ const columnClasses = "mx-auto max-w-site px-gutter";
  * band, achievements, events and courses, and a welcome for new students.
  */
 function Home() {
+  const { data: feed } = useSuspenseQuery(homeFeedQuery());
   // Today in Tehran, once per page view. The server and the browser agree on it except across midnight.
   const today = useMemo(() => todayInTehran(), []);
   const semester = useMemo(() => semesterState({ events: SEMESTER.events, today }), [today]);
@@ -57,7 +64,7 @@ function Home() {
 
       <Arc />
       <div className={`${columnClasses} py-section`}>
-        <NewsSection today={today} />
+        <NewsSection today={today} news={feed.news} notices={feed.notices} />
       </div>
       <div className="border-y bg-background-alt">
         <div className={`${columnClasses} py-section`}>
@@ -65,14 +72,14 @@ function Home() {
         </div>
       </div>
 
-      <Glance />
+      <Glance spotlight={feed.spotlight} />
 
       <div className={`${columnClasses} py-section-lg`}>
-        <Achievements />
+        <Achievements items={feed.achievements} />
       </div>
       <div className="border-y bg-background-alt">
         <div className={`${columnClasses} py-section-lg`}>
-          <Learning />
+          <Learning items={feed.learning} />
         </div>
       </div>
       <div className={`${columnClasses} py-section-lg`}>

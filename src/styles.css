@@ -374,6 +374,20 @@
   max-height: calc(100dvh - 4rem);
 }
 
+/* A heading row, then a row that takes the rest of the height and may shrink below its content (which then scrolls) */
+@utility grid-rows-fill-last {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+/* A list that scrolls without showing a scrollbar (the home page's notices). Give it `tabIndex={0}` so a keyboard can
+   scroll it too. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /*------ Home ------*/
 
 /* The campus photo keeps the building and the mountains in frame */

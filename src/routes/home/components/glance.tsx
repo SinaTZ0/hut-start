@@ -7,8 +7,9 @@ import { textLinkExternalClasses } from "#/components/shared/text-link/text-link
 import { formatDate, formatNumber } from "#/lib/locale";
 import { DEPARTMENTS, DEPARTMENTS_HREF, SOCIAL_LINKS } from "#/lib/university/navigation";
 import { cn } from "#/lib/utils";
+import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
-import { newsHref, SPOTLIGHT, STATS } from "../content";
+import { STATS } from "../content";
 import { isoToDate } from "../semester";
 
 /*===== Constants =====*/
@@ -19,9 +20,10 @@ const VIDEO_CHANNEL = SOCIAL_LINKS.find((link) => link.href.includes("aparat"));
 
 /**
  * The pine band: the mission and six ruled figures beside a campus-life photo with a play link to the video channel;
- * the departments as a grid below. Two faint rings decorate the band.
+ * the departments as a grid below. Two faint rings decorate the band. The photo is the newest campus-life notice;
+ * until the feed has one, the play link stands alone on the band's deep green.
  */
-export function Glance() {
+export function Glance({ spotlight }: { spotlight: FeedItem | null }) {
   return (
     <section
       aria-labelledby="home-glance"
@@ -68,29 +70,38 @@ export function Glance() {
                 <span className="sr-only">{m.home_glance_videos({ channel: VIDEO_CHANNEL.label() })}</span>
               </SiteLink>
             )}
-            <SiteLink
-              href={newsHref(SPOTLIGHT)}
-              className="group/photo relative block aspect-photo overflow-hidden rounded-lg bg-band-deep text-on-band"
-            >
-              {SPOTLIGHT.image && (
-                <img
-                  src={SPOTLIGHT.image}
-                  alt=""
-                  loading="lazy"
-                  className="absolute inset-0 size-full object-cover transition-transform duration-300 motion-safe:group-hover/photo:scale-103"
-                />
-              )}
-              <span className="absolute inset-x-0 bottom-0 flex flex-col bg-linear-to-t from-band-deep/90 to-transparent px-6 pt-15 pb-5">
-                <span className="text-caption text-highlight">{m.home_glance_life()}</span>
-                <span className="text-h4">{SPOTLIGHT.title()}</span>
-              </span>
-            </SiteLink>
+            {spotlight ? (
+              <SiteLink
+                href={spotlight.url}
+                className="group/photo relative block aspect-photo overflow-hidden rounded-lg bg-band-deep text-on-band"
+              >
+                {spotlight.imageUrl && (
+                  <img
+                    src={spotlight.imageUrl}
+                    alt=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 size-full object-cover transition-transform duration-300 motion-safe:group-hover/photo:scale-103"
+                  />
+                )}
+                <span className="absolute inset-x-0 bottom-0 flex flex-col bg-linear-to-t from-band-deep/90 to-transparent px-6 pt-15 pb-5">
+                  <span className="text-caption text-highlight">{m.home_glance_life()}</span>
+                  <span className="text-h4">{spotlight.title}</span>
+                </span>
+              </SiteLink>
+            ) : (
+              <div className="aspect-photo rounded-lg bg-band-deep" />
+            )}
           </div>
           <figcaption className="mt-3 flex flex-wrap justify-between gap-x-4 gap-y-2 text-caption text-on-band-muted">
             <span>
-              {SPOTLIGHT.date &&
+              {spotlight?.publishedOn &&
                 m.home_glance_caption({
-                  date: formatDate(isoToDate(SPOTLIGHT.date), { day: "numeric", month: "long", year: "numeric" }),
+                  date: formatDate(isoToDate(spotlight.publishedOn), {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  }),
                   name: m.site_name(),
                 })}
             </span>

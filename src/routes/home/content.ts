@@ -1,21 +1,23 @@
 import { BookMarkedIcon, FlaskConicalIcon, FactoryIcon, type LucideIcon, SproutIcon } from "lucide-react";
 
 import { formatNumber } from "#/lib/locale";
+import type { FeedCategory } from "#/orpc/home-feed/constants";
 import { m } from "#/paraglide/messages";
 import type { CalendarEvent } from "./semester";
 
 /*===== Home Content =====*/
-// What the home page shows until the features behind it exist. Text is message functions, called in render; each
-// block names the procedure that will replace it. Images are in public/images/home/.
+// What the home page shows beside the feed. The news, notices, achievements and events come from `homeFeed.get`
+// (src/orpc/home-feed/), which mirrors hut.ac.ir's homepage until the cutover. Text is message functions, called in
+// render. Images are in public/images/home/.
 
 /*------ Categories ------*/
+// A feed item's kicker, and where the old site lists the rest of its kind.
 
-export type NewsCategory = "university" | "education" | "graduate" | "student" | "growth" | "openEducation";
-
-export const NEWS_CATEGORIES: Record<NewsCategory, { title: () => string; moreHref: string }> = {
+export const NEWS_CATEGORIES: Record<FeedCategory, { title: () => string; moreHref: string }> = {
   university: { title: m.home_category_university, moreHref: "https://hut.ac.ir/web/hut/اخبار" },
   education: { title: m.home_category_education, moreHref: "https://hut.ac.ir/web/hut/اطلاعیه-ها" },
   graduate: { title: m.home_category_graduate, moreHref: "https://hut.ac.ir/web/hut/اطلاعیه-ها" },
+  industry: { title: m.home_category_industry, moreHref: "https://hut.ac.ir/web/hut/اطلاعیه-ها" },
   student: { title: m.home_category_student, moreHref: "https://student.hut.ac.ir/" },
   growth: { title: m.home_category_growth, moreHref: "https://hut.ac.ir/web/roshd" },
   openEducation: {
@@ -24,173 +26,11 @@ export const NEWS_CATEGORIES: Record<NewsCategory, { title: () => string; moreHr
   },
 };
 
-export type NewsItem = {
-  id: string;
-  title: () => string;
-  summary?: () => string;
-  /** Publication date, ISO (Gregorian). */
-  date?: string;
-  /** The item's own page; without one it links to its category's list. */
-  href?: string;
-  image?: string;
-  category: NewsCategory;
-};
-
-/** Where an item links: its own page, or its category's list. */
-export function newsHref(item: NewsItem): string {
-  return item.href ?? NEWS_CATEGORIES[item.category].moreHref;
-}
-
-/*------ News ------*/
-// Replaced by a `news.list` procedure (the latest university stories with photos).
-
-export const FEATURED_STORY: NewsItem = {
-  id: "elites-council",
-  title: m.home_news_elites,
-  summary: m.home_news_elites_summary,
-  date: "2026-10-11",
-  image: "/images/home/news-president-elites.jpg",
-  category: "university",
-};
-
-export const STORIES: NewsItem[] = [
-  {
-    id: "crisis-day",
-    title: m.home_news_crisis_day,
-    date: "2026-10-12",
-    image: "/images/home/news-crisis-day.jpg",
-    category: "university",
-  },
-  {
-    id: "ee-head",
-    title: m.home_news_ee_head,
-    date: "2026-10-07",
-    image: "/images/home/news-ee-head.jpg",
-    category: "university",
-  },
-];
-
-/*------ Notices ------*/
-// Replaced by a `notice.list` procedure, newest first, per category.
-
-export const NOTICES: { category: NewsCategory; items: NewsItem[] }[] = [
-  {
-    category: "education",
-    items: [
-      {
-        id: "a-19057678",
-        title: m.home_notice_project_titles,
-        date: "2026-10-04",
-        href: "https://hut.ac.ir/article/19057678",
-        category: "education",
-      },
-      {
-        id: "a-19057712",
-        title: m.home_notice_supervised_study,
-        date: "2026-10-04",
-        href: "https://hut.ac.ir/article/19057712",
-        category: "education",
-      },
-      {
-        id: "a-19042273",
-        title: m.home_notice_pe_classes,
-        date: "2026-09-29",
-        href: "https://hut.ac.ir/article/19042273",
-        category: "education",
-      },
-      {
-        id: "a-19039509",
-        title: m.home_notice_add_drop,
-        date: "2026-09-26",
-        href: "https://hut.ac.ir/article/19039509",
-        category: "education",
-      },
-      {
-        id: "a-18985527",
-        title: m.home_notice_registration,
-        date: "2026-09-05",
-        href: "https://hut.ac.ir/article/18985527",
-        category: "education",
-      },
-    ],
-  },
-  {
-    category: "graduate",
-    items: [
-      {
-        id: "a-19057912",
-        title: m.home_notice_defences,
-        date: "2026-10-04",
-        href: "https://hut.ac.ir/article/19057912",
-        category: "graduate",
-      },
-      {
-        id: "a-18989220",
-        title: m.home_notice_top_quota,
-        date: "2026-09-08",
-        href: "https://hut.ac.ir/article/18989220",
-        category: "graduate",
-      },
-      {
-        id: "a-18986145",
-        title: m.home_notice_mining_seminar,
-        date: "2026-09-06",
-        href: "https://hut.ac.ir/article/18986145",
-        category: "graduate",
-      },
-      {
-        id: "a-18986550",
-        title: m.home_notice_thesis_deadline,
-        date: "2026-09-06",
-        href: "https://hut.ac.ir/article/18986550",
-        category: "graduate",
-      },
-      {
-        id: "a-18953187",
-        title: m.home_notice_phd_registration,
-        date: "2026-08-24",
-        href: "https://hut.ac.ir/article/18953187",
-        category: "graduate",
-      },
-    ],
-  },
-  {
-    category: "student",
-    items: [
-      {
-        id: "a-18904770",
-        title: m.home_notice_wellbeing,
-        date: "2026-08-02",
-        href: "https://hut.ac.ir/article/18904770",
-        category: "student",
-      },
-      {
-        id: "a-18609450",
-        title: m.home_notice_loans,
-        date: "2026-04-14",
-        href: "https://hut.ac.ir/article/18609450",
-        category: "student",
-      },
-      {
-        id: "a-16686617",
-        title: m.home_notice_loan_registration,
-        date: "2025-12-07",
-        href: "https://hut.ac.ir/article/16686617",
-        category: "student",
-      },
-      {
-        id: "a-6133335",
-        title: m.home_notice_exam_housing,
-        date: "2025-08-19",
-        href: "https://hut.ac.ir/article/6133335",
-        category: "student",
-      },
-    ],
-  },
-];
+/** Every notice, whatever its category. */
+export const ALL_NOTICES_HREF = "https://hut.ac.ir/web/hut/اطلاعیه-ها";
 
 /*------ Glance ------*/
-// The figures are maintained by hand; the spotlight becomes the newest campus-life notice from `notice.list`.
+// Maintained by hand. The spotlight beside them is the newest campus-life notice from the feed.
 
 export const STATS: { value: number; label: () => string }[] = [
   { value: 2300, label: m.home_stat_students },
@@ -201,47 +41,7 @@ export const STATS: { value: number; label: () => string }[] = [
   { value: 75, label: m.home_stat_staff },
 ];
 
-export const SPOTLIGHT: NewsItem = {
-  id: "graduation-1405",
-  title: m.home_spotlight_graduation,
-  date: "2026-10-05",
-  href: "https://hut.ac.ir/fa/w/اطلاعیه-شماره-۱-🎓-مراسم-آیین-دانش-آموختگی-سال-1405-دا",
-  image: "/images/home/ann-graduation-1405.jpg",
-  category: "student",
-};
-
-/*------ Achievements ------*/
-// Replaced by an `achievement.list` procedure.
-
-export type Achievement = NewsItem & { tag: () => string };
-
-export const LEAD_ACHIEVEMENT: Achievement = {
-  id: "ach-journal",
-  title: m.home_achievement_journal,
-  summary: m.home_achievement_journal_summary,
-  image: "/images/home/ach-journal.jpg",
-  href: "https://enai.hut.ac.ir/",
-  category: "university",
-  tag: m.home_tag_research,
-};
-
-export const ACHIEVEMENTS: Achievement[] = [
-  {
-    id: "ach-sports",
-    title: m.home_achievement_sports,
-    summary: m.home_achievement_sports_summary,
-    image: "/images/home/ach-sports.jpg",
-    category: "university",
-    tag: m.home_tag_students,
-  },
-  {
-    id: "ach-smart-city",
-    title: m.home_achievement_smart_city,
-    image: "/images/home/ach-smart-city.png",
-    category: "university",
-    tag: m.home_tag_city,
-  },
-];
+/*------ Research Units ------*/
 
 export const RESEARCH_UNITS: { label: () => string; description: () => string; href: string; icon: LucideIcon }[] = [
   {
@@ -267,36 +67,6 @@ export const RESEARCH_UNITS: { label: () => string; description: () => string; h
     description: m.home_unit_lab,
     href: "http://lab.hut.ac.ir/",
     icon: FlaskConicalIcon,
-  },
-];
-
-/*------ Learning ------*/
-// Replaced by an `event.list` procedure (the incubator's events and the short courses).
-
-export const LEARNING_ITEMS: NewsItem[] = [
-  {
-    id: "g-200s",
-    title: m.home_learning_200s,
-    summary: m.home_learning_200s_summary,
-    image: "/images/home/growth-200s.jpg",
-    href: "https://hut.ac.ir/web/roshd",
-    category: "growth",
-  },
-  {
-    id: "g-career",
-    title: m.home_learning_career,
-    summary: m.home_learning_career_summary,
-    image: "/images/home/growth-career.jpg",
-    href: "https://hut.ac.ir/web/roshd",
-    category: "growth",
-  },
-  {
-    id: "a-9505501",
-    title: m.home_learning_knowledge_based,
-    summary: m.home_learning_knowledge_based_summary,
-    date: "2025-11-09",
-    href: "https://hut.ac.ir/article/9505501",
-    category: "openEducation",
   },
 ];
 

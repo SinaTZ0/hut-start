@@ -26,15 +26,9 @@ import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { TextLink } from "#/components/shared/text-link/text-link";
 import { NAV_SECTIONS } from "#/lib/university/navigation";
+import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
-import {
-  ACHIEVEMENTS,
-  type Achievement,
-  LEAD_ACHIEVEMENT,
-  NEWS_CATEGORIES,
-  newsHref,
-  RESEARCH_UNITS,
-} from "../content";
+import { NEWS_CATEGORIES, RESEARCH_UNITS } from "../content";
 
 /*===== Constants =====*/
 
@@ -43,18 +37,19 @@ const RESEARCH = NAV_SECTIONS.find((section) => section.id === "research");
 /*===== Achievement Card =====*/
 
 /** The lead achievement as a tall card; the others as a photo beside the text. */
-function AchievementCard({ item, lead = false }: { item: Achievement; lead?: boolean }) {
+function AchievementCard({ item, lead = false }: { item: FeedItem; lead?: boolean }) {
   const text = (
     <>
       <CardHeader>
-        <CardKicker>{item.tag()}</CardKicker>
+        <CardKicker>{m.home_achievement_kicker()}</CardKicker>
         <CardTitle>
-          <h3>{item.title()}</h3>
+          <h3>{item.title}</h3>
         </CardTitle>
       </CardHeader>
+      {/* Clamped: the old site's lead paragraphs run long. */}
       {item.summary && (
         <CardContent>
-          <CardDescription>{item.summary()}</CardDescription>
+          <CardDescription lines={lead ? "3" : "2"}>{item.summary}</CardDescription>
         </CardContent>
       )}
       <CardFooter>
@@ -65,13 +60,13 @@ function AchievementCard({ item, lead = false }: { item: Achievement; lead?: boo
 
   return (
     <Card
-      render={<SiteLink href={newsHref(item)} />}
+      render={<SiteLink href={item.url} />}
       size={lead ? "lg" : "default"}
       orientation={lead ? "vertical" : "horizontal"}
     >
-      {item.image && (
+      {item.imageUrl && (
         <CardMedia className={lead ? "aspect-2/1" : "aspect-2/1 sm:aspect-auto sm:w-2/5"}>
-          <img src={item.image} alt="" loading="lazy" />
+          <img src={item.imageUrl} alt="" loading="lazy" referrerPolicy="no-referrer" />
           {lead && <Badge variant="media">{m.home_achievements_spotlight()}</Badge>}
         </CardMedia>
       )}
@@ -119,7 +114,10 @@ function ResearchUnits() {
 
 /*===== Achievements =====*/
 
-export function Achievements() {
+/** The lead achievement beside two more, then the research units. The units stay when the feed has no achievements. */
+export function Achievements({ items }: { items: FeedItem[] }) {
+  const [lead, ...others] = items;
+
   return (
     <section aria-labelledby="home-achievements">
       <SectionHead
@@ -129,14 +127,16 @@ export function Achievements() {
         lede={m.home_achievements_lede()}
         more={{ label: m.home_achievements_more(), href: NEWS_CATEGORIES.university.moreHref }}
       />
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <AchievementCard item={LEAD_ACHIEVEMENT} lead />
-        <div className="grid gap-6">
-          {ACHIEVEMENTS.map((item) => (
-            <AchievementCard key={item.id} item={item} />
-          ))}
+      {lead && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <AchievementCard item={lead} lead />
+          <div className="grid gap-6">
+            {others.map((item) => (
+              <AchievementCard key={item.id} item={item} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <ResearchUnits />
     </section>
   );

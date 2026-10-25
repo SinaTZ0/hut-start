@@ -19,45 +19,49 @@ import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { textLinkArrowClasses } from "#/components/shared/text-link/text-link.styles";
 import { formatDate, formatDateParts, formatRelativeDays } from "#/lib/locale";
+import type { FeedItem, HomeFeed } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
-import {
-  FEATURED_STORY,
-  NEWS_CATEGORIES,
-  type NewsCategory,
-  type NewsItem,
-  NOTICES,
-  STORIES,
-  newsHref,
-} from "../content";
+import { ALL_NOTICES_HREF, NEWS_CATEGORIES } from "../content";
 import { daysFromToday, isoToDate, type JDate } from "../semester";
 
 /*===== Constants =====*/
 
-const NOTICES_SHOWN = 4;
+type NoticeTab = keyof HomeFeed["notices"];
+
+/** The notices panel's tabs: every notice first, then the two categories students check most. */
+const NOTICE_TABS: { value: NoticeTab; title: () => string; more: () => string; href: string }[] = [
+  { value: "latest", title: m.home_notices_tab_latest, more: m.home_notices_more_all, href: ALL_NOTICES_HREF },
+  ...(["education", "graduate"] as const).map((category) => ({
+    value: category,
+    title: NEWS_CATEGORIES[category].title,
+    more: () => m.home_notices_more({ category: NEWS_CATEGORIES[category].title() }),
+    href: NEWS_CATEGORIES[category].moreHref,
+  })),
+];
 
 /*===== Story =====*/
 
 /** A news card: photo, category, title, then the date and the call. The featured one sits beside its photo and adds
  * its summary. */
-function Story({ item, featured = false }: { item: NewsItem; featured?: boolean }) {
+function Story({ item, featured = false }: { item: FeedItem; featured?: boolean }) {
   const text = (
     <>
       <CardHeader>
         <CardKicker>{NEWS_CATEGORIES[item.category].title()}</CardKicker>
         <CardTitle>
-          <h3>{item.title()}</h3>
+          <h3>{item.title}</h3>
         </CardTitle>
       </CardHeader>
       {featured && item.summary && (
         <CardContent>
-          <CardDescription>{item.summary()}</CardDescription>
+          <CardDescription lines="3">{item.summary}</CardDescription>
         </CardContent>
       )}
       <CardFooter>
-        {item.date && (
-          <time dateTime={item.date}>
+        {item.publishedOn && (
+          <time dateTime={item.publishedOn}>
             <ClockIcon aria-hidden />
-            {formatDate(isoToDate(item.date), { day: "numeric", month: "long", year: "numeric" })}
+            {formatDate(isoToDate(item.publishedOn), { day: "numeric", month: "long", year: "numeric" })}
           </time>
         )}
         <CardCall>{m.home_news_continue()}</CardCall>
@@ -67,14 +71,15 @@ function Story({ item, featured = false }: { item: NewsItem; featured?: boolean 
 
   return (
     <Card
-      render={<SiteLink href={newsHref(item)} />}
+      render={<SiteLink href={item.url} />}
       size={featured ? "lg" : "default"}
       orientation={featured ? "horizontal" : "vertical"}
       className={featured ? "sm:col-span-2" : undefined}
     >
-      {item.image && (
+      {item.imageUrl && (
         <CardMedia className={featured ? "aspect-video sm:aspect-auto sm:min-h-70 sm:flex-1" : "aspect-wide"}>
-          <img src={item.image} alt="" loading="lazy" />
+          {/* Hotlinked from the old site; no referrer, so its server never sees where it's shown. */}
+          <img src={item.imageUrl} alt="" loading="lazy" referrerPolicy="no-referrer" />
           {featured && <Badge variant="media">{m.home_news_featured()}</Badge>}
         </CardMedia>
       )}
@@ -85,8 +90,9 @@ function Story({ item, featured = false }: { item: NewsItem; featured?: boolean 
 
 /*===== Notices =====*/
 
-function NoticeRow({ item, today }: { item: NewsItem; today: JDate }) {
-  const date = item.date ? isoToDate(item.date) : undefined;
+/** A notice: its date as a calendar leaf, the title, then the date in words. Under «latest» it names its category. */
+function NoticeRow({ item, today, showCategory }: { item: FeedItem; today: JDate; showCategory: boolean }) {
+  const date = item.publishedOn ? isoToDate(item.publishedOn) : undefined;
   const parts = date && formatDateParts(date, { month: "short" });
 
   return (
@@ -102,16 +108,24 @@ function NoticeRow({ item, today }: { item: NewsItem; today: JDate }) {
       )}
       <div className="min-w-0">
         <SiteLink
-          href={newsHref(item)}
+          href={item.url}
           className="text-body-sm font-bold text-heading underline-offset-4 transition-colors duration-200 hover:text-brand-text hover:underline motion-reduce:transition-none"
         >
-          {item.title()}
+          {item.title}
         </SiteLink>
-        {item.date && date && (
+        {(showCategory || date) && (
           <p className="mt-0.5 text-caption text-muted-foreground">
-            <time dateTime={item.date}>{formatDate(date, { day: "numeric", month: "long", year: "numeric" })}</time>
-            {" · "}
-            {formatRelativeDays(daysFromToday({ today, iso: item.date }))}
+            {showCategory && NEWS_CATEGORIES[item.category].title()}
+            {showCategory && date && " · "}
+            {item.publishedOn && date && (
+              <>
+                <time dateTime={item.publishedOn}>
+                  {formatDate(date, { day: "numeric", month: "long", year: "numeric" })}
+                </time>
+                {" · "}
+                {formatRelativeDays(daysFromToday({ today, iso: item.publishedOn }))}
+              </>
+            )}
           </p>
         )}
       </div>
@@ -119,10 +133,13 @@ function NoticeRow({ item, today }: { item: NewsItem; today: JDate }) {
   );
 }
 
-/** The notices panel: one tab per category, its newest few, and a link to the category's full list. */
-function Notices({ today }: { today: JDate }) {
-  const [active, setActive] = useState<NewsCategory>(NOTICES[0].category);
-  const category = NEWS_CATEGORIES[active];
+/**
+ * The notices panel: every notice, then one tab per category, each a list that scrolls without a scrollbar, and a
+ * link to the old site's full list. The tab panel takes focus, so a keyboard scrolls the list too.
+ */
+function Notices({ today, notices }: { today: JDate; notices: HomeFeed["notices"] }) {
+  const [active, setActive] = useState<NoticeTab>("latest");
+  const tab = NOTICE_TABS.find((candidate) => candidate.value === active) ?? NOTICE_TABS[0];
 
   return (
     <aside aria-labelledby="home-notices" className="flex flex-col overflow-hidden rounded-md border bg-muted">
@@ -141,30 +158,44 @@ function Notices({ today }: { today: JDate }) {
         </span>
       </div>
 
-      <Tabs value={active} onValueChange={(value) => setActive(value as NewsCategory)} className="flex-1">
+      {/* Beside the stories (`lg`), the list fills the panel down to its footer: the panel is as tall as the stories,
+          and `h-0` keeps the list from making it taller. Stacked on phones, it is about four rows tall. */}
+      <Tabs
+        value={active}
+        onValueChange={(value) => setActive(value as NoticeTab)}
+        className="flex-1 lg:grid-rows-fill-last lg:content-stretch"
+      >
         <TabsList aria-label={m.home_notices_tabs()} className="mx-5 mt-4 w-auto self-stretch sm:mx-6">
-          {NOTICES.map((notices) => (
-            <TabsTrigger key={notices.category} value={notices.category}>
-              {NEWS_CATEGORIES[notices.category].title()}
+          {NOTICE_TABS.map((candidate) => (
+            <TabsTrigger key={candidate.value} value={candidate.value}>
+              {candidate.title()}
             </TabsTrigger>
           ))}
         </TabsList>
-        {NOTICES.map((notices) => (
-          <TabsContent key={notices.category} value={notices.category} className="mx-5 sm:mx-6">
-            <ul className="grid">
-              {notices.items.slice(0, NOTICES_SHOWN).map((item) => (
-                <NoticeRow key={item.id} item={item} today={today} />
-              ))}
-            </ul>
+        {NOTICE_TABS.map((candidate) => (
+          <TabsContent
+            key={candidate.value}
+            value={candidate.value}
+            className="mx-5 scrollbar-none max-h-88 overflow-y-auto sm:mx-6 lg:h-0 lg:max-h-none lg:min-h-full"
+          >
+            {notices[candidate.value].length > 0 ? (
+              <ul className="grid">
+                {notices[candidate.value].map((item) => (
+                  <NoticeRow key={item.id} item={item} today={today} showCategory={candidate.value === "latest"} />
+                ))}
+              </ul>
+            ) : (
+              <p className="py-4 text-body-sm text-muted-foreground">{m.home_notices_empty()}</p>
+            )}
           </TabsContent>
         ))}
       </Tabs>
 
       <SiteLink
-        href={category.moreHref}
+        href={tab.href}
         className="flex min-h-14 items-center justify-between gap-3 border-t px-5 py-4 text-body-sm font-bold text-brand-text underline-offset-4 hover:underline sm:px-6"
       >
-        {m.home_notices_more({ category: category.title() })}
+        {tab.more()}
         <ArrowLeftIcon aria-hidden className={textLinkArrowClasses} />
       </SiteLink>
     </aside>
@@ -174,7 +205,17 @@ function Notices({ today }: { today: JDate }) {
 /*===== News Section =====*/
 
 /** The featured story and two more on the start side; the notices panel on the end side. */
-export function NewsSection({ today }: { today: JDate }) {
+export function NewsSection({
+  today,
+  news,
+  notices,
+}: {
+  today: JDate;
+  news: FeedItem[];
+  notices: HomeFeed["notices"];
+}) {
+  const [featured, ...stories] = news;
+
   return (
     <section aria-labelledby="home-news">
       <SectionHead
@@ -186,12 +227,12 @@ export function NewsSection({ today }: { today: JDate }) {
       />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:col-span-2">
-          <Story item={FEATURED_STORY} featured />
-          {STORIES.map((item) => (
+          {featured && <Story item={featured} featured />}
+          {stories.map((item) => (
             <Story key={item.id} item={item} />
           ))}
         </div>
-        <Notices today={today} />
+        <Notices today={today} notices={notices} />
       </div>
     </section>
   );
