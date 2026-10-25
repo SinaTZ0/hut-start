@@ -72,6 +72,18 @@ const twDescriptionStyles = defineStyles({
   appearance: "text-muted-foreground",
 });
 
+// Text that comes from elsewhere (the home feed's lead paragraphs) can run long; `lines` cuts it with an ellipsis so
+// cards in a row keep their rhythm. Text written for the card shows in full.
+const twDescriptionLines = defineStyles({
+  all: {},
+  "2": {
+    layout: "line-clamp-2",
+  },
+  "3": {
+    layout: "line-clamp-3",
+  },
+});
+
 const twActionStyles = defineStyles({
   layout: "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
 });
@@ -168,10 +180,16 @@ const cardMediaVariants = cva(joinStyles(twMediaStyles), {
   defaultVariants: { fit: "cover" },
 });
 
+const cardDescriptionVariants = cva(joinStyles(twDescriptionStyles), {
+  variants: {
+    lines: composeStyles(twDescriptionLines),
+  },
+  defaultVariants: { lines: "all" },
+});
+
 const cardHeaderClasses = joinStyles(twHeaderStyles);
 const cardTitleClasses = joinStyles(twTitleStyles);
 const cardKickerClasses = joinStyles(twKickerStyles);
-const cardDescriptionClasses = joinStyles(twDescriptionStyles);
 const cardActionClasses = joinStyles(twActionStyles);
 const cardContentClasses = joinStyles(twContentStyles);
 const cardBodyClasses = joinStyles(twBodyStyles);
@@ -185,7 +203,7 @@ export {
   cardHeaderClasses,
   cardTitleClasses,
   cardKickerClasses,
-  cardDescriptionClasses,
+  cardDescriptionVariants,
   cardActionClasses,
   cardContentClasses,
   cardBodyClasses,

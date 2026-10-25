@@ -80,6 +80,22 @@ export const Horizontal: Story = {
   ),
 };
 
+// Text that comes from elsewhere (the home feed's lead paragraphs) is clamped with `lines`, so a row of cards keeps
+// its rhythm whatever the source wrote.
+export const ClampedDescription: Story = {
+  render: (args) => (
+    <Card {...args} className="max-w-sm">
+      <CardHeader>
+        <CardTitle>آیین دانش‌آموختگی دانشجویان برگزار شد</CardTitle>
+        <CardDescription lines="2">
+          به گزارش روابط عمومی دانشگاه، آیین دانش‌آموختگی دانشجویان با حضور خانواده‌ها، استادان و مسئولان دانشگاه در
+          سالن اجتماعات برگزار شد و از دانش‌آموختگان ممتاز این دوره با اهدای لوح سپاس قدردانی شد.
+        </CardDescription>
+      </CardHeader>
+    </Card>
+  ),
+};
+
 // A whole card that is a link: hover or tab to it for the card lift (a darker edge and a shadow) and the media zoom.
 // The second card's image is a poster, so it shows from the top instead of being cropped in the middle.
 export const LinkWithMedia: Story = {

@@ -10,7 +10,7 @@ import {
   cardBodyClasses,
   cardCallClasses,
   cardContentClasses,
-  cardDescriptionClasses,
+  cardDescriptionVariants,
   cardFooterClasses,
   cardHeaderClasses,
   cardKickerClasses,
@@ -64,8 +64,13 @@ function CardKicker({ className, ...props }: ComponentProps<"p">) {
   return <p data-slot="card-kicker" {...props} className={cn(cardKickerClasses, className)} />;
 }
 
-function CardDescription({ className, ...props }: ComponentProps<"div">) {
-  return <div data-slot="card-description" {...props} className={cn(cardDescriptionClasses, className)} />;
+/** A card's supporting text. `lines` clamps text that comes from elsewhere and may run long. */
+function CardDescription({
+  className,
+  lines = "all",
+  ...props
+}: ComponentProps<"div"> & VariantProps<typeof cardDescriptionVariants>) {
+  return <div data-slot="card-description" {...props} className={cn(cardDescriptionVariants({ lines }), className)} />;
 }
 
 function CardAction({ className, ...props }: ComponentProps<"div">) {
