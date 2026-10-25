@@ -4,7 +4,7 @@ import type { UserRole } from "#/lib/user-constants";
 // Browser-safe values shared by the upload API, the image component and the forms. See docs/backend/media.md.
 
 /*===== Kinds =====*/
-export const MEDIA_KINDS = ["avatar", "image"] as const;
+export const MEDIA_KINDS = ["avatar", "image", "portrait"] as const;
 
 export type MediaKind = (typeof MEDIA_KINDS)[number];
 
@@ -29,6 +29,11 @@ export const MEDIA_VARIANTS = {
     thumb: { mode: "cover", width: 320, height: 240 },
     card: { mode: "cover", width: 800, height: 600 },
     full: { mode: "inside", width: 1600, height: 1600 },
+  },
+  // A person's photo in 4:5, as staff directories show them (a department's faculty).
+  portrait: {
+    thumb: { mode: "cover", width: 192, height: 240 },
+    md: { mode: "cover", width: 480, height: 600 },
   },
 } as const satisfies Record<MediaKind, Record<string, MediaVariantSpec>>;
 

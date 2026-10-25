@@ -24,13 +24,15 @@ Each kind has a fixed set of variants, generated once at upload (`src/orpc/media
 - **cover** crops to exactly the given size, keeping the most interesting part of the image (sharp's `attention`).
 - **inside** fits the image inside the box and keeps its aspect ratio. It never upscales.
 
-| Kind     | Variant | Mode   | Size (px)   |
-| -------- | ------- | ------ | ----------- |
-| `avatar` | `thumb` | cover  | 96 × 96     |
-|          | `md`    | cover  | 320 × 320   |
-| `image`  | `thumb` | cover  | 320 × 240   |
-|          | `card`  | cover  | 800 × 600   |
-|          | `full`  | inside | 1600 × 1600 |
+| Kind       | Variant | Mode   | Size (px)   |
+| ---------- | ------- | ------ | ----------- |
+| `avatar`   | `thumb` | cover  | 96 × 96     |
+|            | `md`    | cover  | 320 × 320   |
+| `image`    | `thumb` | cover  | 320 × 240   |
+|            | `card`  | cover  | 800 × 600   |
+|            | `full`  | inside | 1600 × 1600 |
+| `portrait` | `thumb` | cover  | 192 × 240   |
+|            | `md`    | cover  | 480 × 600   |
 
 Sizes are about twice the largest CSS size each one is shown at. Add a kind when a new use needs different variants,
 and allow it per role in `MEDIA_UPLOAD_KINDS_BY_ROLE`.

@@ -1,4 +1,5 @@
 import { createCaptchaChallengeProcedure } from "#/orpc/captcha/procedure";
+import { getDepartmentProcedure, listDepartmentsProcedure } from "#/orpc/department/procedure";
 import { implementer } from "#/orpc/implementer.server";
 import { uploadMediaProcedure } from "#/orpc/media/procedure";
 import { createNoteProcedure, deleteNoteProcedure, listNotesProcedure } from "#/orpc/note/procedure";
@@ -10,6 +11,10 @@ import { siteOriginProcedure } from "#/orpc/site/procedure";
 export const router = implementer.router({
   captcha: {
     createChallenge: createCaptchaChallengeProcedure,
+  },
+  department: {
+    get: getDepartmentProcedure,
+    list: listDepartmentsProcedure,
   },
   media: {
     upload: uploadMediaProcedure,

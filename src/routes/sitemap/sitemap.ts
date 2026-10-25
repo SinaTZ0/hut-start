@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "#/lib/site.server";
+import { client } from "#/orpc/client";
 import { type Locale, localizeHref, locales } from "#/paraglide/runtime";
 
 /*===== Entries =====*/
@@ -17,8 +18,15 @@ const STATIC_ENTRIES: SitemapEntry[] = [{ path: "/" }];
  * Content pages (articles, products) add one entry each here, read through the oRPC `client` (`#/orpc/client`) from a
  * procedure that returns only published items, with `lastModified` from their update time (`docs/frontend/seo.md`).
  */
-function handleGet() {
-  const entries = STATIC_ENTRIES;
+async function handleGet() {
+  const departments = await client.department.list();
+  const entries: SitemapEntry[] = [
+    ...STATIC_ENTRIES,
+    ...departments.map((department) => ({
+      path: `/departments/${department.slug}`,
+      lastModified: department.updatedAt,
+    })),
+  ];
 
   const urls = entries.flatMap(({ path, lastModified }) => {
     const lastmod = lastModified ? `<lastmod>${lastModified.toISOString()}</lastmod>` : "";

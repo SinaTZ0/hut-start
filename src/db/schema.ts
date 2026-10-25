@@ -1,4 +1,7 @@
-import { boolean, index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, date, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import type { AnyPgColumn } from "drizzle-orm/pg-core";
+
+import type { LocalizedText } from "#/lib/localized-text";
 
 /*===== Database Schema =====*/
 // Single source of truth for tables, read by Drizzle Kit (`drizzle.config.ts`) and the
@@ -129,4 +132,134 @@ export const note = pgTable(
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => [index("note_owner_id_created_at_idx").on(table.ownerId, table.createdAt)],
+);
+
+/*===== Departments =====*/
+// A department's page (`/departments/$departmentSlug`, src/orpc/department/). Every text a visitor reads is
+// `LocalizedText` jsonb (`{ fa, en? }`), so a later editor can change it without a deploy. Plain-text kinds, ranks and
+// degrees take their allowed values from `src/orpc/department/constants.ts`. Children go with their department
+// (cascade), and lists keep the order an editor gives them (`position`).
+
+/** A dated step in the department's history, shown as the intro's timeline. */
+export type DepartmentMilestone = { on: string; label: LocalizedText };
+
+export const department = pgTable("department", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  slug: text("slug").notNull().unique(),
+  name: jsonb("name").$type<LocalizedText>().notNull(),
+  /** One or two sentences under the title. */
+  lede: jsonb("lede").$type<LocalizedText>().notNull(),
+  /** The line set large at the start of the intro. */
+  quote: jsonb("quote").$type<LocalizedText>(),
+  /** Paragraphs separated by a blank line. */
+  intro: jsonb("intro").$type<LocalizedText>().notNull(),
+  milestones: jsonb("milestones").$type<DepartmentMilestone[]>().notNull().default([]),
+  foundedOn: date("founded_on", { mode: "string" }),
+  /** Shown rounded with a «+», so it only needs updating now and then. */
+  studentCount: integer("student_count"),
+  /** Cleared if the member is removed. The FK points back at a child table, hence the lazy reference. */
+  headMemberId: uuid("head_member_id").references((): AnyPgColumn => departmentMember.id, { onDelete: "set null" }),
+  labsUrl: text("labs_url"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  /** Shown as «last updated». Every write to the department or one of its children sets it, not only this row's. */
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const departmentMember = pgTable(
+  "department_member",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    departmentId: uuid("department_id")
+      .notNull()
+      .references(() => department.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull(),
+    honorific: text("honorific"),
+    name: jsonb("name").$type<LocalizedText>().notNull(),
+    /** Faculty only. */
+    rank: text("rank"),
+    /** Staff only: «کارشناس گروه و آزمایشگاه». */
+    jobTitle: jsonb("job_title").$type<LocalizedText>(),
+    phone: text("phone"),
+    email: text("email"),
+    office: jsonb("office").$type<LocalizedText>(),
+    homepageUrl: text("homepage_url"),
+    scholarUrl: text("scholar_url"),
+    /** A `portrait` media. Cleared if the media row is ever deleted. */
+    photoMediaId: uuid("photo_media_id").references(() => media.id, { onDelete: "set null" }),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("department_member_department_id_position_idx").on(table.departmentId, table.position)],
+);
+
+/** A subject area (electronics, control…) with its drawing; degree tracks hang off it. */
+export const departmentField = pgTable(
+  "department_field",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    departmentId: uuid("department_id")
+      .notNull()
+      .references(() => department.id, { onDelete: "cascade" }),
+    /** Names the field's drawing (`/images/departments/<slug>/field-<key>.webp`). */
+    key: text("key").notNull(),
+    name: jsonb("name").$type<LocalizedText>().notNull(),
+    summary: jsonb("summary").$type<LocalizedText>().notNull(),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [
+    uniqueIndex("department_field_department_id_key_idx").on(table.departmentId, table.key),
+    index("department_field_department_id_position_idx").on(table.departmentId, table.position),
+  ],
+);
+
+/** A specialisation students are admitted to at one degree, with its curriculum files. */
+export const departmentTrack = pgTable(
+  "department_track",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    departmentId: uuid("department_id")
+      .notNull()
+      .references(() => department.id, { onDelete: "cascade" }),
+    fieldId: uuid("field_id")
+      .notNull()
+      .references(() => departmentField.id, { onDelete: "cascade" }),
+    degree: text("degree").notNull(),
+    name: jsonb("name").$type<LocalizedText>().notNull(),
+    /** A qualifier such as «ورودی ۹۸ به بعد». */
+    note: jsonb("note").$type<LocalizedText>(),
+    planUrl: text("plan_url"),
+    chartUrl: text("chart_url"),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("department_track_department_id_position_idx").on(table.departmentId, table.position)],
+);
+
+export const departmentLab = pgTable(
+  "department_lab",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    departmentId: uuid("department_id")
+      .notNull()
+      .references(() => department.id, { onDelete: "cascade" }),
+    name: jsonb("name").$type<LocalizedText>().notNull(),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("department_lab_department_id_position_idx").on(table.departmentId, table.position)],
+);
+
+/** A curriculum file. `archived` ones are older editions, kept for students admitted under them. */
+export const departmentDocument = pgTable(
+  "department_document",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    departmentId: uuid("department_id")
+      .notNull()
+      .references(() => department.id, { onDelete: "cascade" }),
+    degree: text("degree").notNull(),
+    title: jsonb("title").$type<LocalizedText>().notNull(),
+    url: text("url").notNull(),
+    format: text("format").notNull(),
+    archived: boolean("archived").notNull().default(false),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("department_document_department_id_position_idx").on(table.departmentId, table.position)],
 );

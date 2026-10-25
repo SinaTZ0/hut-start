@@ -1,0 +1,50 @@
+import type { Database } from "#/db/client.server";
+import { DEPARTMENT_SLUG_PATTERN } from "#/orpc/department/constants";
+import type { Department, DepartmentSummary } from "#/orpc/department/contract";
+import { toDepartmentSummary, toPublicDepartment } from "#/orpc/department/mapper";
+import {
+  findDepartmentBySlug,
+  findDepartments,
+  findDocuments,
+  findFields,
+  findLabs,
+  findMembers,
+  findTracks,
+} from "#/orpc/department/repository";
+
+/*===== Get =====*/
+type GetDepartmentResult = { kind: "success"; department: Department } | { kind: "not-found" };
+
+/**
+ * Loads everything a department's page shows, in the request's locale.
+ *
+ * @returns `not-found` for an unknown slug, or one that can't be a slug at all.
+ */
+export async function getDepartment({ db, slug }: { db: Database; slug: string }): Promise<GetDepartmentResult> {
+  if (!DEPARTMENT_SLUG_PATTERN.test(slug)) return { kind: "not-found" };
+
+  const record = await findDepartmentBySlug({ db, slug });
+  if (!record) return { kind: "not-found" };
+
+  // Independent reads of the same department; the pool runs them side by side.
+  const departmentId = record.id;
+  const [members, fields, tracks, labs, documents] = await Promise.all([
+    findMembers({ db, departmentId }),
+    findFields({ db, departmentId }),
+    findTracks({ db, departmentId }),
+    findLabs({ db, departmentId }),
+    findDocuments({ db, departmentId }),
+  ]);
+
+  return {
+    kind: "success",
+    department: toPublicDepartment({ department: record, members, fields, tracks, labs, documents }),
+  };
+}
+
+/*===== List =====*/
+/** Every department that has a page. */
+export async function listDepartments({ db }: { db: Database }): Promise<DepartmentSummary[]> {
+  const rows = await findDepartments({ db });
+  return rows.map(toDepartmentSummary);
+}
