@@ -17,16 +17,33 @@ import { m } from "#/paraglide/messages";
 
 /*===== Account Menu =====*/
 
+export type AccountMenuProps = {
+  viewer: Viewer;
+  /** `tool`: the header's round icon button. `tab`: a phone tab bar item, labelled, with the menu opening above it. */
+  variant?: "tool" | "tab";
+};
+
 /** The signed-in viewer's menu: who they are, their notes, and signing out. */
-export function AccountMenu({ viewer }: { viewer: Viewer }) {
+export function AccountMenu({ viewer, variant = "tool" }: AccountMenuProps) {
   const signOut = useSignOut();
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="tool" size="icon-sm" aria-label={m.nav_account()} />}>
-        <UserIcon />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-56">
+      {variant === "tab" ? (
+        <DropdownMenuTrigger render={<Button variant="tab" size="tab" />}>
+          <UserIcon />
+          {m.nav_account()}
+        </DropdownMenuTrigger>
+      ) : (
+        <DropdownMenuTrigger render={<Button variant="tool" size="icon-sm" aria-label={m.nav_account()} />}>
+          <UserIcon />
+        </DropdownMenuTrigger>
+      )}
+      <DropdownMenuContent
+        side={variant === "tab" ? "top" : "bottom"}
+        align={variant === "tab" ? "center" : "end"}
+        className="min-w-56"
+      >
         <DropdownMenuGroup>
           <DropdownMenuLabel>
             <span className="block text-foreground">{viewer.name}</span>

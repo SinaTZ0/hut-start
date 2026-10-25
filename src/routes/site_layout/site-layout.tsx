@@ -28,7 +28,8 @@ function SiteLayout() {
   useEffect(() => setReportedUser(userId), [userId]);
 
   return (
-    <div className="flex min-h-svh flex-col">
+    // Below `lg` the tab bar is fixed over the bottom of the screen; the padding keeps the footer clear of it.
+    <div className="flex min-h-svh flex-col pb-tab-bar lg:pb-0">
       <a
         href="#main"
         className="sr-only z-50 rounded-sm bg-primary px-4 py-2 text-button text-primary-foreground focus:not-sr-only focus:fixed focus:inset-s-4 focus:top-4"

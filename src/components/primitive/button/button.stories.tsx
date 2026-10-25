@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ArrowLeftIcon, CalendarIcon, PlusIcon } from "lucide-react";
+import { ArrowLeftIcon, CalendarIcon, HouseIcon, MenuIcon, PlusIcon, SearchIcon } from "lucide-react";
 
 import { Input } from "#/components/primitive/input/input";
 import { Button } from "./button";
@@ -149,4 +149,25 @@ export const IconSizes: Story = {
 
 export const Disabled: Story = {
   args: { disabled: true },
+};
+
+// The phone tab bar: `tab` items fill equal cells. The current page (`aria-current="page"`) and an item whose sheet is
+// open put their icon in the pine pill.
+export const TabBar: Story = {
+  render: () => (
+    <div className="grid max-w-sm grid-cols-3 border-t bg-card">
+      <Button variant="tab" size="tab" aria-current="page">
+        <HouseIcon />
+        خانه
+      </Button>
+      <Button variant="tab" size="tab">
+        <MenuIcon />
+        منو
+      </Button>
+      <Button variant="tab" size="tab">
+        <SearchIcon />
+        جست‌وجو
+      </Button>
+    </div>
+  ),
 };

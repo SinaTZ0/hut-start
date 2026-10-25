@@ -75,6 +75,15 @@ const twVariant = defineStyles({
     appearance: "text-brand-text underline-offset-4",
     hover: "hover:underline",
   },
+  // A phone tab bar item (use with the `tab` size): muted until it's the current page (`aria-current`) or its sheet is
+  // open, then its icon sits in a pine pill. The pill is the icon's own padding and background, so no wrapper is needed.
+  tab: {
+    appearance: "text-muted-foreground",
+    hover: "hover:text-heading",
+    state:
+      "aria-[current=page]:text-heading data-popup-open:text-heading aria-[current=page]:[&_svg]:bg-primary aria-[current=page]:[&_svg]:text-primary-foreground data-popup-open:[&_svg]:bg-primary data-popup-open:[&_svg]:text-primary-foreground",
+    icon: "[&_svg]:box-content [&_svg]:rounded-full [&_svg]:px-4 [&_svg]:py-1 [&_svg]:transition-colors [&_svg]:duration-200",
+  },
 });
 
 /*===== Geometry =====*/
@@ -118,6 +127,12 @@ const twSize = defineStyles({
   "icon-lg": {
     geometry: "size-12",
     icon: "[&_svg:not([class*='size-'])]:size-6",
+  },
+  // A phone tab bar item: icon over label, filling its cell and the bar's height.
+  tab: {
+    layout: "flex-col gap-0.5",
+    geometry: "h-tab-bar w-full rounded-none px-1",
+    typography: "text-caption font-semibold",
   },
 });
 

@@ -19,9 +19,10 @@ const twContentStyles = defineStyles({
   typography: "text-body-sm",
   interaction: "transition duration-200 ease-in-out",
   state: "data-ending-style:opacity-0 data-starting-style:opacity-0",
-  // The top/bottom edges are full width; start/end edges are a side panel capped at 24rem.
+  // The top/bottom edges are full width, and a bottom sheet stops short of the top (`max-h-sheet`); start/end edges are
+  // a side panel capped at 24rem.
   stateBottom:
-    "data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:rounded-t-lg data-[side=bottom]:data-ending-style:translate-y-10 data-[side=bottom]:data-starting-style:translate-y-10",
+    "data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:max-h-sheet data-[side=bottom]:rounded-t-lg data-[side=bottom]:data-ending-style:translate-y-10 data-[side=bottom]:data-starting-style:translate-y-10",
   stateTop:
     "data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:rounded-b-lg data-[side=top]:data-ending-style:-translate-y-10 data-[side=top]:data-starting-style:-translate-y-10",
   stateStart:
