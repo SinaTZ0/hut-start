@@ -8,6 +8,7 @@ step links to the doc that holds its rules. Read that doc when you reach the ste
 | [backend/architecture.md](./backend/architecture.md) | Structure, layers, contracts, validation, errors, middleware, auth, database, naming |
 | [backend/logging.md](./backend/logging.md)           | Writing logs, error reporting (error viewer), request timing, slow-request reports   |
 | [backend/media.md](./backend/media.md)               | Image uploads, processing, storage and rendering                                     |
+| [backend/home-feed.md](./backend/home-feed.md)       | The home page's feed, mirrored from hut.ac.ir until the cutover                      |
 | [deployment.md](./deployment.md)                     | Production stack, deploying, migrations in production, health check, backups         |
 
 The `note` feature (`src/orpc/note/`) is the worked example. Copy its shape.

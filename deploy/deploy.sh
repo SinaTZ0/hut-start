@@ -328,6 +328,9 @@ SETTINGS=(
   "S3_SECRET_KEY|secret:32|stack"
   "S3_ADMIN_ACCESS_KEY|secret:16|stack"
   "S3_ADMIN_SECRET_KEY|secret:32|stack"
+  # `default`, not `int`: 0 is allowed and turns the timer off.
+  "HOME_FEED_SYNC_MINUTES|default|stack"
+  "HOME_FEED_SYNC_SECRET|secret:32:32|stack"
   # Overrides `compose.prod.yaml` reads but the example leaves out; Compose has a default for each.
   "LOG_SLOW_REQUEST_MS|int|stack"
   "LOG_SLOW_QUERY_MS|int|stack"

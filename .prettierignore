@@ -20,3 +20,5 @@ tools/error-viewer/templates/
 .agents/
 # Copied design references (docs/frontend/reference/), kept as they were exported.
 docs/frontend/reference/
+# Old-site markup the home feed's parser is tested on; kept as the site writes it (its scripts' quotes included).
+src/orpc/home-feed/fixtures/

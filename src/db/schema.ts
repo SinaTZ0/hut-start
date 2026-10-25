@@ -263,3 +263,44 @@ export const departmentDocument = pgTable(
   },
   (table) => [index("department_document_department_id_position_idx").on(table.departmentId, table.position)],
 );
+
+/*===== Home Feed =====*/
+// What the home page's news, notices, achievements and events show (src/orpc/home-feed/). Until the cutover it mirrors
+// hut.ac.ir's homepage (docs/backend/home-feed.md): an article is a story or notice on the old site, a placement is
+// where the homepage shows it. One article can appear in several blocks (a notice under two tabs, a story that is also
+// an achievement). Kinds and categories take their allowed values from `src/orpc/home-feed/constants.ts`.
+
+export const feedArticle = pgTable("feed_article", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  /** The article's page, absolute and without a query string. Identifies it across runs. */
+  url: text("url").notNull().unique(),
+  /** The old site's own ID for it (`/article/<id>`), when the page names it. */
+  sourceAssetId: text("source_asset_id"),
+  title: jsonb("title").$type<LocalizedText>().notNull(),
+  summary: jsonb("summary").$type<LocalizedText>(),
+  publishedOn: date("published_on", { mode: "string" }),
+  /** Hotlinked from the old site, never copied. */
+  imageUrl: text("image_url"),
+  /** When the article's own page was last read. Null means not yet: the next run tries again. */
+  enrichedAt: timestamp("enriched_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const feedPlacement = pgTable(
+  "feed_placement",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    articleId: uuid("article_id")
+      .notNull()
+      .references(() => feedArticle.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull(),
+    category: text("category").notNull(),
+    /** The order within its block, as the old homepage lists it. */
+    position: integer("position").notNull(),
+  },
+  (table) => [
+    uniqueIndex("feed_placement_kind_category_article_id_idx").on(table.kind, table.category, table.articleId),
+    index("feed_placement_kind_category_position_idx").on(table.kind, table.category, table.position),
+  ],
+);

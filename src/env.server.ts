@@ -43,6 +43,11 @@ const envSchema = z.object({
   // Where browsers read images: a full URL (dev, straight from SeaweedFS) or a path behind a proxy (`/media`). No
   // trailing slash.
   MEDIA_PUBLIC_URL: z.union([z.url(), z.string().regex(/^\/\S*$/, "Must be a URL or a path starting with /")]),
+  // The home page mirrors hut.ac.ir's homepage until the cutover (docs/backend/home-feed.md). How often it's read, in
+  // minutes; 0 turns the timer off (`pnpm crawl:home` and `homeFeed.sync` still work).
+  HOME_FEED_SYNC_MINUTES: z.coerce.number().int().min(0).default(30),
+  // Lets `homeFeed.sync` be called with `Authorization: Bearer <secret>`. Unset or empty turns the procedure off.
+  HOME_FEED_SYNC_SECRET: z.preprocess((value) => (value === "" ? undefined : value), z.string().min(32).optional()),
 });
 
 /*===== Validation =====*/

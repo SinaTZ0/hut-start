@@ -19,7 +19,8 @@ export default defineConfig({
   webServer: {
     command: "pnpm build && pnpm start",
     url: `http://localhost:${PORT}`,
-    env: { PORT: String(PORT) },
+    // The home feed's timer stays off: a test run never reads hut.ac.ir.
+    env: { PORT: String(PORT), HOME_FEED_SYNC_MINUTES: "0" },
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

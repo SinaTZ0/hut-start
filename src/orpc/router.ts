@@ -1,5 +1,6 @@
 import { createCaptchaChallengeProcedure } from "#/orpc/captcha/procedure";
 import { getDepartmentProcedure, listDepartmentsProcedure } from "#/orpc/department/procedure";
+import { getHomeFeedProcedure, syncHomeFeedProcedure } from "#/orpc/home-feed/procedure";
 import { implementer } from "#/orpc/implementer.server";
 import { uploadMediaProcedure } from "#/orpc/media/procedure";
 import { createNoteProcedure, deleteNoteProcedure, listNotesProcedure } from "#/orpc/note/procedure";
@@ -15,6 +16,10 @@ export const router = implementer.router({
   department: {
     get: getDepartmentProcedure,
     list: listDepartmentsProcedure,
+  },
+  homeFeed: {
+    get: getHomeFeedProcedure,
+    sync: syncHomeFeedProcedure,
   },
   media: {
     upload: uploadMediaProcedure,

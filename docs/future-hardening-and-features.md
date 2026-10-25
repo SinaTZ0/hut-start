@@ -59,6 +59,8 @@ third-party widget), or as soon as a review or customer asks for one.
 - `img-src 'self' data:`: image placeholders are `data:` URIs (`media.placeholder`). In development, also
   `MEDIA_PUBLIC_URL`'s origin, since images load straight from SeaweedFS there.
 - `frame-ancestors 'none'`, matching Caddy's `X-Frame-Options: DENY`.
+- While the home feed mirrors the old site, also `img-src https://hut.ac.ir`: its images are hotlinked
+  ([backend/home-feed.md](./backend/home-feed.md)).
 
 Start with `Content-Security-Policy-Report-Only` and fix what the browser console reports before enforcing it.
 
