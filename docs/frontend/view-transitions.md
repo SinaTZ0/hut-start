@@ -73,6 +73,9 @@ different scroll positions, both pages would glide up or down across the screen.
 
 ## Animating More
 
+The `react-view-transitions` skill (`.agents/skills/`) has the patterns, the pitfalls found here and how to check a
+transition frame by frame.
+
 - **Morph an element between pages:** give it the same `view-transition-name` on both pages, built from the record's
   id (`note-42`), since a name must be unique on the page. The page fade then animates that element from its old box
   to its new one.
