@@ -15,7 +15,8 @@ import { formatNumber } from "#/lib/locale";
 import { DEPARTMENTS_HREF } from "#/lib/university/navigation";
 import type { Department } from "#/orpc/department/contract";
 import { m } from "#/paraglide/messages";
-import { admitsStudents, type Drawings } from "../content";
+import type { Drawings } from "#/lib/university/drawings";
+import { admitsStudents } from "../content";
 
 /*===== Hero =====*/
 

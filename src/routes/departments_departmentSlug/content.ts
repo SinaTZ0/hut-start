@@ -3,21 +3,6 @@ import type { DepartmentField, DepartmentMember } from "#/orpc/department/contra
 import { formatNumber } from "#/lib/locale";
 import { m } from "#/paraglide/messages";
 
-/*===== Drawings =====*/
-// Each department's signature drawings (docs/frontend/app-identity.md → Brand) ship with the app, in
-// `public/images/departments/<slug>/`, as transparent WebPs used as masks. A department without them yet gets the page
-// without art.
-
-const DRAWN = new Set(["ee", "ce", "mech", "bme", "materials", "chem", "mining", "bs"]);
-
-export type Drawings = { hero: string; lab: string; field: (key: string) => string };
-
-export function departmentDrawings(slug: string): Drawings | null {
-  if (!DRAWN.has(slug)) return null;
-  const folder = `/images/departments/${slug}`;
-  return { hero: `${folder}/hero.webp`, lab: `${folder}/lab.webp`, field: (key) => `${folder}/field-${key}.webp` };
-}
-
 /*===== Degrees =====*/
 /**
  * Whether the department admits students to a degree of its own. One that doesn't (Basic Sciences) only teaches other

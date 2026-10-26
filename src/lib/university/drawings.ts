@@ -1,0 +1,33 @@
+/*===== Drawings =====*/
+// The signature drawings (docs/frontend/app-identity.md → Brand) ship with the app as transparent WebPs used as masks:
+// each department's in `public/images/departments/<slug>/`, the home page's in `public/images/home/`. A department
+// without them yet gets its page, and its home grid cell, without art.
+
+const DRAWN = new Set(["ee", "ce", "mech", "bme", "materials", "chem", "mining", "bs"]);
+
+export type Drawings = {
+  hero: string;
+  lab: string;
+  /** The department's key object, cut from its hero drawing, for its cell in the home page's grid. */
+  mark: string;
+  field: (key: string) => string;
+};
+
+export function departmentDrawings(slug: string): Drawings | null {
+  if (!DRAWN.has(slug)) return null;
+  const folder = `/images/departments/${slug}`;
+  return {
+    hero: `${folder}/hero.webp`,
+    lab: `${folder}/lab.webp`,
+    mark: `${folder}/mark.webp`,
+    field: (key) => `${folder}/field-${key}.webp`,
+  };
+}
+
+/** The home page's drawings: the glance band's, the learning and welcome panels' corners, and the research vignette. */
+export const HOME_DRAWINGS = {
+  glance: "/images/home/glance.webp",
+  learning: "/images/home/learning.webp",
+  welcome: "/images/home/welcome.webp",
+  research: "/images/home/research.webp",
+};

@@ -13,7 +13,8 @@ import { cn } from "#/lib/utils";
 import type { DepartmentField, DepartmentTrack } from "#/orpc/department/contract";
 import type { Degree } from "#/orpc/department/constants";
 import { m } from "#/paraglide/messages";
-import { admitsStudents, type Drawings } from "../content";
+import type { Drawings } from "#/lib/university/drawings";
+import { admitsStudents } from "../content";
 import { RuledHeading } from "./ruled-heading";
 
 /*===== Fields =====*/

@@ -3,7 +3,8 @@ import type { CSSProperties } from "react";
 import { TextLink } from "#/components/shared/text-link/text-link";
 import type { Department } from "#/orpc/department/contract";
 import { m } from "#/paraglide/messages";
-import { type Drawings, formatPhone, memberName, sectionNumber } from "../content";
+import type { Drawings } from "#/lib/university/drawings";
+import { formatPhone, memberName, sectionNumber } from "../content";
 import { RuledHeading } from "./ruled-heading";
 
 /*===== Labs =====*/

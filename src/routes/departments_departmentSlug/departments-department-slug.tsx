@@ -9,6 +9,7 @@ import { DEPARTMENTS_HREF } from "#/lib/university/navigation";
 import { orpc } from "#/orpc/client";
 import { m } from "#/paraglide/messages";
 import { localizeHref } from "#/paraglide/runtime";
+import { departmentDrawings } from "#/lib/university/drawings";
 import { About } from "./components/about";
 import { Documents } from "./components/documents";
 import { Faculty } from "./components/faculty";
@@ -16,7 +17,6 @@ import { Fields } from "./components/fields";
 import { Hero } from "./components/hero";
 import { Labs } from "./components/labs";
 import { OtherDepartments } from "./components/others";
-import { departmentDrawings } from "./content";
 import { departmentSearchDefaults, departmentSearchSchema, type RankFilter } from "./search-params";
 
 /*===== Query =====*/
