@@ -16,6 +16,8 @@ import { Route as sitemapSitemapRouteImport } from './routes/sitemap/sitemap'
 import { Route as homeHomeRouteImport } from './routes/home/home'
 import { Route as notes_layoutNotesLayoutRouteImport } from './routes/notes_layout/notes-layout'
 import { Route as authAuthRouteImport } from './routes/auth/auth'
+import { Route as consultationConsultationRouteImport } from './routes/consultation/consultation'
+import { Route as feedbackFeedbackRouteImport } from './routes/feedback/feedback'
 import { Route as rpcRpcRouteImport } from './routes/rpc/rpc'
 import { Route as notesNotesRouteImport } from './routes/notes/notes'
 import { Route as departments_departmentSlugDepartmentsDepartmentSlugRouteImport } from './routes/departments_departmentSlug/departments-department-slug'
@@ -54,6 +56,17 @@ const authAuthRoute = authAuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => site_layoutSiteLayoutRoute,
 } as any)
+const consultationConsultationRoute =
+  consultationConsultationRouteImport.update({
+    id: '/consultation',
+    path: '/consultation',
+    getParentRoute: () => site_layoutSiteLayoutRoute,
+  } as any)
+const feedbackFeedbackRoute = feedbackFeedbackRouteImport.update({
+  id: '/feedback',
+  path: '/feedback',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
 const rpcRpcRoute = rpcRpcRouteImport.update({
   id: '/rpc/$',
   path: '/rpc/$',
@@ -82,6 +95,8 @@ export interface FileRoutesByFullPath {
   '/robots.txt': typeof robotsRobotsRoute
   '/sitemap.xml': typeof sitemapSitemapRoute
   '/auth': typeof authAuthRoute
+  '/consultation': typeof consultationConsultationRoute
+  '/feedback': typeof feedbackFeedbackRoute
   '/rpc/$': typeof rpcRpcRoute
   '/notes': typeof notesNotesRoute
   '/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
@@ -93,6 +108,8 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof sitemapSitemapRoute
   '/': typeof homeHomeRoute
   '/auth': typeof authAuthRoute
+  '/consultation': typeof consultationConsultationRoute
+  '/feedback': typeof feedbackFeedbackRoute
   '/rpc/$': typeof rpcRpcRoute
   '/notes': typeof notesNotesRoute
   '/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
@@ -107,6 +124,8 @@ export interface FileRoutesById {
   '/_site-layout/': typeof homeHomeRoute
   '/_site-layout/_notes-layout': typeof notes_layoutNotesLayoutRouteWithChildren
   '/_site-layout/auth': typeof authAuthRoute
+  '/_site-layout/consultation': typeof consultationConsultationRoute
+  '/_site-layout/feedback': typeof feedbackFeedbackRoute
   '/rpc/$': typeof rpcRpcRoute
   '/_site-layout/_notes-layout/notes': typeof notesNotesRoute
   '/_site-layout/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
@@ -120,6 +139,8 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/sitemap.xml'
     | '/auth'
+    | '/consultation'
+    | '/feedback'
     | '/rpc/$'
     | '/notes'
     | '/departments/$departmentSlug'
@@ -131,6 +152,8 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/'
     | '/auth'
+    | '/consultation'
+    | '/feedback'
     | '/rpc/$'
     | '/notes'
     | '/departments/$departmentSlug'
@@ -144,6 +167,8 @@ export interface FileRouteTypes {
     | '/_site-layout/'
     | '/_site-layout/_notes-layout'
     | '/_site-layout/auth'
+    | '/_site-layout/consultation'
+    | '/_site-layout/feedback'
     | '/rpc/$'
     | '/_site-layout/_notes-layout/notes'
     | '/_site-layout/departments/$departmentSlug'
@@ -210,6 +235,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAuthRouteImport
       parentRoute: typeof site_layoutSiteLayoutRoute
     }
+    '/_site-layout/consultation': {
+      id: '/_site-layout/consultation'
+      path: '/consultation'
+      fullPath: '/consultation'
+      preLoaderRoute: typeof consultationConsultationRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
+    '/_site-layout/feedback': {
+      id: '/_site-layout/feedback'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof feedbackFeedbackRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
     '/rpc/$': {
       id: '/rpc/$'
       path: '/rpc/$'
@@ -259,6 +298,8 @@ interface site_layoutSiteLayoutRouteChildren {
   homeHomeRoute: typeof homeHomeRoute
   notes_layoutNotesLayoutRoute: typeof notes_layoutNotesLayoutRouteWithChildren
   authAuthRoute: typeof authAuthRoute
+  consultationConsultationRoute: typeof consultationConsultationRoute
+  feedbackFeedbackRoute: typeof feedbackFeedbackRoute
   departments_departmentSlugDepartmentsDepartmentSlugRoute: typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
 }
 
@@ -266,6 +307,8 @@ const site_layoutSiteLayoutRouteChildren: site_layoutSiteLayoutRouteChildren = {
   homeHomeRoute: homeHomeRoute,
   notes_layoutNotesLayoutRoute: notes_layoutNotesLayoutRouteWithChildren,
   authAuthRoute: authAuthRoute,
+  consultationConsultationRoute: consultationConsultationRoute,
+  feedbackFeedbackRoute: feedbackFeedbackRoute,
   departments_departmentSlugDepartmentsDepartmentSlugRoute:
     departments_departmentSlugDepartmentsDepartmentSlugRoute,
 }

@@ -31,3 +31,10 @@ export const HOME_DRAWINGS = {
   welcome: "/images/home/welcome.webp",
   research: "/images/home/research.webp",
 };
+
+/** The public forms' drawings, in the corner of each page's pine rail: a quill, a sealed letter and a balance scale for
+ * complaints and feedback; an open book with dividers, a compass and a lantern for online consultation. */
+export const FORM_DRAWINGS = {
+  feedback: { src: "/images/forms/feedback.webp", aspect: "aspect-720/493" },
+  consultation: { src: "/images/forms/consultation.webp", aspect: "aspect-720/408" },
+};

@@ -173,7 +173,7 @@
   "service_book_renew_description": "تمدید امانت و رزرو کتاب",
   "service_counseling": "مرکز مشاوره و سبک زندگی",
   "service_counseling_short": "مشاوره",
-  "service_counseling_description": "گفت‌وگوی محرمانه با مشاور",
+  "service_counseling_description": "پرسش آنلاین از مشاوران دانشگاه",
   "service_student_affairs": "معاونت دانشجویی و فرهنگی",
   "service_student_affairs_short": "امور دانشجویی",
   "service_student_affairs_description": "کانون‌ها، انجمن‌های علمی و تشکل‌ها",
@@ -566,5 +566,182 @@
         "": "{countText} عضو هیئت علمی"
       }
     }
-  ]
+  ],
+  "common_captcha_failed": "بررسی امنیتی انجام نشد. دوباره ارسال کنید.",
+  "form_captcha_unavailable": "بررسی امنیتی انجام نشد. روی «من ربات نیستم» بزنید و دوباره ارسال کنید.",
+  "form_captcha_label": "من ربات نیستم",
+  "form_captcha_idle": "با شروع پر کردن فرم، خودکار بررسی می‌شود.",
+  "form_captcha_solving": "در حال بررسی…",
+  "form_captcha_slow": "در دستگاه‌های قدیمی‌تر چند ثانیه بیشتر طول می‌کشد.",
+  "form_captcha_verified": "تأیید شد",
+  "form_captcha_error": "بررسی انجام نشد. برای تلاش دوباره بزنید.",
+  "form_captcha_badge": "بدون ردیابی",
+  "form_checking": "بررسی امنیتی…",
+  "form_sending": "در حال ارسال…",
+  "form_submit_failed": "ارسال انجام نشد. لطفاً کمی بعد دوباره تلاش کنید.",
+  "form_optional": "(اختیاری)",
+  "form_select_placeholder": "انتخاب کنید",
+  "form_unspecified": "نامعین",
+  "form_steps_title": "روند کار",
+  "form_step_code": "کد پیگیری را نگه دارید",
+  "form_step_code_description": "پس از ارسال، کد پیگیری یکتایی می‌بینید. آن را کپی کنید تا بعداً با آن پیگیری کنید.",
+  "form_first_name_label": "نام",
+  "form_last_name_label": "نام خانوادگی",
+  "form_mobile_label": "شماره همراه",
+  "form_mobile_placeholder": "۰۹۱۲ ۱۲۳ ۴۵۶۷",
+  "form_email_label": "ایمیل",
+  "form_student_id_label": "شماره دانشجویی",
+  "form_text_hint": [
+    {
+      "declarations": ["input min", "local minText = min: number"],
+      "match": {
+        "": "دست‌کم {minText} حرف."
+      }
+    }
+  ],
+  "form_text_count": [
+    {
+      "declarations": ["input count", "input max", "local countText = count: number", "local maxText = max: number"],
+      "match": {
+        "": "{countText} از {maxText}"
+      }
+    }
+  ],
+  "form_error_first_name_required": "نام خود را بنویسید.",
+  "form_error_name_too_long": [
+    {
+      "declarations": ["input max", "local maxText = max: number"],
+      "match": {
+        "": "حداکثر {maxText} حرف."
+      }
+    }
+  ],
+  "form_error_mobile_invalid": "یک شماره همراه ایران وارد کنید، مانند ۰۹۱۲۱۲۳۴۵۶۷.",
+  "form_error_email_invalid": "نشانی ایمیل درست نیست.",
+  "form_error_student_id_invalid": [
+    {
+      "declarations": ["input min", "input max", "local minText = min: number", "local maxText = max: number"],
+      "match": {
+        "": "شماره دانشجویی فقط عدد است، از {minText} تا {maxText} رقم."
+      }
+    }
+  ],
+  "form_error_text_too_short": [
+    {
+      "declarations": ["input min", "local minText = min: number"],
+      "match": {
+        "": "دست‌کم {minText} حرف بنویسید."
+      }
+    }
+  ],
+  "form_error_text_too_long": [
+    {
+      "declarations": ["input max", "local maxText = max: number"],
+      "match": {
+        "": "حداکثر {maxText} حرف."
+      }
+    }
+  ],
+  "form_error_option_invalid": "یکی از گزینه‌ها را انتخاب کنید.",
+  "form_error_age_invalid": [
+    {
+      "declarations": ["input min", "input max", "local minText = min: number", "local maxText = max: number"],
+      "match": {
+        "": "سن را به عدد، از {minText} تا {maxText}، بنویسید."
+      }
+    }
+  ],
+  "form_receipt_code_label": "کد پیگیری",
+  "form_receipt_copy": "کپی کد",
+  "form_receipt_copied": "کپی شد",
+  "form_receipt_copied_announce": "کد پیگیری کپی شد.",
+  "form_receipt_copy_failed": "کپی نشد. کد را انتخاب و کپی کنید.",
+  "form_receipt_home": "بازگشت به صفحه اصلی",
+  "form_receipt_keep": "ثبت‌شده در {date}. این کد را نزد خود نگه دارید؛ برای پیگیری به آن نیاز دارید.",
+  "feedback_title": "ثبت شکایات و پیشنهادات",
+  "feedback_kicker": "صدای شما",
+  "feedback_lede": "شکایت، پیشنهاد یا انتقاد خود را برای واحد یا مسئول مرتبط بفرستید. پیام شما ثبت می‌شود تا بررسی و پیگیری شود.",
+  "feedback_description": "شکایت، پیشنهاد یا انتقاد خود را برای واحدها و مسئولان دانشگاه صنعتی همدان بفرستید و کد پیگیری بگیرید.",
+  "feedback_section_message": "پیام شما",
+  "feedback_kind_label": "نوع پیام",
+  "feedback_kind_complaint": "شکایت",
+  "feedback_kind_complaint_description": "از یک خدمت، تصمیم یا رفتار ناراضی هستید.",
+  "feedback_kind_suggestion": "پیشنهاد یا انتقاد",
+  "feedback_kind_suggestion_description": "راهی برای بهتر شدن کارها سراغ دارید.",
+  "feedback_unit_label": "واحد یا مسئول مرتبط",
+  "feedback_unit_group_management": "مدیریت و واحدهای دانشگاه",
+  "feedback_unit_group_departments": "مدیران گروه‌های آموزشی",
+  "feedback_body_label": "شرح پیام",
+  "feedback_body_placeholder": "موضوع را روشن و با جزئیات بنویسید: چه پیش آمد، کجا و چه زمانی.",
+  "feedback_section_sender": "مشخصات شما",
+  "feedback_section_sender_hint": "به جز نام، وارد کردن اطلاعات تماس اختیاری است، اما پیگیری را آسان‌تر می‌کند.",
+  "feedback_error_kind_required": "نوع پیام را انتخاب کنید.",
+  "feedback_error_unit_required": "واحد یا مسئول مرتبط را انتخاب کنید.",
+  "feedback_submit": "ارسال پیام",
+  "feedback_privacy": "اطلاعات شما فقط برای بررسی و پیگیری درخواستتان به کار می‌رود.",
+  "feedback_step_fill": "فرم را پر کنید",
+  "feedback_step_fill_description": "نوع پیام و واحد مرتبط را انتخاب کنید و موضوع را روشن بنویسید.",
+  "feedback_step_send": "پیام را بفرستید",
+  "feedback_step_send_description": "پیام شما در سامانه دانشگاه ثبت می‌شود تا بررسی شود.",
+  "feedback_receipt_title": "پیام شما ثبت شد",
+  "feedback_receipt_description": "پیام شما به واحد مرتبط می‌رسد تا بررسی و پیگیری شود. از اینکه وقت گذاشتید سپاسگزاریم.",
+  "feedback_receipt_again": "ثبت پیام دیگر",
+  "feedback_unit_complaints_office": "رسیدگی به شکایات",
+  "feedback_unit_president": "ریاست دانشگاه",
+  "feedback_unit_monitoring_evaluation": "مدیر گروه نظارت و ارزیابی",
+  "feedback_unit_admin_finance": "معاونت اداری و مالی",
+  "feedback_unit_representative_office": "رئیس نهاد دانشگاه",
+  "feedback_unit_vp_education_research": "معاون آموزشی و پژوهشی",
+  "feedback_unit_security": "مدیر حراست",
+  "feedback_unit_education": "مدیر آموزش",
+  "feedback_unit_math": "مدیر گروه ریاضی",
+  "feedback_unit_ee_telecom_electronics": "مدیر گروه مهندسی برق - مخابرات و الکترونیک",
+  "feedback_unit_ee_control_power": "مدیر گروه مهندسی برق - کنترل و قدرت",
+  "feedback_unit_civil": "مدیر گروه عمران",
+  "feedback_unit_islamic_studies": "مدیر گروه معارف",
+  "feedback_unit_industrial": "مدیر گروه صنایع",
+  "feedback_unit_computer": "مدیر گروه مهندسی کامپیوتر",
+  "feedback_unit_chemistry": "مدیر گروه شیمی",
+  "consultation_title": "مشاوره آنلاین",
+  "consultation_kicker": "همراه شما",
+  "consultation_lede": "پرسش خود را بفرستید تا به واحد یا مشاور مناسب دانشگاه برسد و پاسخ داده شود.",
+  "consultation_description": "پرسش خود را آنلاین از مشاوران دانشگاه صنعتی همدان بپرسید و کد پیگیری بگیرید.",
+  "consultation_section_about": "مشخصات شما",
+  "consultation_section_about_hint": "اگر نمی‌خواهید بگویید، «نامعین» را نگه دارید.",
+  "consultation_gender_label": "جنسیت",
+  "consultation_gender_male": "مرد",
+  "consultation_gender_female": "زن",
+  "consultation_marital_label": "وضعیت تأهل",
+  "consultation_marital_single": "مجرد",
+  "consultation_marital_married": "متأهل",
+  "consultation_age_label": "سن",
+  "consultation_section_studies": "اطلاعات تحصیلی",
+  "consultation_section_studies_hint": "این اطلاعات کمک می‌کند پرسش شما به مشاور مناسب برسد.",
+  "consultation_faculty_label": "نام دانشکده",
+  "consultation_faculty_electrical_computer": "برق و کامپیوتر",
+  "consultation_faculty_engineering": "فنی و مهندسی",
+  "consultation_faculty_basic_sciences": "علوم پایه",
+  "consultation_field_label": "نام رشته تحصیلی",
+  "consultation_field_computer": "کامپیوتر",
+  "consultation_field_electrical": "برق",
+  "consultation_field_industrial": "صنایع",
+  "consultation_field_polymer": "پلیمر",
+  "consultation_field_civil": "عمران",
+  "consultation_field_mechanical": "مکانیک",
+  "consultation_field_engineering_physics": "فیزیک مهندسی",
+  "consultation_field_organic_chemistry": "شیمی آلی",
+  "consultation_section_question": "پرسش شما",
+  "consultation_question_label": "متن پرسش",
+  "consultation_question_placeholder": "پرسش خود را روشن بنویسید و اگر لازم است زمینه آن را هم بگویید.",
+  "consultation_email_label": "پست الکترونیکی",
+  "consultation_contact_hint": "راه‌های تماس اختیاری است، اما پاسخ و پیگیری را آسان‌تر می‌کند.",
+  "consultation_submit": "ارسال پرسش",
+  "consultation_privacy": "اطلاعات شما فقط برای بررسی و پاسخ به پرسشتان به کار می‌رود.",
+  "consultation_step_details": "مشخصات را وارد کنید",
+  "consultation_step_details_description": "اطلاعات تحصیلی کمک می‌کند پرسش به فرد یا واحد مناسب برسد.",
+  "consultation_step_send": "پرسش را بفرستید",
+  "consultation_step_send_description": "پرسش شما در سامانه دانشگاه ثبت می‌شود تا بررسی شود.",
+  "consultation_receipt_title": "پرسش شما ثبت شد",
+  "consultation_receipt_description": "پرسش شما به مشاور یا واحد مناسب می‌رسد تا بررسی و پاسخ داده شود.",
+  "consultation_receipt_again": "ثبت پرسش دیگر"
 }

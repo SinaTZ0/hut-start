@@ -99,7 +99,7 @@ export function Welcome() {
                 <ItemDescription>{help.description()}</ItemDescription>
               </ItemContent>
               <ItemActions>
-                <ExternalLinkIcon data-icon="external" />
+                <ArrowLeftIcon data-icon="forward" />
               </ItemActions>
             </Item>
           </li>

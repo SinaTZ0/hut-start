@@ -58,6 +58,10 @@ translation ([i18n.md](./i18n.md)).
   department's cell in the glance grid carries its mark (`mark.webp`, its key object cut from its hero drawing). The
   photo hero takes no drawing. The home echoes the department page too: its figures hang from dimension lines, and
   the news, semester and achievements heads draw a ruler to their link (`SectionHead ruled`).
+- **Form drawings**: the public forms (`/feedback`, `/consultation`) each have one in `public/images/forms/` (listed in
+  `FORM_DRAWINGS`): a quill, a sealed letter and a balance scale for complaints; an open book with dividers, a compass
+  and a lantern for consultation. Each sits in the far corner of its page's pine rail (`mask-art text-art-band`), under
+  the steps; the receipt's tracking code hangs from a dimension line.
 - **Rules out**: stock photography, illustrations other than the signature drawings, gradients as decoration, a second
   accent colour, and gold on large areas.
 - **References**: the Kaj homepage source and screenshot in [reference/kaj/](./reference/kaj/), and its

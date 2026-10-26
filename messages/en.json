@@ -173,7 +173,7 @@
   "service_book_renew_description": "Renew loans and reserve books",
   "service_counseling": "Counseling and lifestyle center",
   "service_counseling_short": "Counseling",
-  "service_counseling_description": "Confidential talks with a counselor",
+  "service_counseling_description": "Ask the university's advisors online",
   "service_student_affairs": "Student and cultural affairs",
   "service_student_affairs_short": "Student affairs",
   "service_student_affairs_description": "Clubs, scientific associations and student organizations",
@@ -584,5 +584,182 @@
         "countPlural=other": "{countText} faculty members"
       }
     }
-  ]
+  ],
+  "common_captcha_failed": "The security check didn't go through. Please send again.",
+  "form_captcha_unavailable": "The security check didn't finish. Tap \"I'm not a robot\" and send again.",
+  "form_captcha_label": "I'm not a robot",
+  "form_captcha_idle": "Checked automatically once you start filling in the form.",
+  "form_captcha_solving": "Checking…",
+  "form_captcha_slow": "This takes a few seconds longer on older devices.",
+  "form_captcha_verified": "Verified",
+  "form_captcha_error": "The check didn't finish. Tap to try again.",
+  "form_captcha_badge": "No tracking",
+  "form_checking": "Security check…",
+  "form_sending": "Sending…",
+  "form_submit_failed": "We couldn't send this. Please try again a little later.",
+  "form_optional": "(optional)",
+  "form_select_placeholder": "Choose one",
+  "form_unspecified": "Unspecified",
+  "form_steps_title": "How it works",
+  "form_step_code": "Keep the tracking code",
+  "form_step_code_description": "Once it's sent, you'll see a unique tracking code. Copy it to follow up later.",
+  "form_first_name_label": "First name",
+  "form_last_name_label": "Last name",
+  "form_mobile_label": "Mobile number",
+  "form_mobile_placeholder": "0912 123 4567",
+  "form_email_label": "Email",
+  "form_student_id_label": "Student ID",
+  "form_text_hint": [
+    {
+      "declarations": ["input min", "local minText = min: number"],
+      "match": {
+        "": "At least {minText} characters."
+      }
+    }
+  ],
+  "form_text_count": [
+    {
+      "declarations": ["input count", "input max", "local countText = count: number", "local maxText = max: number"],
+      "match": {
+        "": "{countText} / {maxText}"
+      }
+    }
+  ],
+  "form_error_first_name_required": "Enter your first name.",
+  "form_error_name_too_long": [
+    {
+      "declarations": ["input max", "local maxText = max: number"],
+      "match": {
+        "": "Up to {maxText} characters."
+      }
+    }
+  ],
+  "form_error_mobile_invalid": "Enter an Iranian mobile number, like 0912 123 4567.",
+  "form_error_email_invalid": "This email address doesn't look right.",
+  "form_error_student_id_invalid": [
+    {
+      "declarations": ["input min", "input max", "local minText = min: number", "local maxText = max: number"],
+      "match": {
+        "": "A student ID is digits only, {minText} to {maxText} of them."
+      }
+    }
+  ],
+  "form_error_text_too_short": [
+    {
+      "declarations": ["input min", "local minText = min: number"],
+      "match": {
+        "": "Write at least {minText} characters."
+      }
+    }
+  ],
+  "form_error_text_too_long": [
+    {
+      "declarations": ["input max", "local maxText = max: number"],
+      "match": {
+        "": "Up to {maxText} characters."
+      }
+    }
+  ],
+  "form_error_option_invalid": "Choose one of the options.",
+  "form_error_age_invalid": [
+    {
+      "declarations": ["input min", "input max", "local minText = min: number", "local maxText = max: number"],
+      "match": {
+        "": "Enter your age as a whole number from {minText} to {maxText}."
+      }
+    }
+  ],
+  "form_receipt_code_label": "Tracking code",
+  "form_receipt_copy": "Copy code",
+  "form_receipt_copied": "Copied",
+  "form_receipt_copied_announce": "Tracking code copied.",
+  "form_receipt_copy_failed": "Couldn't copy. Select the code and copy it yourself.",
+  "form_receipt_home": "Back to the home page",
+  "form_receipt_keep": "Recorded on {date}. Keep this code: you'll need it to follow up.",
+  "feedback_title": "Complaints and feedback",
+  "feedback_kicker": "Your voice",
+  "feedback_lede": "Send a complaint, suggestion or criticism to the right office or official. Your message is recorded so it can be reviewed and followed up.",
+  "feedback_description": "Send a complaint, suggestion or criticism to an office or official of Hamedan University of Technology and get a tracking code.",
+  "feedback_section_message": "Your message",
+  "feedback_kind_label": "Message type",
+  "feedback_kind_complaint": "Complaint",
+  "feedback_kind_complaint_description": "You're unhappy with a service, a decision or someone's conduct.",
+  "feedback_kind_suggestion": "Suggestion or criticism",
+  "feedback_kind_suggestion_description": "You see a way things could work better.",
+  "feedback_unit_label": "Related office or official",
+  "feedback_unit_group_management": "University offices",
+  "feedback_unit_group_departments": "Heads of department",
+  "feedback_body_label": "Message",
+  "feedback_body_placeholder": "Describe the issue clearly: what happened, where and when.",
+  "feedback_section_sender": "About you",
+  "feedback_section_sender_hint": "Apart from your first name, these details are optional, but they make follow-up easier.",
+  "feedback_error_kind_required": "Choose a message type.",
+  "feedback_error_unit_required": "Choose the related office or official.",
+  "feedback_submit": "Send message",
+  "feedback_privacy": "Your information is used only to review and follow up on your request.",
+  "feedback_step_fill": "Fill in the form",
+  "feedback_step_fill_description": "Choose the message type and the related office, and describe the issue clearly.",
+  "feedback_step_send": "Send it",
+  "feedback_step_send_description": "Your message is recorded in the university's system for review.",
+  "feedback_receipt_title": "Your message has been recorded",
+  "feedback_receipt_description": "It will reach the related office for review and follow-up. Thank you for taking the time.",
+  "feedback_receipt_again": "Send another message",
+  "feedback_unit_complaints_office": "Complaints handling",
+  "feedback_unit_president": "University President",
+  "feedback_unit_monitoring_evaluation": "Head of Monitoring and Evaluation",
+  "feedback_unit_admin_finance": "Administrative and Financial Affairs",
+  "feedback_unit_representative_office": "Head of the University Representative Office",
+  "feedback_unit_vp_education_research": "Vice President for Education and Research",
+  "feedback_unit_security": "Head of Security",
+  "feedback_unit_education": "Head of Education",
+  "feedback_unit_math": "Head of Mathematics",
+  "feedback_unit_ee_telecom_electronics": "Head of Electrical Engineering – Telecommunications and Electronics",
+  "feedback_unit_ee_control_power": "Head of Electrical Engineering – Control and Power",
+  "feedback_unit_civil": "Head of Civil Engineering",
+  "feedback_unit_islamic_studies": "Head of Islamic Studies",
+  "feedback_unit_industrial": "Head of Industrial Engineering",
+  "feedback_unit_computer": "Head of Computer Engineering",
+  "feedback_unit_chemistry": "Head of Chemistry",
+  "consultation_title": "Online consultation",
+  "consultation_kicker": "With you",
+  "consultation_lede": "Send your question and it will go to the right university office or advisor for an answer.",
+  "consultation_description": "Ask Hamedan University of Technology's advisors a question online and get a tracking code.",
+  "consultation_section_about": "About you",
+  "consultation_section_about_hint": "If you'd rather not say, leave it as “Unspecified”.",
+  "consultation_gender_label": "Gender",
+  "consultation_gender_male": "Male",
+  "consultation_gender_female": "Female",
+  "consultation_marital_label": "Marital status",
+  "consultation_marital_single": "Single",
+  "consultation_marital_married": "Married",
+  "consultation_age_label": "Age",
+  "consultation_section_studies": "Your studies",
+  "consultation_section_studies_hint": "This helps send your question to the right advisor.",
+  "consultation_faculty_label": "Faculty",
+  "consultation_faculty_electrical_computer": "Electrical and Computer Engineering",
+  "consultation_faculty_engineering": "Engineering",
+  "consultation_faculty_basic_sciences": "Basic Sciences",
+  "consultation_field_label": "Field of study",
+  "consultation_field_computer": "Computer Engineering",
+  "consultation_field_electrical": "Electrical Engineering",
+  "consultation_field_industrial": "Industrial Engineering",
+  "consultation_field_polymer": "Polymer Engineering",
+  "consultation_field_civil": "Civil Engineering",
+  "consultation_field_mechanical": "Mechanical Engineering",
+  "consultation_field_engineering_physics": "Engineering Physics",
+  "consultation_field_organic_chemistry": "Organic Chemistry",
+  "consultation_section_question": "Your question",
+  "consultation_question_label": "Question",
+  "consultation_question_placeholder": "Write your question clearly, with any background that helps.",
+  "consultation_email_label": "Email",
+  "consultation_contact_hint": "Contact details are optional, but they make answering and following up easier.",
+  "consultation_submit": "Send question",
+  "consultation_privacy": "Your information is used only to review and answer your question.",
+  "consultation_step_details": "Enter your details",
+  "consultation_step_details_description": "Your academic details help route the question to the right person or office.",
+  "consultation_step_send": "Send your question",
+  "consultation_step_send_description": "Your question is recorded in the university's system for review.",
+  "consultation_receipt_title": "Your question has been recorded",
+  "consultation_receipt_description": "It will reach the right advisor or office to be reviewed and answered.",
+  "consultation_receipt_again": "Ask another question"
 }

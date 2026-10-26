@@ -192,11 +192,11 @@ export const SERVICES: Service[] = [
     title: m.service_counseling,
     short: m.service_counseling_short,
     description: m.service_counseling_description,
-    href: "http://counseling.hut.ac.ir/",
+    href: "/consultation",
     group: "support",
     icon: MessagesSquareIcon,
     priority: 2,
-    keywords: ["مشاوره", "counseling", "روانشناس"],
+    keywords: ["مشاوره", "مشاوره آنلاین", "counseling", "روانشناس"],
   },
   {
     id: "student-affairs",

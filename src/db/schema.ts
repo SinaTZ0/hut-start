@@ -304,3 +304,45 @@ export const feedPlacement = pgTable(
     index("feed_placement_kind_category_position_idx").on(table.kind, table.category, table.position),
   ],
 );
+
+/*===== Public Forms =====*/
+// What visitors send through the complaints and feedback form (`/feedback`, src/orpc/feedback/) and the online
+// consultation form (`/consultation`, src/orpc/consultation/), FORMS.md. Anyone may send one, so nothing points at a
+// user. Each gets a tracking code the visitor keeps (`src/lib/tracking-code.ts`). Option values are plain text with
+// their allowed keys in each feature's `constants.ts`. No address or browser details are stored.
+
+export const feedbackMessage = pgTable(
+  "feedback_message",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    trackingCode: text("tracking_code").notNull().unique(),
+    firstName: text("first_name").notNull(),
+    lastName: text("last_name"),
+    /** `09xxxxxxxxx`. */
+    mobile: text("mobile"),
+    email: text("email"),
+    studentId: text("student_id"),
+    /** The unit or official the message is for. */
+    unit: text("unit").notNull(),
+    /** `complaint` or `suggestion` (a suggestion or criticism). */
+    kind: text("kind").notNull(),
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [index("feedback_message_unit_created_at_idx").on(table.unit, table.createdAt)],
+);
+
+export const consultationRequest = pgTable("consultation_request", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  trackingCode: text("tracking_code").notNull().unique(),
+  gender: text("gender").notNull(),
+  age: integer("age").notNull(),
+  maritalStatus: text("marital_status").notNull(),
+  email: text("email"),
+  /** `09xxxxxxxxx`. */
+  mobile: text("mobile"),
+  faculty: text("faculty").notNull(),
+  fieldOfStudy: text("field_of_study").notNull(),
+  question: text("question").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});

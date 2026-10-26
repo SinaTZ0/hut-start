@@ -217,7 +217,7 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         title: m.nav_campus_life_support,
         links: [
-          { label: m.nav_campus_life_counseling, href: "http://counseling.hut.ac.ir/" },
+          { label: m.nav_campus_life_counseling, href: "/consultation" },
           { label: m.nav_campus_life_discipline, href: "https://student.hut.ac.ir/شورای-انضباطی" },
           { label: m.nav_campus_life_shahed, href: "https://hut.ac.ir/امور-دانشجویان-شاهد-و-ایثارگر" },
         ],
@@ -236,7 +236,7 @@ export const NAV_SECTIONS: NavSection[] = [
 /*------ Footer ------*/
 
 /** The university's suggestions and complaints form. */
-export const SUGGESTIONS_LINK: NavLink = { label: m.nav_suggestions, href: "https://hut.ac.ir/فرم نظرات پیشنهادات" };
+export const SUGGESTIONS_LINK: NavLink = { label: m.nav_suggestions, href: "/feedback" };
 
 export const FOOTER_LINKS: NavLink[] = [
   { label: m.nav_sitemap, href: "https://hut.ac.ir/fa/نقشه-سایت" },
