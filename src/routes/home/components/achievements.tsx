@@ -1,4 +1,5 @@
 import { ExternalLinkIcon } from "lucide-react";
+import type { CSSProperties } from "react";
 
 import { Badge } from "#/components/primitive/badge/badge";
 import {
@@ -25,6 +26,7 @@ import {
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { TextLink } from "#/components/shared/text-link/text-link";
+import { HOME_DRAWINGS } from "#/lib/university/drawings";
 import { NAV_SECTIONS } from "#/lib/university/navigation";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
@@ -77,13 +79,19 @@ function AchievementCard({ item, lead = false }: { item: FeedItem; lead?: boolea
 
 /*===== Research Units =====*/
 
-/** The research and technology units: a short introduction beside a grid of links that leave the site. */
+/** The research and technology units: a short introduction over a sketch of a telescope and a microscope, beside a grid
+ * of links that leave the site. */
 function ResearchUnits() {
   return (
     <div className="mt-section grid grid-cols-1 overflow-hidden rounded-lg border bg-card lg:grid-cols-3">
       <div className="flex flex-col items-start gap-2 border-b bg-background-alt p-8 sm:p-10 lg:border-e lg:border-b-0">
         <h3 className="text-h2">{m.home_units_title()}</h3>
         <p className="max-w-xs text-body-sm text-muted-foreground">{m.home_units_lede()}</p>
+        <div
+          aria-hidden
+          style={{ "--art": `url("${HOME_DRAWINGS.research}")` } as CSSProperties}
+          className="mt-6 aspect-480/448 w-36 mask-art text-art-ink sm:w-44"
+        />
         {RESEARCH && (
           <TextLink href={RESEARCH.href} className="mt-auto pt-6">
             {m.nav_section_page({ title: RESEARCH.title() })}
@@ -122,6 +130,7 @@ export function Achievements({ items }: { items: FeedItem[] }) {
     <section aria-labelledby="home-achievements">
       <SectionHead
         id="home-achievements"
+        ruled
         kicker={m.home_achievements_kicker()}
         title={m.home_achievements_title()}
         lede={m.home_achievements_lede()}

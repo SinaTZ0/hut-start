@@ -51,6 +51,13 @@ translation ([i18n.md](./i18n.md)).
   body text, fades out downward and stays faint under the title. Its empty side is the start, so English mirrors it. It
   never moves. The department page echoes it in type: section numbers in gold, a ruler (`ruler`) after each heading,
   and figures hung from dimension lines.
+- **Home drawings**: the home page has drawings of its own in the same hand, in `public/images/home/` (listed in
+  `src/lib/university/drawings.ts`): Avicenna's tomb before Alvand with an astrolabe across the glance band, a
+  seedling among gears in the learning panel's corner, a book, dividers and an iwan in the welcome panel's corner (kept
+  small, clear of its text), and a telescope and microscope under the research units' introduction (`art-ink`). Each
+  department's cell in the glance grid carries its mark (`mark.webp`, its key object cut from its hero drawing). The
+  photo hero takes no drawing. The home echoes the department page too: its figures hang from dimension lines, and
+  the news, semester and achievements heads draw a ruler to their link (`SectionHead ruled`).
 - **Rules out**: stock photography, illustrations other than the signature drawings, gradients as decoration, a second
   accent colour, and gold on large areas.
 - **References**: the Kaj homepage source and screenshot in [reference/kaj/](./reference/kaj/), and its

@@ -170,6 +170,11 @@
   --color-band-control: var(--band-control);
   --color-band-hover: var(--band-hover);
 
+  /*------ Drawings ------*/
+  /* The signature drawings' inks, for a drawing masked in `currentColor` (`mask-art`) */
+  --color-art-ink: var(--art-ink);
+  --color-art-band: var(--art-band);
+
   /*------ Radius ------*/
   /* xs 2 (hairline bars), sm 10 (buttons, inputs, tiles, thumbnails), md 16 (cards, popovers), lg 22 (the large
      panels a section is built on). xl and up stay at lg so a stray class never leaves the scale. */
@@ -421,10 +426,10 @@
   inset-inline-start: calc(var(--at) * 100% - 1.5px);
 }
 
-/*------ Departments ------*/
+/*------ Drawings ------*/
 
-/* A department's signature drawing (`--art`, the URL of a transparent WebP whose lines are opaque) used as a mask, so
-   the theme's ink colours it. Behind the hero it fades out downward and stays faint under the title: the title sits on
+/* A signature drawing (`--art`, the URL of a transparent WebP whose lines are opaque) used as a mask, so the theme's
+   ink colours it. Behind a department's hero it fades out downward and stays faint under the title: the title sits on
    the drawing's empty side, at the start, so the art is mirrored in left-to-right pages instead of the fade. */
 @utility art-sheet {
   background-color: var(--art-ink);
@@ -440,7 +445,7 @@
   mask-composite: intersect;
 }
 
-/* The same on a pine band, behind a whole section */
+/* The same on a pine band, behind a whole section (a department's labs, the home page's glance band) */
 @utility art-band {
   background-color: var(--art-band);
   mask-image: var(--art), linear-gradient(to bottom, #000 35%, transparent 96%);
@@ -452,7 +457,7 @@
   mask-composite: intersect;
 }
 
-/* A small drawing (a field's vignette) in `currentColor` */
+/* A small drawing in `currentColor`: a field's vignette, a department's mark, a panel's corner */
 @utility mask-art {
   mask: var(--art) center / contain no-repeat;
   background-color: currentColor;

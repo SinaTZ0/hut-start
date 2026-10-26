@@ -1,10 +1,12 @@
 import { ExternalLinkIcon, PlayIcon } from "lucide-react";
+import type { CSSProperties } from "react";
 
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { TextLink } from "#/components/shared/text-link/text-link";
 import { textLinkExternalClasses } from "#/components/shared/text-link/text-link.styles";
 import { formatDate, formatNumber } from "#/lib/locale";
+import { departmentDrawings, HOME_DRAWINGS } from "#/lib/university/drawings";
 import { DEPARTMENTS, DEPARTMENTS_HREF, SOCIAL_LINKS } from "#/lib/university/navigation";
 import { cn } from "#/lib/utils";
 import type { FeedItem } from "#/orpc/home-feed/contract";
@@ -19,16 +21,23 @@ const VIDEO_CHANNEL = SOCIAL_LINKS.find((link) => link.href.includes("aparat"));
 /*===== Glance =====*/
 
 /**
- * The pine band: the mission and six ruled figures beside a campus-life photo with a play link to the video channel;
- * the departments as a grid below. Two faint rings decorate the band. The photo is the newest campus-life notice;
- * until the feed has one, the play link stands alone on the band's deep green.
+ * The pine band under the home page's drawing (Avicenna's tomb before Alvand): the mission and six figures hung from
+ * dimension lines beside a campus-life photo with a play link to the video channel; the departments as a grid below,
+ * each cell with its department's mark. The photo is the newest campus-life notice; until the feed has one, the play
+ * link stands alone on the band's deep green.
  */
 export function Glance({ spotlight }: { spotlight: FeedItem | null }) {
   return (
-    <section
-      aria-labelledby="home-glance"
-      className="relative isolate overflow-hidden bg-band text-on-band before:absolute before:-start-40 before:-top-75 before:-z-10 before:size-130 before:rounded-full before:border before:border-band-decor after:absolute after:-end-65 after:-bottom-105 after:-z-10 after:size-160 after:rounded-full after:border after:border-band-decor"
-    >
+    <section aria-labelledby="home-glance" className="relative isolate overflow-hidden bg-band text-on-band">
+      {/*===== Drawing =====*/}
+      {/* Its own 21:9 across the top, so none of it is cropped on wide screens; taller on phones, where it crops to the
+          middle. The figures sit on its start side, so English mirrors it. */}
+      <div
+        aria-hidden
+        style={{ "--art": `url("${HOME_DRAWINGS.glance}")` } as CSSProperties}
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 aspect-21/9 min-h-96 art-band ltr:-scale-x-100"
+      />
+
       <div className="mx-auto grid max-w-site grid-cols-1 gap-y-10 px-gutter py-section lg:grid-cols-2 lg:gap-x-20">
         {/*===== Mission and Figures =====*/}
         <div>
@@ -47,11 +56,16 @@ export function Glance({ spotlight }: { spotlight: FeedItem | null }) {
           />
           <p className="text-body-sm text-on-band-soft">{m.home_glance_mission()}</p>
 
-          <dl className="mt-10 grid grid-cols-2 gap-x-6 sm:grid-cols-3">
+          {/* Each figure hangs from a dimension line, as on a department's page. */}
+          <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3">
             {STATS.map((stat) => (
-              <div key={stat.value} className="flex flex-col-reverse border-t border-band-line py-5">
-                <dt className="text-caption text-on-band-muted">{stat.label()}</dt>
-                <dd className="text-stat text-highlight">{formatNumber(stat.value)}+</dd>
+              <div key={stat.value} className="flex flex-col">
+                <span
+                  aria-hidden
+                  className="relative block h-3 border-x border-band-line-strong before:absolute before:inset-x-0 before:top-1/2 before:h-px before:bg-band-line-strong"
+                />
+                <dt className="order-last mt-1 text-caption text-on-band-muted">{stat.label()}</dt>
+                <dd className="mt-3 text-stat text-highlight">{formatNumber(stat.value)}+</dd>
               </div>
             ))}
           </dl>
@@ -126,20 +140,32 @@ export function Glance({ spotlight }: { spotlight: FeedItem | null }) {
             </TextLink>
           </div>
           <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-band-line-strong bg-band-line-strong sm:grid-cols-4">
-            {DEPARTMENTS.map((department) => (
-              <li key={department.id}>
-                {/* The one gold hover on the page besides the buttons: a department is where a visitor goes next. */}
-                <SiteLink
-                  href={department.href}
-                  className="group/dept flex h-full flex-col justify-center gap-0.5 bg-band px-4 py-4 text-on-band transition-colors duration-200 hover:bg-highlight hover:text-highlight-foreground focus-visible:-outline-offset-4 motion-reduce:transition-none sm:px-7 sm:py-6"
-                >
-                  <span className="text-h3">{department.short()}</span>
-                  <span className="text-caption text-on-band-muted transition-colors duration-200 group-hover/dept:text-highlight-foreground motion-reduce:transition-none">
-                    {m.home_department_full({ name: department.name() })}
-                  </span>
-                </SiteLink>
-              </li>
-            ))}
+            {DEPARTMENTS.map((department) => {
+              const drawings = departmentDrawings(department.id);
+              return (
+                <li key={department.id}>
+                  {/* The one gold hover on the page besides the buttons: a department is where a visitor goes next. */}
+                  <SiteLink
+                    href={department.href}
+                    className="group/dept relative isolate flex h-full flex-col justify-center gap-0.5 bg-band px-4 py-4 text-on-band transition-colors duration-200 hover:bg-highlight hover:text-highlight-foreground focus-visible:-outline-offset-4 motion-reduce:transition-none sm:px-7 sm:py-6"
+                  >
+                    {/* The department's mark at the far end, faint on pine and fainter dark ink on the gold hover. Left
+                      out on phones, where the cell is too narrow to keep it clear of the name. */}
+                    {drawings && (
+                      <span
+                        aria-hidden
+                        style={{ "--art": `url("${drawings.mark}")` } as CSSProperties}
+                        className="pointer-events-none absolute inset-y-2 end-3 -z-10 hidden w-2/5 mask-art text-art-band transition-colors duration-200 group-hover/dept:text-highlight-foreground/15 motion-reduce:transition-none sm:block ltr:-scale-x-100"
+                      />
+                    )}
+                    <span className="text-h3">{department.short()}</span>
+                    <span className="text-caption text-on-band-muted transition-colors duration-200 group-hover/dept:text-highlight-foreground motion-reduce:transition-none">
+                      {m.home_department_full({ name: department.name() })}
+                    </span>
+                  </SiteLink>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

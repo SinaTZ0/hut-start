@@ -1,4 +1,5 @@
 import { ArrowLeftIcon, BookOpenIcon, ClockIcon } from "lucide-react";
+import type { CSSProperties } from "react";
 
 import {
   Card,
@@ -15,6 +16,7 @@ import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { textLinkArrowClasses } from "#/components/shared/text-link/text-link.styles";
 import { formatDate } from "#/lib/locale";
+import { HOME_DRAWINGS } from "#/lib/university/drawings";
 import { cn } from "#/lib/utils";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
@@ -23,13 +25,21 @@ import { isoToDate } from "../semester";
 
 /*===== Learning =====*/
 
-/** A pine panel with one link to the incubator; the events and short courses listed beside it as compact cards, each
- * ending like a news card: the date (when it has one) and the call below a hairline. */
+/** A pine panel with one link to the incubator, a seedling among gears drawn in its far corner; the events and short
+ * courses listed beside it as compact cards, each ending like a news card: the date (when it has one) and the call
+ * below a hairline. */
 export function Learning({ items }: { items: FeedItem[] }) {
   return (
     <section aria-labelledby="home-learning" className="grid grid-cols-1 gap-10 lg:grid-cols-3">
       {/*===== Panel =====*/}
-      <div className="relative isolate flex flex-col overflow-hidden rounded-lg bg-band px-5 py-6 text-on-band after:absolute after:-end-35 after:-bottom-55 after:-z-10 after:size-105 after:rounded-full after:border after:border-band-decor sm:p-8">
+      <div className="relative isolate flex flex-col overflow-hidden rounded-lg bg-band px-5 py-6 text-on-band sm:p-8">
+        {/* Small while the panel is only as tall as its text; beside the cards it fills the room above the link. The
+            drawing's subject keeps to its start-bottom corner, so English mirrors it. */}
+        <div
+          aria-hidden
+          style={{ "--art": `url("${HOME_DRAWINGS.learning}")` } as CSSProperties}
+          className="pointer-events-none absolute end-0 bottom-0 -z-10 aspect-6/7 w-32 mask-art text-art-band sm:w-44 lg:w-3/5 ltr:-scale-x-100"
+        />
         <span
           aria-hidden
           className="mb-6 grid size-12 place-items-center self-end rounded-sm border border-band-line text-highlight"

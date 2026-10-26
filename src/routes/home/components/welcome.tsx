@@ -1,11 +1,5 @@
-import {
-  ArrowLeftIcon,
-  ExternalLinkIcon,
-  FileTextIcon,
-  type LucideIcon,
-  MessagesSquareIcon,
-  SchoolIcon,
-} from "lucide-react";
+import { ArrowLeftIcon, ExternalLinkIcon, FileTextIcon, type LucideIcon, MessagesSquareIcon } from "lucide-react";
+import type { CSSProperties } from "react";
 
 import { buttonVariants } from "#/components/primitive/button/button.styles";
 import {
@@ -19,6 +13,7 @@ import {
 } from "#/components/primitive/item/item";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
+import { HOME_DRAWINGS } from "#/lib/university/drawings";
 import { DEPARTMENTS_HREF, SUGGESTIONS_LINK } from "#/lib/university/navigation";
 import { SERVICES } from "#/lib/university/services";
 import { m } from "#/paraglide/messages";
@@ -52,7 +47,8 @@ const HELP: HelpLink[] = [
 
 /*===== Welcome =====*/
 
-/** The closing split card: a welcome for new students on pine, and two ways to reach the university beside it. */
+/** The closing split card: a welcome for new students on pine, over a drawing of a book, dividers and an iwan, and two
+ * ways to reach the university beside it. */
 export function Welcome() {
   return (
     <section
@@ -81,9 +77,12 @@ export function Welcome() {
             <ExternalLinkIcon data-icon="inline-end" className="size-4" />
           </SiteLink>
         </div>
-        <SchoolIcon
+        {/* Small, in the far corner: the panel is short, and the drawing stays clear of the lede and the buttons. Its
+            subject keeps to its start-bottom corner, so English mirrors it. */}
+        <div
           aria-hidden
-          className="absolute end-6 -bottom-10 -z-10 size-45 -rotate-12 stroke-1 text-band-decor"
+          style={{ "--art": `url("${HOME_DRAWINGS.welcome}")` } as CSSProperties}
+          className="pointer-events-none absolute end-0 bottom-0 -z-10 aspect-720/666 w-28 mask-art text-art-band sm:w-36 lg:w-40 ltr:-scale-x-100"
         />
       </div>
 

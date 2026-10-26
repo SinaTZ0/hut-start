@@ -220,6 +220,7 @@ export function NewsSection({
     <section aria-labelledby="home-news">
       <SectionHead
         id="home-news"
+        ruled
         kicker={m.home_news_kicker()}
         title={m.home_news_title()}
         lede={m.home_news_lede()}

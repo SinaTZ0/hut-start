@@ -119,6 +119,7 @@ export function SemesterSection({ state }: { state: SemesterState }) {
     <section id="home-calendar" aria-labelledby="home-term">
       <SectionHead
         id="home-term"
+        ruled
         kicker={m.home_term_kicker()}
         title={m.home_term_title()}
         lede={m.home_term_lede()}
