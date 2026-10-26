@@ -17,12 +17,15 @@ import { client } from "#/orpc/client";
  */
 export function useCaptcha() {
   const widgetRef = useRef<AltchaWidgetElement>(null);
+  const loaded = useRef<Promise<unknown>>(null);
 
   useEffect(() => {
-    void import("altcha");
+    loaded.current = import("altcha");
   }, []);
 
   async function solve(): Promise<string | null> {
+    // A form may ask before the module has arrived (the visible check starts on the first focus).
+    await loaded.current;
     const widget = widgetRef.current;
     if (!widget || !customElements.get("altcha-widget")) return null;
 
