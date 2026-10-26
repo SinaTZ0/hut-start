@@ -89,6 +89,9 @@
      under it scales with the width. */
   --spacing-hero: max(35rem, calc(100svh - 6.5rem));
   --spacing-arc: clamp(0.875rem, 2.2vw, 2rem);
+  /* The room a section keeps above its heading when an arc hangs over it (`pt-after-arc`): the arc already separates
+     it from the band above, so it needs less than `py-section`. */
+  --spacing-after-arc: clamp(2.5rem, 5vw, 3.5rem);
 
   /* News cards and phone learning rows (16:7), the glance photo (16:10), a person's photo (4:5, the `portrait` media) */
   --aspect-wide: 16 / 7;

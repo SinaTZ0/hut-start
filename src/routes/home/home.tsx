@@ -63,7 +63,7 @@ function Home() {
       </Hero>
 
       <Arc />
-      <div className={`${columnClasses} py-section`}>
+      <div className={`${columnClasses} pt-after-arc pb-section`}>
         <NewsSection today={today} news={feed.news} notices={feed.notices} />
       </div>
       <div className="border-y bg-background-alt">
@@ -73,8 +73,9 @@ function Home() {
       </div>
 
       <Glance spotlight={feed.spotlight} />
+      <Arc tone="band" />
 
-      <div className={`${columnClasses} py-section-lg`}>
+      <div className={`${columnClasses} pt-after-arc pb-section-lg`}>
         <Achievements items={feed.achievements} />
       </div>
       <div className="border-y bg-background-alt">
