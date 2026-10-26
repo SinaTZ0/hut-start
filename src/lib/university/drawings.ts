@@ -38,3 +38,6 @@ export const FORM_DRAWINGS = {
   feedback: { src: "/images/forms/feedback.webp", aspect: "aspect-720/493" },
   consultation: { src: "/images/forms/consultation.webp", aspect: "aspect-720/408" },
 };
+
+/** The privacy statement's drawing, behind its heading: an exploded padlock with its key and keyhole plate. */
+export const PRIVACY_DRAWING = { src: "/images/privacy/privacy.webp", aspect: "aspect-720/468" };

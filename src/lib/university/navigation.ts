@@ -244,6 +244,7 @@ export const FOOTER_LINKS: NavLink[] = [
   PHONEBOOK_LINK,
   { label: m.nav_ethics, href: "https://hut.ac.ir/documents/38165/453653/نظامنامه+اخلاق+آموزش.pdf" },
   SUGGESTIONS_LINK,
+  { label: m.nav_privacy, href: "/privacy" },
   { label: m.nav_alumni, href: "https://hut.ac.ir/web/دانش-آموختگان" },
   RECRUITMENT_LINK,
 ];

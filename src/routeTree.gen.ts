@@ -18,6 +18,7 @@ import { Route as notes_layoutNotesLayoutRouteImport } from './routes/notes_layo
 import { Route as authAuthRouteImport } from './routes/auth/auth'
 import { Route as consultationConsultationRouteImport } from './routes/consultation/consultation'
 import { Route as feedbackFeedbackRouteImport } from './routes/feedback/feedback'
+import { Route as privacyPrivacyRouteImport } from './routes/privacy/privacy'
 import { Route as rpcRpcRouteImport } from './routes/rpc/rpc'
 import { Route as notesNotesRouteImport } from './routes/notes/notes'
 import { Route as departments_departmentSlugDepartmentsDepartmentSlugRouteImport } from './routes/departments_departmentSlug/departments-department-slug'
@@ -67,6 +68,11 @@ const feedbackFeedbackRoute = feedbackFeedbackRouteImport.update({
   path: '/feedback',
   getParentRoute: () => site_layoutSiteLayoutRoute,
 } as any)
+const privacyPrivacyRoute = privacyPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
 const rpcRpcRoute = rpcRpcRouteImport.update({
   id: '/rpc/$',
   path: '/rpc/$',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof authAuthRoute
   '/consultation': typeof consultationConsultationRoute
   '/feedback': typeof feedbackFeedbackRoute
+  '/privacy': typeof privacyPrivacyRoute
   '/rpc/$': typeof rpcRpcRoute
   '/notes': typeof notesNotesRoute
   '/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/auth': typeof authAuthRoute
   '/consultation': typeof consultationConsultationRoute
   '/feedback': typeof feedbackFeedbackRoute
+  '/privacy': typeof privacyPrivacyRoute
   '/rpc/$': typeof rpcRpcRoute
   '/notes': typeof notesNotesRoute
   '/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/_site-layout/auth': typeof authAuthRoute
   '/_site-layout/consultation': typeof consultationConsultationRoute
   '/_site-layout/feedback': typeof feedbackFeedbackRoute
+  '/_site-layout/privacy': typeof privacyPrivacyRoute
   '/rpc/$': typeof rpcRpcRoute
   '/_site-layout/_notes-layout/notes': typeof notesNotesRoute
   '/_site-layout/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/consultation'
     | '/feedback'
+    | '/privacy'
     | '/rpc/$'
     | '/notes'
     | '/departments/$departmentSlug'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/consultation'
     | '/feedback'
+    | '/privacy'
     | '/rpc/$'
     | '/notes'
     | '/departments/$departmentSlug'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/_site-layout/auth'
     | '/_site-layout/consultation'
     | '/_site-layout/feedback'
+    | '/_site-layout/privacy'
     | '/rpc/$'
     | '/_site-layout/_notes-layout/notes'
     | '/_site-layout/departments/$departmentSlug'
@@ -249,6 +261,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof feedbackFeedbackRouteImport
       parentRoute: typeof site_layoutSiteLayoutRoute
     }
+    '/_site-layout/privacy': {
+      id: '/_site-layout/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof privacyPrivacyRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
     '/rpc/$': {
       id: '/rpc/$'
       path: '/rpc/$'
@@ -300,6 +319,7 @@ interface site_layoutSiteLayoutRouteChildren {
   authAuthRoute: typeof authAuthRoute
   consultationConsultationRoute: typeof consultationConsultationRoute
   feedbackFeedbackRoute: typeof feedbackFeedbackRoute
+  privacyPrivacyRoute: typeof privacyPrivacyRoute
   departments_departmentSlugDepartmentsDepartmentSlugRoute: typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
 }
 
@@ -309,6 +329,7 @@ const site_layoutSiteLayoutRouteChildren: site_layoutSiteLayoutRouteChildren = {
   authAuthRoute: authAuthRoute,
   consultationConsultationRoute: consultationConsultationRoute,
   feedbackFeedbackRoute: feedbackFeedbackRoute,
+  privacyPrivacyRoute: privacyPrivacyRoute,
   departments_departmentSlugDepartmentsDepartmentSlugRoute:
     departments_departmentSlugDepartmentsDepartmentSlugRoute,
 }
