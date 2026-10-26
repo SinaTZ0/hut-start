@@ -146,6 +146,15 @@ func (c Checker) Validate(key, value string, inExample bool) []Problem {
 
 	case kind == "optional":
 
+	case kind == "registry":
+		switch {
+		case value == "":
+		case !httpURL.MatchString(value):
+			return p(Ask, Invalid, "isn't an http:// or https:// URL")
+		case strings.HasSuffix(value, "/"):
+			return p(Ask, Invalid, "ends with a /: leave it off (https://registry.npmmirror.com)")
+		}
+
 	case kind == "derived":
 		expected := ExpectedDSN(c.Values)
 		switch {

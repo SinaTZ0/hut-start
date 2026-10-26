@@ -83,6 +83,9 @@ func (t *Tool) Apply(args []string) error {
 	if err := t.Env.Check(note); err != nil {
 		return err
 	}
+	if err := t.checkSources(note); err != nil {
+		return err
+	}
 	if err := t.S.Deploy(t.Env); err != nil {
 		return err
 	}

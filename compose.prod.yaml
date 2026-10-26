@@ -24,6 +24,8 @@ x-app-image:
     # The browser bundle reports its errors to this DSN, inlined at build time (`vite.config.ts`).
     args:
       SENTRY_DSN: ${SENTRY_DSN:-}
+      # An npm mirror, for a server that can't reach registry.npmjs.org. Empty uses npm's.
+      NPM_REGISTRY: ${NPM_REGISTRY:-}
   image: template-app
   init: true
   logging: *logging

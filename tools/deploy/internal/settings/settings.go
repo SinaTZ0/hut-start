@@ -37,6 +37,7 @@ const (
 //	int           a whole number above 0; empty takes the example's value
 //	default       anything; empty takes the example's value
 //	optional      anything, empty too
+//	registry      empty, or an http(s) URL without a trailing slash (an npm registry: the Dockerfile appends the `/`)
 //	derived       SENTRY_DSN, from ERROR_VIEWER_PUBLIC_KEY and ERRORS_DOMAIN
 type Setting struct {
 	Key   string
@@ -57,6 +58,7 @@ var Registry = []Setting{
 	{"ERROR_VIEWER_SESSION_SECRET", "secret:32:32", Stack},
 	{"SENTRY_DSN", "derived", Stack},
 	{"GOPROXY", "optional", Stack},
+	{"NPM_REGISTRY", "registry", Stack},
 	{"POSTGRES_PASSWORD", "secret:32", Stack},
 	{"BETTER_AUTH_SECRET", "secret:32:32", Stack},
 	{"ALTCHA_HMAC_KEY", "secret:32:32", Stack},

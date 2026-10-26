@@ -8,6 +8,12 @@ FROM node:24-slim AS base
 WORKDIR /app
 # pnpm at the version in package.json's `packageManager`.
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+# The npm registry, for corepack's download of pnpm and for pnpm's of the packages: `NPM_REGISTRY` in .env, a mirror
+# for a server that can't reach registry.npmjs.org (docs/deployment.md). Empty uses npm's. pnpm reads
+# `pnpm_config_registry` (not `npm_config_registry`), with the trailing slash.
+ARG NPM_REGISTRY=""
+ENV COREPACK_NPM_REGISTRY=${NPM_REGISTRY:-https://registry.npmjs.org} \
+    pnpm_config_registry=${NPM_REGISTRY:-https://registry.npmjs.org}/
 RUN corepack enable
 
 # ===== Dependencies =====

@@ -75,13 +75,6 @@ func (t *Tool) Setup(args []string) error {
 	}
 	dir = project.ExpandHome(dir)
 
-	ui.Step("Build")
-	ui.Info("Only if this server can't reach proxy.golang.org (Google blocks some regions): a Go module mirror.")
-	goproxy, err := ui.Ask("Go module mirror (Enter for none)", "", "")
-	if err != nil {
-		return err
-	}
-
 	/*------ Write .env ------*/
 	// The answers above go in; Check generates every secret and SENTRY_DSN, and asks for anything else the registry
 	// can't fill in. From here on .env exists and Set up is locked: a failed build is retried with Settings → Apply.
@@ -95,7 +88,6 @@ func (t *Tool) Setup(args []string) error {
 	}
 	for _, kv := range [][2]string{
 		{"DOMAIN", domain}, {"ERRORS_DOMAIN", errorsDomain}, {"TLS_MODE", tlsMode}, {"BACKUP_DIR", dir},
-		{"GOPROXY", goproxy},
 	} {
 		if err := envfile.Set(t.P.EnvFile(), kv[0], kv[1]); err != nil {
 			return err
@@ -121,6 +113,12 @@ func (t *Tool) Setup(args []string) error {
 		}
 	}
 
+	// Mirrors, when this server can't reach npm's registry or Go's module proxy: probed rather than asked, since few
+	// people know whether their server can.
+	ui.Step("Package registries")
+	if err := t.checkSources(""); err != nil {
+		return err
+	}
 	if err := t.S.Deploy(t.Env); err != nil {
 		return err
 	}

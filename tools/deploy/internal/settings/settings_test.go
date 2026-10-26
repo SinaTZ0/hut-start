@@ -21,6 +21,9 @@ func TestValidate(t *testing.T) {
 		{"LOG_LEVEL", "loud", Ask},
 		{"LOG_LEVEL", "", Gen},
 		{"BACKUP_KEEP", "0", Ask},
+		// The Dockerfile adds the `/` itself; with a second one, the URLs it builds would have `//`.
+		{"NPM_REGISTRY", "https://registry.npmmirror.com/", Ask},
+		{"NPM_REGISTRY", "", ""},
 		{"SOMETHING_ELSE", "1", Warn},
 	}
 	for _, tc := range cases {

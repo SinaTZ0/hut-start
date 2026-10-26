@@ -101,12 +101,13 @@ git clone <repo> app && cd app
 deploy/deploy.sh          # choose Set up
 ```
 
-Set up checks the tools and the ports, asks for the two domains, the certificate (HTTPS Certificates below), the backup
-folder and an optional Go module mirror, then writes `.env` from `.env.production.example`. The check every deploy runs
+Set up checks the tools and the ports, asks for the two domains, the certificate (HTTPS Certificates below) and the backup
+folder, then writes `.env` from `.env.production.example`. The check every deploy runs
 (Settings below) fills in the rest: every secret generated (hex, so they're safe inside the database URL and the
 store's config), `SENTRY_DSN`, and anything else the tool can't generate asked for. If a database volume is already
 there from an earlier install, it asks for that database's original password instead of generating one. It then offers
-to open `.env` in an editor, builds the stack and waits for it to turn healthy. It prints the error viewer's password at
+to open `.env` in an editor, checks that the server can reach the package registries (Package Registries below), builds
+the stack and waits for it to turn healthy. It prints the error viewer's password at
 the end; it's also in `.env`. Keep a copy of `.env` off the server: without its secrets, a database backup is all
 that's left.
 
@@ -173,9 +174,35 @@ Until `SENTRY_DSN` is set, nothing is reported; errors are still in the logs. Th
 newest 50 000 (`RETENTION_DAYS`, `MAX_EVENTS` in `tools/error-viewer/README.md`). Losing the volume loses error
 history, nothing else.
 
-**Building where Google is blocked.** The viewer's image pulls everything from Docker Hub, but its build downloads Go
-modules from `proxy.golang.org`. If that fails with `403 Forbidden`, set `GOPROXY` in `.env` to a Go module mirror the
-server can reach, and deploy again (Settings: edit `.env`, then apply).
+## Package Registries
+
+The images come from Docker Hub, but their builds download packages: npm packages from `registry.npmjs.org` (the app)
+and Go modules from `proxy.golang.org` (the error viewer). Where one of them is blocked, the build doesn't fail fast:
+pnpm retries for about ten minutes before it gives up. So before each build (Set up, Apply, Update) the tool checks
+both from the server, which takes a few seconds:
+
+- npm: a request to every IPv4 address of `registry.npmjs.org`. Every one, because a block can be partial (on one
+  server, 2 of 12 answered): a single request could pass while pnpm, which spreads its downloads over all of them,
+  hangs. IPv4, because builds run on Docker's network, which has no IPv6.
+- Go: one large module zip, which `proxy.golang.org` hands over to `storage.googleapis.com`, the part that answers
+  `403 Forbidden` where Google blocks the region. Small modules pass even there.
+
+For one that doesn't answer, it offers a mirror and writes it to `.env`:
+
+| Setting        | Mirror offered                   |
+| -------------- | -------------------------------- |
+| `NPM_REGISTRY` | `https://registry.npmmirror.com` |
+| `GOPROXY`      | `https://goproxy.cn`             |
+
+Both mirrors are run by third parties in China, so the tool asks instead of switching by itself. Packages are still
+checked against the hashes in `pnpm-lock.yaml` and `go.sum`, so a mirror can't swap one. Without a terminal (cron), it
+stops before the build and names the setting to add. Once a setting has a value, it isn't checked again: to keep the
+default source and skip the check, set it to the default (`NPM_REGISTRY=https://registry.npmjs.org`,
+`GOPROXY=https://proxy.golang.org,direct`).
+
+Another mirror works too: set it in `.env` (Settings: edit `.env`, then apply). `NPM_REGISTRY` goes without a trailing
+slash, and an npm mirror must also answer corepack's lookup of pnpm itself (`/pnpm/<version>`), which
+`mirror-npm.runflare.com` doesn't. If a build still fails on a download, the tool names the setting to add.
 
 ## Updating
 

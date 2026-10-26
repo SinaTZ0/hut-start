@@ -16,7 +16,10 @@ import (
 	"deploy/internal/ui"
 )
 
-var goProxyBlocked = regexp.MustCompile(`proxy\.golang\.org.*403 Forbidden`)
+var (
+	goProxyBlocked = regexp.MustCompile(`proxy\.golang\.org.*403 Forbidden`)
+	npmBlocked     = regexp.MustCompile(`registry\.npmjs\.org.*(ETIMEDOUT|ECONNRESET|UND_ERR_SOCKET|timed out|other side closed)`)
+)
 
 // Deploy builds the images and starts the stack. A running, healthy app is replaced without downtime (RolloutApp);
 // otherwise (the first deploy, or an app that's down anyway) Compose starts everything at once. Either way `migrate`
@@ -45,6 +48,12 @@ func (s *Stack) Deploy(env *envfile.Settings) error {
 		if goProxyBlocked.Match(log.Bytes()) {
 			return ui.Fail("This server can't download Go modules from proxy.golang.org. Set GOPROXY in .env to a mirror " +
 				"it can reach\n(e.g. GOPROXY=https://goproxy.cn): choose Settings, edit .env, then apply (deploy/deploy.sh apply).")
+		}
+		// The check before the build catches a blocked npm registry; this is for one that fails only now.
+		if npmBlocked.Match(log.Bytes()) {
+			return ui.Fail("This server can't download npm packages from registry.npmjs.org. Set NPM_REGISTRY in .env to a " +
+				"mirror it can reach\n(e.g. NPM_REGISTRY=https://registry.npmmirror.com): choose Settings, edit .env, then " +
+				"apply (deploy/deploy.sh apply).")
 		}
 		return ui.Fail("The build failed (see above). Nothing that was running was replaced. Once it's fixed, choose " +
 			"Settings → Apply\n(deploy/deploy.sh apply).")
