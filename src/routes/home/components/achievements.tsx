@@ -84,14 +84,15 @@ function AchievementCard({ item, lead = false }: { item: FeedItem; lead?: boolea
 function ResearchUnits() {
   return (
     <div className="mt-section grid grid-cols-1 overflow-hidden rounded-lg border bg-card lg:grid-cols-3">
-      <div className="flex flex-col items-start gap-2 border-b bg-background-alt p-8 sm:p-10 lg:border-e lg:border-b-0">
-        <h3 className="text-h2">{m.home_units_title()}</h3>
-        <p className="max-w-xs text-body-sm text-muted-foreground">{m.home_units_lede()}</p>
+      {/* The drawing sits behind the text: `isolate` keeps its -z-10 above this panel's background and below its content. */}
+      <div className="relative isolate flex flex-col items-start gap-2 overflow-hidden border-b bg-background-alt p-8 sm:p-10 lg:border-e lg:border-b-0">
         <div
           aria-hidden
           style={{ "--art": `url("${HOME_DRAWINGS.research}")` } as CSSProperties}
-          className="mt-6 aspect-480/448 w-36 mask-art text-art-ink sm:w-44"
+          className="pointer-events-none absolute end-4 bottom-4 -z-10 aspect-480/448 w-40 mask-art text-art-ink opacity-60 sm:w-52"
         />
+        <h3 className="text-h2">{m.home_units_title()}</h3>
+        <p className="max-w-xs text-body-sm text-muted-foreground">{m.home_units_lede()}</p>
         {RESEARCH && (
           <TextLink href={RESEARCH.href} className="mt-auto pt-6">
             {m.nav_section_page({ title: RESEARCH.title() })}
