@@ -23,6 +23,7 @@ import {
   OptionalMark,
   RequiredMark,
   type SubmitStage,
+  swapFormBody,
   TextCount,
 } from "#/components/shared/form-page/form-page";
 import { SubmissionReceipt } from "#/components/shared/submission-receipt/submission-receipt";
@@ -81,6 +82,9 @@ export function ConsultationForm() {
   const questionLength = useWatch({ control: form.control, name: "question" }).length;
 
   const submit = useMutation(orpc.consultation.submit.mutationOptions());
+  // The receipt on show. Apart from `submit.data`, which React Query sets outside a Transition, so the swap runs in
+  // one and the card animates (`swapFormBody`).
+  const [sent, setSent] = useState<typeof submit.data>();
   const failure = submit.error ? describeApiFailure({ error: submit.error, fallback: m.form_submit_failed() }) : null;
   const fieldError = (name: keyof ConsultationFormInput) => errors[name]?.message ?? failure?.fields[name];
 
@@ -100,28 +104,36 @@ export function ConsultationForm() {
     /*------ Send ------*/
     // A failure is shown from `submit.error`. The answer was spent either way, so a failed send solves a new one.
     setStage("sending");
-    const sent = await submit.mutateAsync({ ...values, captcha: answer }).then(
-      () => true,
-      () => false,
-    );
-    if (!sent) void captcha.start();
-    setStage("idle");
+    const result = await submit.mutateAsync({ ...values, captcha: answer }).catch(() => undefined);
+    if (!result) {
+      void captcha.start();
+      return setStage("idle");
+    }
+
+    /*------ Receipt ------*/
+    swapFormBody(() => {
+      setStage("idle");
+      setSent(result);
+    });
   });
 
   /*===== Sent =====*/
-  if (submit.data) {
+  if (sent) {
     return (
       <SubmissionReceipt
         title={m.consultation_receipt_title()}
         description={m.consultation_receipt_description()}
-        trackingCode={submit.data.trackingCode}
-        createdAt={submit.data.createdAt}
+        trackingCode={sent.trackingCode}
+        createdAt={sent.createdAt}
         againLabel={m.consultation_receipt_again()}
-        onAgain={() => {
-          form.reset(EMPTY);
-          submit.reset();
-          captcha.reset();
-        }}
+        onAgain={() =>
+          swapFormBody(() => {
+            form.reset(EMPTY);
+            submit.reset();
+            captcha.reset();
+            setSent(undefined);
+          })
+        }
       />
     );
   }

@@ -2,7 +2,17 @@
 /// <reference types="altcha/types/react" />
 
 import { CheckIcon, LockIcon, SendIcon, ShieldCheckIcon } from "lucide-react";
-import { type CSSProperties, type ReactNode, useEffect, useEffectEvent, useId, useRef } from "react";
+import {
+  addTransitionType,
+  type CSSProperties,
+  type ReactNode,
+  startTransition,
+  useEffect,
+  useEffectEvent,
+  useId,
+  useRef,
+  ViewTransition,
+} from "react";
 
 import {
   Breadcrumb,
@@ -82,53 +92,77 @@ export function FormPage({
         className="mt-10 max-w-3xl md:mt-14"
       />
 
-      <div className="grid overflow-hidden rounded-lg border bg-card lg:grid-cols-3">
-        {/*===== Form =====*/}
-        <div className="px-5 py-8 sm:p-10 lg:col-span-2">{children}</div>
+      {/* Only `swapFormBody` animates the card: other Transitions, hydration among them, leave it still. */}
+      <ViewTransition default="none" update={{ [FORM_SWAP]: "form-card", default: "none" }}>
+        <div className="grid overflow-hidden rounded-lg border bg-card lg:grid-cols-3">
+          {/*===== Form =====*/}
+          <ViewTransition default="none" update={{ [FORM_SWAP]: "form-body", default: "none" }}>
+            <div className="px-5 py-8 sm:p-10 lg:col-span-2">{children}</div>
+          </ViewTransition>
 
-        {/*===== Rail =====*/}
-        {/* Room under the text for the drawing, so it stays clear of the privacy note when the form side is short. */}
-        <aside
-          aria-labelledby={`${id}-steps`}
-          className="relative isolate overflow-hidden bg-band px-5 pt-8 pb-44 text-on-band sm:px-10 sm:pt-10 lg:pb-52"
-        >
-          <div className="lg:sticky lg:top-10">
-            <h2 id={`${id}-steps`} className="text-kicker font-bold text-on-band-muted">
-              {m.form_steps_title()}
-            </h2>
-            <ol className="mt-4">
-              {steps.map((step, index) => (
-                <li key={step.title} className="flex gap-4 border-b border-band-line py-5">
-                  <span aria-hidden className="pt-0.5 text-kicker font-bold text-highlight">
-                    {stepNumber(index + 1)}
-                  </span>
-                  <div>
-                    <p className="text-h4">{step.title}</p>
-                    <p className="mt-1 text-body-sm text-on-band-soft">{step.description}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+          {/*===== Rail =====*/}
+          {/* Room under the text for the drawing, so it stays clear of the privacy note when the form side is short. */}
+          <aside
+            aria-labelledby={`${id}-steps`}
+            className="relative isolate overflow-hidden bg-band px-5 pt-8 pb-44 text-on-band sm:px-10 sm:pt-10 lg:pb-52"
+          >
+            <ViewTransition default="none" update={{ [FORM_SWAP]: "form-rail", default: "none" }}>
+              <div className="lg:sticky lg:top-10">
+                <h2 id={`${id}-steps`} className="text-kicker font-bold text-on-band-muted">
+                  {m.form_steps_title()}
+                </h2>
+                <ol className="mt-4">
+                  {steps.map((step, index) => (
+                    <li key={step.title} className="flex gap-4 border-b border-band-line py-5">
+                      <span aria-hidden className="pt-0.5 text-kicker font-bold text-highlight">
+                        {stepNumber(index + 1)}
+                      </span>
+                      <div>
+                        <p className="text-h4">{step.title}</p>
+                        <p className="mt-1 text-body-sm text-on-band-soft">{step.description}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
 
-            <div className="mt-8 flex gap-3 rounded-lg border border-band-line bg-band-hover p-5">
-              <ShieldCheckIcon aria-hidden className="mt-0.5 size-5 shrink-0 text-highlight" />
-              <p className="text-body-sm text-on-band-soft">{privacy}</p>
-            </div>
-          </div>
+                <div className="mt-8 flex gap-3 rounded-lg border border-band-line bg-band-hover p-5">
+                  <ShieldCheckIcon aria-hidden className="mt-0.5 size-5 shrink-0 text-highlight" />
+                  <p className="text-body-sm text-on-band-soft">{privacy}</p>
+                </div>
+              </div>
+            </ViewTransition>
 
-          {/* Its subject keeps to its start-bottom corner, so English mirrors it. */}
-          <div
-            aria-hidden
-            style={{ "--art": `url("${drawing.src}")` } as CSSProperties}
-            className={cn(
-              "pointer-events-none absolute end-0 bottom-0 -z-10 w-64 mask-art text-art-band sm:w-72 ltr:-scale-x-100",
-              drawing.aspect,
-            )}
-          />
-        </aside>
-      </div>
+            {/* Its subject keeps to its start-bottom corner, so English mirrors it. */}
+            <div
+              aria-hidden
+              style={{ "--art": `url("${drawing.src}")` } as CSSProperties}
+              className={cn(
+                "pointer-events-none absolute end-0 bottom-0 -z-10 w-64 mask-art text-art-band sm:w-72 ltr:-scale-x-100",
+                drawing.aspect,
+              )}
+            />
+          </aside>
+        </div>
+      </ViewTransition>
     </div>
   );
+}
+
+/*===== Form Swap =====*/
+// The form and the receipt are different heights, so swapping one for the other would jump the page below. In a
+// Transition of this type, the card eases to its new height while the old body fades out and the new one in. The
+// card, its body and the rail's text are three snapshots (`form-card`, `form-body`, `form-rail` in styles.css), so
+// the card's frame stays solid, only the body fades, and the rail's text, which sits a little apart in the two states
+// as it sticks, slides to its new place instead of showing twice.
+
+const FORM_SWAP = "form-swap";
+
+/** Runs `update`, the change from the form to the receipt or back, so that the card animates the swap. */
+export function swapFormBody(update: () => void) {
+  startTransition(() => {
+    addTransitionType(FORM_SWAP);
+    update();
+  });
 }
 
 /*===== Form Section =====*/

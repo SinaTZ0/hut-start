@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, CheckIcon, CopyIcon, RotateCcwIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { Button } from "#/components/primitive/button/button";
 import { buttonVariants } from "#/components/primitive/button/button.styles";
@@ -34,7 +34,8 @@ export function SubmissionReceipt({
   const headingRef = useRef<HTMLHeadingElement>(null);
   const [copy, setCopy] = useState<"idle" | "copied" | "failed">("idle");
 
-  useEffect(() => {
+  // Before paint, so the page has scrolled to the heading by the time the form swap's view transition captures it.
+  useLayoutEffect(() => {
     headingRef.current?.focus();
   }, []);
 
@@ -64,8 +65,9 @@ export function SubmissionReceipt({
       <p className="mt-3 max-w-xl text-body text-muted-foreground">{description}</p>
 
       {/*===== Tracking Code =====*/}
-      {/* The code hangs from a dimension line, the way the department pages give a measure. */}
-      <div className="mt-10 w-full rounded-lg border border-dashed border-border-strong bg-background-alt p-5 sm:p-8">
+      {/* The code hangs from a dimension line, the way the department pages give a measure. It arrives a beat after the
+          rest of the receipt, so the code is what the visitor sees last. */}
+      <div className="mt-10 w-full animate-in rounded-lg border border-dashed border-border-strong bg-background-alt p-5 delay-150 duration-300 fill-mode-backwards fade-in motion-safe:slide-in-from-bottom-1 sm:p-8">
         <p className="text-body-sm text-muted-foreground">{m.form_receipt_code_label()}</p>
         <div className="mt-4 flex flex-wrap items-end justify-between gap-5">
           <div dir="ltr" className="flex flex-col">

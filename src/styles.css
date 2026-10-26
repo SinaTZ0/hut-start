@@ -573,6 +573,37 @@
   }
 }
 
+/*------ Form Swap ------*/
+/* A public form and its receipt replace each other inside one card (`swapFormBody` in form-page.tsx). The card's frame
+   (`form-card`), its body (`form-body`) and the rail's text (`form-rail`) are snapshotted apart: each box eases to its
+   new size and place, the frame and the rail cross-fade with themselves so they stay solid, and the old body is gone
+   before the new one shows, since the two differ everywhere and a plain cross-fade reads as a double exposure. Each
+   snapshot keeps its own height from the top, so the clip hides the taller one's lower part as the box shrinks
+   instead of letting it spill over the page. */
+::view-transition-group(.form-card),
+::view-transition-group(.form-body),
+::view-transition-group(.form-rail) {
+  overflow: clip;
+  animation-duration: 400ms;
+  animation-timing-function: var(--ease-glide);
+}
+::view-transition-old(.form-card),
+::view-transition-new(.form-card),
+::view-transition-old(.form-rail),
+::view-transition-new(.form-rail) {
+  animation-duration: 400ms;
+}
+::view-transition-old(.form-body) {
+  animation-duration: 120ms;
+  animation-timing-function: ease-out;
+}
+::view-transition-new(.form-body) {
+  animation-duration: 260ms;
+  animation-delay: 120ms;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   /* Colour transitions and hover lifts are removed entirely */
   *,

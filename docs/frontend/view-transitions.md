@@ -82,6 +82,12 @@ different scroll positions, both pages would glide up or down across the screen.
   quick clicks jump. Reach for React's `<ViewTransition>` only when CSS can't follow the change, such as a filtered
   or reordered list. It works for state updates you start with `startTransition`; query refetches don't run in a
   Transition, so a list that changes after an invalidation doesn't animate on its own.
+- **The public forms' swap** (form ↔ receipt) is the worked example: `swapFormBody` in
+  `src/components/shared/form-page/form-page.tsx` runs the update in a Transition of type `form-swap`, and the
+  `<ViewTransition>`s in `FormPage` animate only for that type (`update={{ [FORM_SWAP]: "…", default: "none" }}`).
+  Without the type, hydration, which also runs as a Transition, animated the card on every page load. Anything that
+  sets focus or scroll as the new content mounts does it in `useLayoutEffect`, before the browser captures the new
+  state; from `useEffect` it lands mid-animation and named elements end in the wrong place.
 
 ## Don'ts
 

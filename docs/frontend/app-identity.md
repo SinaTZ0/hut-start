@@ -76,9 +76,12 @@ being used, but nothing moves on its own or calls attention to itself.
   and its arrow disc fills pine; a forward arrow nudges ahead a few pixels; a row takes the `accent` wash; a disclosure
   chevron turns; a tab switcher's pill slides to the chosen tab while its content cross-fades in from that side; a panel that opens grows out of its trigger while
   what follows glides aside (the Collapsible primitive). A new component gets the same kind of response.
-- **CSS transitions, not snapshots**: motion inside a page is a CSS transition on the real element, through the
-  primitives (Tabs' indicator and panels, Collapsible's height). It stays sharp, can be interrupted mid-way and needs no library.
-  View transitions are kept for moving between pages ([view-transitions.md](./view-transitions.md)).
+- **CSS transitions first**: motion inside a page is a CSS transition on the real element, through the primitives
+  (Tabs' indicator and panels, Collapsible's height). It stays sharp, can be interrupted mid-way and needs no library.
+- **View transitions where CSS can't follow**: moving between pages, and a change CSS can't animate, such as one block
+  of content replacing another of a different height (a public form and its receipt) or a list that filters or
+  reorders. Those use React's `<ViewTransition>`, not hand-written measuring and animating code
+  ([view-transitions.md](./view-transitions.md#animating-more)).
 - **Small and short**: colour and shadow over 200ms, movement and scale over 300ms, `ease-out`. Distances stay within a
   few pixels and scale within 1.03. No bounce, spring, parallax, looping or attention-seeking animation, and nothing
   that delays an action.
