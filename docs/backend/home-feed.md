@@ -95,5 +95,5 @@ At the cutover, when the new site's editors take over:
 2. Delete `syncHomeFeed` and its helpers from `service.ts`, the `sync` procedure and contract, and the
    `startHomeFeedSync()` call in `src/server.ts`.
 3. Remove both variables from `src/env.server.ts`, `.env.example`, `.env.production.example`, `compose.prod.yaml`,
-   `deploy/deploy.sh` and `playwright.config.ts`.
+   the deploy tool's settings registry (`tools/deploy/internal/settings/settings.go`) and `playwright.config.ts`.
 4. Keep the tables and `homeFeed.get`. Editors' tools write the same rows; a placement says where an article shows.

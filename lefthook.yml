@@ -16,6 +16,10 @@ pre-commit:
       run: pnpm exec prettier --write --ignore-unknown {staged_files}
       # Re-stages what Prettier changed, so the commit holds the formatted files.
       stage_fixed: true
+    - name: deploy-binary
+      # The deploy tool is committed as a binary (docs/deployment.md → The Deploy Tool): a source change needs it rebuilt.
+      glob: "tools/deploy/**"
+      run: bash tools/deploy/build.sh --check
 
 # Conventional Commits (`feat: …`, `fix(scope): …`), checked by commitlint (`commitlint.config.js`).
 commit-msg:
