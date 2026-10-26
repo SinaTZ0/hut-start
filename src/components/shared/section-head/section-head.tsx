@@ -7,6 +7,7 @@ import {
   sectionHeadVariants,
   sectionKickerClasses,
   sectionLedeClasses,
+  sectionRuleClasses,
   sectionTitleClasses,
 } from "./section-head.styles";
 
@@ -23,14 +24,27 @@ export type SectionHeadProps = VariantProps<typeof sectionHeadVariants> & {
   lede?: ReactNode;
   /** The section's "see all" link, at the far end. */
   more?: { label: ReactNode; href: string };
+  /** Draws a ruler from the heading to the "see all" link (app-identity.md → Brand). */
+  ruled?: boolean;
   className?: string;
 };
 
 /**
  * A section's heading block: a gold dash and kicker, the heading, an optional lede, and the "see all" link at the far
- * end. `tone="band"` is for sections on a pine band; `as="h1"` makes it a page's heading.
+ * end, with a ruler between them when `ruled`. `tone="band"` is for sections on a pine band; `as="h1"` makes it a page's
+ * heading.
  */
-export function SectionHead({ id, as: Heading = "h2", kicker, title, lede, more, tone, className }: SectionHeadProps) {
+export function SectionHead({
+  id,
+  as: Heading = "h2",
+  kicker,
+  title,
+  lede,
+  more,
+  ruled = false,
+  tone,
+  className,
+}: SectionHeadProps) {
   return (
     <div data-slot="section-head" className={cn(sectionHeadVariants({ tone }), className)}>
       <div>
@@ -46,6 +60,7 @@ export function SectionHead({ id, as: Heading = "h2", kicker, title, lede, more,
           </p>
         )}
       </div>
+      {ruled && <span aria-hidden data-slot="section-rule" className={sectionRuleClasses} />}
       {more && (
         <TextLink href={more.href} tone={tone === "band" ? "highlight" : "default"}>
           {more.label}

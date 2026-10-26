@@ -11,6 +11,7 @@ const meta = {
   component: SectionHead,
   argTypes: {
     tone: { control: "inline-radio", options: toneOptions },
+    ruled: { control: "boolean" },
   },
   args: {
     id: "news",
@@ -19,6 +20,7 @@ const meta = {
     lede: "روایت رویدادها، پژوهش‌ها و زندگی جامعه دانشگاهی",
     more: { label: "همه اخبار دانشگاه", href: "#news" },
     tone: "default",
+    ruled: false,
   },
 } satisfies Meta<typeof SectionHead>;
 
@@ -27,6 +29,9 @@ type Story = StoryObj<typeof meta>;
 
 /*===== Stories =====*/
 export const Playground: Story = {};
+
+// The home page's sections: a draughtsman's ruler runs from the heading to the link.
+export const Ruled: Story = { args: { ruled: true } };
 
 // On a pine band the kicker and the link turn gold.
 export const OnBand: Story = {

@@ -25,17 +25,25 @@ const twLedeStyles = defineStyles({
   typography: "text-body-sm",
 });
 
+// A draughtsman's rule (the `ruler` utility) running from the heading to the "see all" link, level with the link's
+// text. Left out on phones, where the link wraps under the heading.
+const twRuleStyles = defineStyles({
+  layout: "hidden flex-1 md:block",
+  geometry: "mb-3.5 h-3 min-w-8",
+  appearance: "ruler",
+});
+
 /*===== Tones =====*/
 
 // `band` is for a section head on a pine band: gold kicker, light title and lede.
 const twTone = defineStyles({
   default: {
     appearance:
-      "**:data-[slot=section-kicker]:text-brand-text **:data-[slot=section-lede]:text-muted-foreground **:data-[slot=section-title]:text-heading",
+      "**:data-[slot=section-kicker]:text-brand-text **:data-[slot=section-lede]:text-muted-foreground **:data-[slot=section-rule]:text-border-strong **:data-[slot=section-title]:text-heading",
   },
   band: {
     appearance:
-      "**:data-[slot=section-kicker]:text-highlight **:data-[slot=section-lede]:text-on-band-muted **:data-[slot=section-title]:text-on-band",
+      "**:data-[slot=section-kicker]:text-highlight **:data-[slot=section-lede]:text-on-band-muted **:data-[slot=section-rule]:text-band-line-strong **:data-[slot=section-title]:text-on-band",
   },
 });
 
@@ -49,5 +57,13 @@ const sectionHeadVariants = cva(joinStyles(twSectionHeadStyles), {
 const sectionKickerClasses = joinStyles(twKickerStyles);
 const sectionTitleClasses = joinStyles(twTitleStyles);
 const sectionLedeClasses = joinStyles(twLedeStyles);
+const sectionRuleClasses = joinStyles(twRuleStyles);
 
-export { sectionHeadVariants, sectionKickerClasses, sectionTitleClasses, sectionLedeClasses, twTone };
+export {
+  sectionHeadVariants,
+  sectionKickerClasses,
+  sectionTitleClasses,
+  sectionLedeClasses,
+  sectionRuleClasses,
+  twTone,
+};
