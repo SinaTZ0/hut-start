@@ -14,6 +14,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	osuser "os/user"
 	"strconv"
 	"strings"
 	"time"
@@ -222,9 +223,14 @@ func Open(p *project.Project, s *stack.Stack, d time.Duration, dump bool) error 
 	}
 
 	/*------ How to Reach It ------*/
+	// The account the operator signed in as: sudo's caller, else this process's own. $USER can be unset (cron,
+	// `docker exec`), so the user database decides last.
 	login := os.Getenv("SUDO_USER")
 	if login == "" {
 		login = os.Getenv("USER")
+	}
+	if u, err := osuser.Current(); login == "" && err == nil {
+		login = u.Username
 	}
 	domain := envfile.Get(p.EnvFile(), "DOMAIN")
 	ui.OK("The database browser is open.")

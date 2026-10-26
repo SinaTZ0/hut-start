@@ -442,7 +442,9 @@ its database connection: a statement still running finishes first (outside a tra
 closes on its own at the time it printed, in two ways that don't depend on each other. The container runs pgweb under
 `timeout`, with `restart: "no"`, so it stops on time even with nobody logged in, and stays down after a reboot. And
 every run of the tool, cron's nightly backup included, removes a browser that's past its time. `deploy/deploy.sh pgweb
-status` and the pgweb status line say until when it's open.
+status` and the pgweb status line say until when it's open. A deploy while it's open (Update, Apply) leaves it running:
+`--remove-orphans` removes only containers whose service is gone from `compose.prod.yaml`, and `pgweb` is still there,
+in its profile. It keeps its sign-in and closing time.
 
 The database's own login can't be made to expire for the browser alone: it's the app's login, and expiring it would
 lock the app out. That's why the time limit lives in the container instead.
