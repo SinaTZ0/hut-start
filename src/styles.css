@@ -194,6 +194,8 @@
   /* The signature drawings' inks, for a drawing masked in `currentColor` (`mask-art`) */
   --color-art-ink: var(--art-ink);
   --color-art-band: var(--art-band);
+  --color-art-menu: var(--art-menu);
+  --color-art-menu-glass: var(--art-menu-glass);
 
   /*------ Radius ------*/
   /* xs 2 (hairline bars), sm 10 (buttons, inputs, tiles, thumbnails), md 16 (cards, popovers), lg 22 (the large
@@ -288,6 +290,10 @@
   /* The home hero's drawing of the campus: the picture itself there, so stronger than a band's backdrop. The hero is
      pine in both themes, so it keeps this in dark too. */
   --art-hero: color-mix(in srgb, var(--on-band) 30%, transparent);
+  /* A main menu card's ground: under the links, so fainter than a page's drawing. `art-menu-glass` is for the dark glass
+     card over the hero photo, the same in both themes. */
+  --art-menu: color-mix(in srgb, var(--heading) 20%, transparent);
+  --art-menu-glass: color-mix(in srgb, var(--on-band) 20%, transparent);
 
   --elevation-sm: 0 1px 2px rgb(16 61 64 / 4%);
   --elevation-md: 0 1px 2px rgb(16 61 64 / 4%), 0 8px 24px -12px rgb(16 61 64 / 12%);
@@ -356,6 +362,7 @@
   /* Pale lines on the dark page, quieter than in light: light ink on dark reads stronger */
   --art-ink: color-mix(in srgb, var(--heading) 20%, transparent);
   --art-band: color-mix(in srgb, var(--on-band) 9%, transparent);
+  --art-menu: color-mix(in srgb, var(--heading) 11%, transparent);
 
   --elevation-sm: 0 1px 2px rgb(0 0 0 / 30%);
   --elevation-md: 0 1px 2px rgb(0 0 0 / 30%), 0 8px 24px -12px rgb(0 0 0 / 50%);
@@ -545,6 +552,23 @@
     cover,
     100% 100%;
   mask-position: center top;
+  mask-repeat: no-repeat;
+  mask-composite: intersect;
+}
+
+/* A main menu card's ground (`currentColor`): the drawing covers the card from its bottom end corner, where the groups
+   leave the card empty, and fades out toward the summary at the start and the headings at the top. The end is the left
+   in Persian; English mirrors the layer. */
+@utility art-card {
+  background-color: currentColor;
+  mask-image:
+    var(--art), linear-gradient(to right, #000 25%, transparent 80%),
+    linear-gradient(to top, #000 30%, rgb(0 0 0 / 35%) 100%);
+  mask-size:
+    cover,
+    100% 100%,
+    100% 100%;
+  mask-position: left bottom;
   mask-repeat: no-repeat;
   mask-composite: intersect;
 }

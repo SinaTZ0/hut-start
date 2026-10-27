@@ -45,3 +45,14 @@ export const FORM_DRAWINGS = {
 
 /** The privacy statement's drawing, behind its heading: an exploded padlock with its key and keyhole plate. */
 export const PRIVACY_DRAWING = { src: "/images/privacy/privacy.webp", aspect: "aspect-720/468" };
+
+/** The main menu's drawings, one per section's card, laid under the whole card as a wide notebook sheet with its
+ * subject in the bottom corner the link groups leave empty: the university building before Alvand for the university, a
+ * Pacioli solid over an open book with dividers for education, gears, a worm screw and a wing for research, and students
+ * under a chenar for campus life. Keyed by the section's `id` (`NAV_SECTIONS`). */
+export const NAV_DRAWINGS: Record<string, string> = {
+  about: "/images/nav/about.webp",
+  education: "/images/nav/education.webp",
+  research: "/images/nav/research.webp",
+  "campus-life": "/images/nav/campus.webp",
+};

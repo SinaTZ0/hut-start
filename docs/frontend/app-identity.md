@@ -68,6 +68,13 @@ translation ([i18n.md](./i18n.md)).
   `FORM_DRAWINGS`): a quill, a sealed letter and a balance scale for complaints; an open book with dividers, a compass
   and a lantern for consultation. Each sits in the far corner of its page's pine rail (`mask-art text-art-band`), under
   the steps; the receipt's tracking code hangs from a dimension line.
+- **Menu drawings**: each card of the main menu lies on a drawing of its own, in `public/images/nav/` (listed in
+  `NAV_DRAWINGS`): a wide notebook sheet whose subject fills the bottom corner the link groups leave empty and whose
+  studies and construction lines fade out under the links (`art-card`), toward the summary and the headings. The
+  university building before Alvand for the university, a Pacioli solid over an open book with dividers for education,
+  gears, a worm screw and a wing for research, and students under a chenar for campus life. Its ink is fainter than a
+  page's, since links sit on it: `art-menu` on the paper cards, `art-menu-glass` on the dark glass card over the hero.
+  English mirrors it.
 - **Rules out**: stock photography, illustrations other than the signature drawings, gradients as decoration, a second
   accent colour, and gold on large areas.
 - **References**: the Kaj homepage source and screenshot in [reference/kaj/](./reference/kaj/), and its
