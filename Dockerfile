@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
 
 # Production image: the built app, runtime dependencies only, and the deploy scripts (`migrate.mjs`,
-# `init-storage.mjs`) that `compose.prod.yaml` runs from the same image. See docs/deployment.md.
+# `init-storage.mjs`) that `compose.prod.yaml` runs from the same image, plus the departments' seed that
+# `deploy/deploy.sh departments` runs. See docs/deployment.md.
 
 # ===== Base =====
 FROM node:24-slim AS base
@@ -35,6 +36,10 @@ FROM deps AS build
 ARG SENTRY_DSN=""
 COPY . .
 RUN pnpm build
+# The departments' seed (`src/db/seed-departments.ts`) as one plain-JavaScript file, since the runtime image has no
+# TypeScript loader or `#/` alias. Packages stay imports, read from the runtime's node_modules.
+RUN pnpm exec esbuild src/db/seed-departments.ts --bundle --platform=node --format=esm --target=node24 \
+    --packages=external --sourcemap --outfile=/app/deploy-dist/seed-departments.mjs
 
 # ===== Runtime =====
 FROM node:24-slim AS runtime
@@ -53,6 +58,7 @@ COPY --from=build /app/src ./src
 COPY package.json ./
 COPY drizzle ./drizzle
 COPY deploy/migrate.mjs deploy/init-storage.mjs ./deploy/
+COPY --from=build /app/deploy-dist ./deploy/
 
 USER node
 EXPOSE 3000

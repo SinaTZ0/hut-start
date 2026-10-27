@@ -43,7 +43,8 @@ gets the `admin` key.
   8) Status            containers, health, disk
   9) Logs              pick a service, follow
  10) Make admin        promote an account by email
- 11) Database browser  browse and edit the database, for a set time
+ 11) Load departments  add the departments' pages that are missing
+ 12) Database browser  browse and edit the database, for a set time
   0) Quit
 
   ● Project      up to date  (381286c)
@@ -146,6 +147,12 @@ choose Make admin (`deploy/deploy.sh admin you@example.com`), or by hand:
 docker compose -f compose.prod.yaml exec db \
   psql -U app -d app -c "update \"user\" set role = 'admin' where email = 'you@example.com';"
 ```
+
+**The departments.** Migrations create the department tables empty, so `/departments/<slug>` is "not found" until
+they're loaded. The image carries `pnpm db:seed:departments` bundled as `deploy/seed-departments.mjs`; once there is
+an admin, choose Load departments (`deploy/deploy.sh departments --as you@example.com`). It downloads the staff photos
+from hut.ac.ir and uploads them as that admin. A department that exists is skipped, so it's safe to run again;
+`--replace mech` loads one again from `src/db/departments/`, losing the edits made to it on the site.
 
 ## HTTPS Certificates
 

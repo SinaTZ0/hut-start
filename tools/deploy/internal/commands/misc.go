@@ -111,6 +111,53 @@ func (t *Tool) Admin(args []string) error {
 	return nil
 }
 
+/*===== Load Departments =====*/
+
+// Departments loads the departments' pages from the seed bundled into the app's image (`src/db/seed-departments.ts`).
+// A department that exists is skipped, so editors' changes stay; --replace loads it again, and slugs limit the run.
+// The photos are uploaded as an admin, by email: --as, or asked on a terminal.
+func (t *Tool) Departments(args []string) error {
+	if err := t.requireSetUp(); err != nil {
+		return err
+	}
+	email, seedArgs := "", []string{}
+	for i := 0; i < len(args); i++ {
+		switch arg := args[i]; {
+		case arg == "--as":
+			if i+1 >= len(args) {
+				return ui.Usage("--as needs an admin's email.")
+			}
+			i++
+			email = args[i]
+		case arg == "--replace" || !strings.HasPrefix(arg, "-"):
+			seedArgs = append(seedArgs, arg)
+		default:
+			return ui.Usage("departments doesn't know %s (see deploy/deploy.sh help)", arg)
+		}
+	}
+	if email == "" {
+		if !ui.Interactive {
+			return ui.Usage("departments needs --as <email> without a terminal.")
+		}
+		var err error
+		if email, err = ui.Ask("Email of an admin (the photos' uploader)", "", "the email"); err != nil {
+			return err
+		}
+	}
+	if !strings.Contains(email, "@") {
+		return ui.Fail("%q isn't an email address.", email)
+	}
+	// A one-off container of the running app's service: its image, settings and networks (database, storage). The
+	// email goes in as a variable, never as part of a command line the shell reads.
+	run := append([]string{"run", "--rm", "--no-deps", "-T", "-e", "SEED_ADMIN_EMAIL=" + email, "app",
+		"node", "deploy/seed-departments.mjs"}, seedArgs...)
+	if err := t.S.Run(run...); err != nil {
+		return interrupt.Check(ui.Fail("Loading the departments failed (see above)."))
+	}
+	ui.OK("Departments loaded.")
+	return nil
+}
+
 /*===== Database Browser =====*/
 
 // Pgweb opens, closes or reports on the database browser. Without a subcommand, on a terminal, it offers what fits:

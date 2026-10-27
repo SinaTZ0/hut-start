@@ -29,6 +29,10 @@ With no command, a menu with the stack's status under it.
   status                        containers, disk, backups and the status lines
   logs [<service>]              follow a service's logs: %s
   admin [<email>]               give an account the admin role
+  departments [--as <email>] [--replace] [<slug>...]
+                                load the departments' pages that are missing, photos uploaded as that admin;
+                                --replace loads existing ones again (editors' changes are lost); without a
+                                terminal, --as is needed
   pgweb open [--for <time>] [--no-backup]
                                 a database browser with full access, through an SSH tunnel, for 30m, 4h…
                                 (24h at most, the default); a database dump first, unless --no-backup
