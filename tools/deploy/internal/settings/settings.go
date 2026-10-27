@@ -70,6 +70,8 @@ var Registry = []Setting{
 	// `default`, not `int`: 0 is allowed and turns the timer off.
 	{"HOME_FEED_SYNC_MINUTES", "default", Stack},
 	{"HOME_FEED_SYNC_SECRET", "secret:32:32", Stack},
+	// Empty turns the design preview off, so it isn't generated.
+	{"DESIGN_PREVIEW_KEY", "optional", Stack},
 	// Overrides `compose.prod.yaml` reads but the example leaves out; Compose has a default for each.
 	{"LOG_SLOW_REQUEST_MS", "int", Stack},
 	{"LOG_SLOW_QUERY_MS", "int", Stack},

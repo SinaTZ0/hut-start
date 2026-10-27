@@ -43,6 +43,8 @@ var (
 	bucketName  = regexp.MustCompile(`^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$`)
 	httpURL     = regexp.MustCompile(`^https?://[^/]+`)
 	dsnShape    = regexp.MustCompile(`^https?://[^/@]+@[^/]+/[0-9]+$`)
+	// The app refuses to start with a shorter one (`src/env.server.ts`), and it goes in a link's query string.
+	previewKey = regexp.MustCompile(`^[A-Za-z0-9_-]{8,}$`)
 	// Compose expands `$` and treats quotes, `#` and spaces specially, so a stack value with them isn't what it looks
 	// like.
 	unsafeChars = regexp.MustCompile("[[:space:]$\"'`#\\\\]")
@@ -145,6 +147,9 @@ func (c Checker) Validate(key, value string, inExample bool) []Problem {
 		}
 
 	case kind == "optional":
+		if key == "DESIGN_PREVIEW_KEY" && value != "" && !previewKey.MatchString(value) {
+			return p(Ask, Invalid, "needs at least 8 letters, digits, _ or - (or empty, to turn the preview off)")
+		}
 
 	case kind == "registry":
 		switch {
