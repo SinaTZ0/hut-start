@@ -25,8 +25,9 @@ import type { AcademicRank, Degree, DocumentFormat, Honorific, MemberKind } from
 import { attachMedia, deleteMedia, uploadMedia } from "#/orpc/media/service";
 
 /*===== Seed Departments =====*/
-// Loads the departments' pages from `src/db/departments/`. Run with `pnpm db:seed:departments` after `pnpm db:seed`:
-// the photos are uploaded as the admin (SEED_ADMIN_EMAIL), since every media row has an uploader.
+// Loads the departments' pages from `src/db/departments/`: `pnpm db:seed:departments`, or in production
+// `deploy/deploy.sh departments`. Every media row names its uploader, so the photos are uploaded as a system user the
+// seed creates (see `systemUser`).
 //
 // A department that already exists is skipped, so the editor's changes are never overwritten. `--replace` deletes it
 // first (its photos too) and loads it again; name slugs after it to limit the run: `-- --replace ee`.
@@ -91,6 +92,7 @@ async function uploadPhoto({ url, uploader }: { url: string; uploader: string })
       type: response.headers.get("content-type") ?? "",
     });
 
+    // The role only passes the upload's kind check (portraits are an admin's); the stored row records just the id.
     const result = await uploadMedia({ db, user: { id: uploader, role: "admin" }, kind: "portrait", file });
     if (result.kind !== "success") throw new Error(`upload refused: ${result.kind}`);
     return result.media.id;
@@ -98,6 +100,22 @@ async function uploadPhoto({ url, uploader }: { url: string; uploader: string })
     console.warn(`Skipped a photo (${error instanceof Error ? error.message : error}): ${url}`);
     return null;
   }
+}
+
+/*===== System User =====*/
+const SYSTEM_USER = { id: "system", name: "System", email: "system@system.invalid" };
+
+/**
+ * Returns the user the seed's photos are credited to, creating it on the first run. It can't sign in: it has no
+ * password (no `account` row), it's blocked, and `.invalid` mail is never delivered. Its email also keeps anyone from
+ * signing up as it.
+ */
+async function systemUser(): Promise<{ id: string }> {
+  await db
+    .insert(user)
+    .values({ ...SYSTEM_USER, role: "user", status: "blocked" })
+    .onConflictDoNothing({ target: user.id });
+  return { id: SYSTEM_USER.id };
 }
 
 /*===== Remove =====*/
@@ -209,10 +227,7 @@ const args = process.argv.slice(2);
 const replace = args.includes("--replace");
 const only = args.filter((arg) => !arg.startsWith("--"));
 
-const email = process.env.SEED_ADMIN_EMAIL?.toLowerCase();
-if (!email) throw new Error("Set SEED_ADMIN_EMAIL: the photos are uploaded as that admin.");
-const [admin] = await db.select({ id: user.id }).from(user).where(eq(user.email, email));
-if (!admin) throw new Error(`No account for ${email}. Run \`pnpm db:seed\` first.`);
+const system = await systemUser();
 
 for (const seed of DEPARTMENTS) {
   if (only.length > 0 && !only.includes(seed.slug)) continue;
@@ -227,10 +242,10 @@ for (const seed of DEPARTMENTS) {
   // Downloads and uploads happen before the transaction, so it doesn't hold a connection open over the network.
   const photos: (string | null)[] = [];
   for (const member of seed.members) {
-    photos.push(member.photoUrl ? await uploadPhoto({ url: member.photoUrl, uploader: admin.id }) : null);
+    photos.push(member.photoUrl ? await uploadPhoto({ url: member.photoUrl, uploader: system.id }) : null);
   }
 
-  await db.transaction((tx) => insertDepartment({ tx, seed, photos, uploader: admin.id }));
+  await db.transaction((tx) => insertDepartment({ tx, seed, photos, uploader: system.id }));
   console.info(`Seeded ${seed.slug}: ${photos.filter(Boolean).length} photos.`);
 }
 

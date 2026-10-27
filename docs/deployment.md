@@ -149,10 +149,10 @@ docker compose -f compose.prod.yaml exec db \
 ```
 
 **The departments.** Migrations create the department tables empty, so `/departments/<slug>` is "not found" until
-they're loaded. The image carries `pnpm db:seed:departments` bundled as `deploy/seed-departments.mjs`; once there is
-an admin, choose Load departments (`deploy/deploy.sh departments --as you@example.com`). It downloads the staff photos
-from hut.ac.ir and uploads them as that admin. A department that exists is skipped, so it's safe to run again;
-`--replace mech` loads one again from `src/db/departments/`, losing the edits made to it on the site.
+they're loaded. The image carries `pnpm db:seed:departments` bundled as `deploy/seed-departments.mjs`; choose Load
+departments (`deploy/deploy.sh departments`). It needs no account: it downloads the staff photos from hut.ac.ir and
+credits them to a `system` user it creates, which can't sign in. A department that exists is skipped, so it's safe to
+run again; `--replace mech` loads one again from `src/db/departments/`, losing the edits made to it on the site.
 
 ## HTTPS Certificates
 
