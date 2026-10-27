@@ -14,8 +14,7 @@ const twListStyles = defineStyles({
 
 /*===== Tones =====*/
 // What the menu sits on. `paper`: a light bar. `band`: a pine bar, where each tab fills the bar's height and a gold
-// rule under it marks hover and the open section, and the card opens as a full-width panel under the bar (anchor it to
-// the bar). `glass`: a photo, with the tabs in a frosted glass capsule and the card in dark glass. `frost`: the same
+// rule under it marks hover and the open section. `glass`: a photo, with the tabs in a frosted glass capsule and the card in dark glass. `frost`: the same
 // capsule in frosted paper, for a bar laid over a light page.
 
 const twListTone = defineStyles({
@@ -111,10 +110,9 @@ const twContentStyles = defineStyles({
   motion: "motion-reduce:transition-none",
 });
 
-// The band's panel spans the bar, so its content lines up with the bar's own edge.
 const twContentTone = defineStyles({
   paper: { geometry: "p-6" },
-  band: { geometry: "px-edge pt-7 pb-8" },
+  band: { geometry: "p-6" },
   glass: { geometry: "p-6" },
   frost: { geometry: "p-6" },
 });
@@ -148,10 +146,9 @@ const twPopupTone = defineStyles({
     geometry: "w-(--popup-width) rounded-md",
     appearance: "bg-popover text-popover-foreground shadow-md ring-1 ring-border",
   },
-  // As wide as the bar it's anchored to, with a hairline foot instead of a ring around it.
   band: {
-    geometry: "w-(--anchor-width) border-b",
-    appearance: "border-border bg-card text-card-foreground shadow-lg",
+    geometry: "w-(--popup-width) rounded-lg",
+    appearance: "bg-card text-card-foreground shadow-lg ring-1 ring-border",
   },
   glass: {
     geometry: "w-(--popup-width) rounded-lg",

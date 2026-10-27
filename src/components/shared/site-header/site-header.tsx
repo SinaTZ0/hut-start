@@ -1,6 +1,5 @@
 import { Link, useMatches } from "@tanstack/react-router";
 import { LogInIcon, UserIcon } from "lucide-react";
-import { useRef } from "react";
 
 import type { NavigationMenuTone } from "#/components/primitive/navigation-menu/navigation-menu";
 import { buttonVariants } from "#/components/primitive/button/button.styles";
@@ -121,25 +120,23 @@ function HeaderTools({ viewer, tone }: { viewer: Viewer | null; tone: HeaderTone
 /*===== Pine Band =====*/
 
 /**
- * One pine bar: brand, the menu (its sections' panels open the bar's full width), tools and the portal. On wide
+ * One bar: brand, the menu, tools and the portal. It's light by day and pine at night (`band-paper-by-day`). On wide
  * screens it sticks to the top and turns compact once the page scrolls; the header keeps its full height in the page,
  * so nothing under it moves.
  */
 function PineHeader({ viewer }: { viewer: Viewer | null }) {
-  const barRef = useRef<HTMLDivElement>(null);
   const compact = useScrolled();
 
   return (
     <header className="pointer-events-none relative z-30 lg:sticky lg:top-0 lg:h-18">
       <div
-        ref={barRef}
         className={cn(
-          "pointer-events-auto flex h-15 items-center gap-6 border-b border-band-line bg-band-deep px-edge text-on-band transition-all duration-200 ease-out motion-reduce:transition-none",
+          "pointer-events-auto flex h-15 items-center gap-6 border-b border-band-line bg-band-deep px-edge text-on-band transition-all duration-200 ease-out band-paper-by-day motion-reduce:transition-none",
           compact ? "shadow-lg" : "lg:h-18",
         )}
       >
         <Brand tone="band" compact={compact} />
-        <MainNav tone="band" anchor={barRef} className="mx-auto hidden self-stretch lg:flex" />
+        <MainNav tone="band" className="mx-auto hidden self-stretch lg:flex" />
         <HeaderTools viewer={viewer} tone="band" />
         <div className="ms-auto lg:hidden">
           <PortalLink tone="band" iconOnly />

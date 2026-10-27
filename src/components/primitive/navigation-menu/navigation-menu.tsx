@@ -28,21 +28,18 @@ const ToneContext = createContext<NavigationMenuTone>("paper");
 /*===== Navigation Menu =====*/
 
 export type NavigationMenuProps = NavigationMenuPrimitive.Root.Props &
-  Pick<NavigationMenuPrimitive.Positioner.Props, "align" | "anchor" | "sideOffset" | "collisionPadding"> & {
+  Pick<NavigationMenuPrimitive.Positioner.Props, "align" | "sideOffset"> & {
     /** What the menu sits on (`navigation-menu.styles.ts` → Tones). */
     tone?: NavigationMenuTone;
   };
 
 /**
  * A `<nav>` of triggers and links. Triggers open on hover (after `delay`) as well as on click and keyboard, and every
- * section's content shows in one shared popup, rendered here, that follows the open trigger and resizes to fit. Give
- * it an `anchor` to open under that element instead, such as the whole header bar.
+ * section's content shows in one shared popup, rendered here, that follows the open trigger and resizes to fit.
  */
 function NavigationMenu({
   align = "start",
-  anchor,
   sideOffset,
-  collisionPadding,
   tone = "paper",
   className,
   children,
@@ -56,12 +53,7 @@ function NavigationMenu({
         {...props}
       >
         {children}
-        <NavigationMenuPositioner
-          align={align}
-          anchor={anchor}
-          sideOffset={sideOffset}
-          collisionPadding={collisionPadding}
-        />
+        <NavigationMenuPositioner align={align} sideOffset={sideOffset} />
       </NavigationMenuPrimitive.Root>
     </ToneContext>
   );

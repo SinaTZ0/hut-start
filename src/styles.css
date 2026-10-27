@@ -432,6 +432,21 @@
   );
 }
 
+/* The pine header by day: the band's colours turned to paper inside it, so the bar keeps the band's shape (full-height
+   tabs, gold rule) on a light ground, and is pine again at night. Everything on the bar already takes the band tokens. */
+@utility band-paper-by-day {
+  &:not(:is(.dark *)) {
+    --band-deep: var(--background-alt);
+    --on-band: var(--heading);
+    --on-band-soft: var(--foreground);
+    --on-band-muted: var(--muted-foreground);
+    --band-line: var(--border);
+    --band-line-strong: var(--border);
+    --band-control: var(--input);
+    --band-hover: var(--accent);
+  }
+}
+
 /* The university emblem (a white PNG) drawn in `currentColor`, so it takes pine on light grounds and white on bands */
 @utility mask-logo {
   mask: url("/images/logo.png") center / contain no-repeat;

@@ -2,6 +2,7 @@ import { useLocation, useMatches, useNavigate } from "@tanstack/react-router";
 import { LinkIcon, PaletteIcon, RotateCcwIcon } from "lucide-react";
 import { useEffect, useEffectEvent } from "react";
 
+import { Badge } from "#/components/primitive/badge/badge";
 import { Button } from "#/components/primitive/button/button";
 import { Field, FieldLabel, FieldLegend, FieldSet, FieldTitle } from "#/components/primitive/field/field";
 import {
@@ -24,6 +25,7 @@ import {
   designVariantsForPage,
   serializeDesignChoices,
 } from "#/lib/design-variants";
+import { formatNumber } from "#/lib/locale";
 import { m } from "#/paraglide/messages";
 
 /*===== Share Link =====*/
@@ -67,6 +69,7 @@ function useRememberedLink(remember: () => void) {
 
 /*===== Switch =====*/
 
+/** A switch's designs, each with its number (its place in the registry), so a reviewer can say "header 2". */
 function VariantSwitch<Id extends DesignVariantId>({
   id,
   value,
@@ -83,10 +86,13 @@ function VariantSwitch<Id extends DesignVariantId>({
     <FieldSet>
       <FieldLegend variant="label">{variant.label()}</FieldLegend>
       <RadioGroup value={value} onValueChange={(option) => onChange(option as DesignOption<Id>)}>
-        {options.map(([option, label]) => (
+        {options.map(([option, label], index) => (
           <FieldLabel key={option} htmlFor={`design-${id}-${option}`}>
             <Field orientation="horizontal">
-              <FieldTitle>{label()}</FieldTitle>
+              <FieldTitle>
+                <Badge variant="outline">{formatNumber(index + 1)}</Badge>
+                {label()}
+              </FieldTitle>
               <RadioGroupItem value={option} id={`design-${id}-${option}`} />
             </Field>
           </FieldLabel>

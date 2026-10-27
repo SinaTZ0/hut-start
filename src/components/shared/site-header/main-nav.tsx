@@ -1,5 +1,3 @@
-import type { RefObject } from "react";
-
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -19,12 +17,12 @@ import { useClosedOnNavigation } from "./use-closed-on-navigation";
 
 /*===== Styles =====*/
 
-// The summary tile and the group headings, per tone: pine on the band's white panel, glass in the dark glass card.
+// The summary tile and the group headings, per tone: pine on the band's white card, glass in the dark glass card.
 const panelTone = {
   paper: { summary: "bg-accent text-muted-foreground", title: "text-heading", link: "default", group: "" },
   frost: { summary: "bg-accent text-muted-foreground", title: "text-heading", link: "default", group: "" },
   band: {
-    summary: "w-70 rounded-lg bg-band p-6 text-on-band-soft",
+    summary: "w-64 rounded-md bg-band p-6 text-on-band-soft",
     title: "text-on-band",
     link: "highlight",
     group: "mb-2 border-b pb-2",
@@ -47,7 +45,7 @@ function SectionPanel({ section, tone }: { section: NavSection; tone: Navigation
   const styles = panelTone[tone];
 
   return (
-    <div className={cn("flex", tone === "band" ? "gap-10" : "gap-6")}>
+    <div className={cn("flex", tone === "band" ? "gap-8" : "gap-6")}>
       {/*------ Summary ------*/}
       <div className={cn("flex w-56 flex-col gap-2 rounded-sm p-5 text-body-sm", styles.summary)}>
         <p className={cn("text-h4", styles.title)}>{section.title()}</p>
@@ -59,7 +57,7 @@ function SectionPanel({ section, tone }: { section: NavSection; tone: Navigation
 
       {/*------ Groups ------*/}
       {section.groups.map((group) => (
-        <div key={group.title()} className={tone === "band" ? "w-55" : "w-44"}>
+        <div key={group.title()} className={tone === "band" ? "w-48" : "w-44"}>
           <h2 className={cn("mb-1 px-2 text-title text-highlight-text", styles.group)}>
             {group.href ? (
               <SiteLink href={group.href} className="underline-offset-4 hover:underline">
@@ -87,8 +85,6 @@ function SectionPanel({ section, tone }: { section: NavSection; tone: Navigation
 export type MainNavProps = {
   /** What the header bar under the menu is (`navigation-menu.styles.ts` → Tones). */
   tone: NavigationMenuTone;
-  /** Opens the card under this element (the band's whole bar) instead of under the open section. */
-  anchor?: RefObject<HTMLElement | null>;
   className?: string;
 };
 
@@ -96,18 +92,15 @@ export type MainNavProps = {
  * The university's main menu on wide screens (phones use the tab bar's menu sheet). Each section with groups opens its
  * card on hover or click; a section without groups is a plain link in the row.
  */
-export function MainNav({ tone, anchor, className }: MainNavProps) {
+export function MainNav({ tone, className }: MainNavProps) {
   const [openId, setOpenId] = useClosedOnNavigation<string | null>(null);
 
   return (
     <NavigationMenu
       aria-label={m.nav_main()}
       tone={tone}
-      // Anchored to the bar, the panel spans it edge to edge, so it can't slide along it or keep clear of the screen's.
-      align={anchor ? "start" : "center"}
-      anchor={anchor}
-      sideOffset={anchor ? 0 : 12}
-      collisionPadding={anchor ? 0 : undefined}
+      align="center"
+      sideOffset={12}
       value={openId}
       onValueChange={(value) => setOpenId(value)}
       className={className}

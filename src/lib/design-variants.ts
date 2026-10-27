@@ -8,7 +8,10 @@ import { m } from "#/paraglide/messages";
 type DesignVariant = {
   /** What the switch is called in the preview panel. */
   label: () => string;
-  /** Each design's id and name. The id goes in the cookie and the share link. */
+  /**
+   * Each design's id and name. The id goes in the cookie and the share link. The panel numbers the designs in this
+   * order (1, 2, …) for reviewers to name them by, so add new ones at the end.
+   */
   options: Record<string, () => string>;
   default: string;
   /** The route paths (as declared in `src/routes.ts`) where the switch shows, or `all` for every page. */
