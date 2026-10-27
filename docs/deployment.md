@@ -244,7 +244,9 @@ seconds.
 ## Rolling Back
 
 Every build tags the app's image with the commit it was built from (`template-app:381286c`), and the newest three are
-kept (`KeepVersions` in `tools/deploy/internal/stack`); older tags are removed after each deploy, never the running one. Choose Roll back
+kept (`KeepVersions` in `tools/deploy/internal/stack`); older tags are removed after each deploy, never the running one.
+The build cache is trimmed then too, to its 3 GB most recently used (`BuildCacheKeep`), so repeated builds don't fill
+the disk. Only `app` builds the image; `migrate` and `storage-init` run the one it built. Choose Roll back
 (`deploy/deploy.sh rollback [<version>]`), pick a version, and the tool points the image Compose runs at it and
 replaces the app the way Update does, without downtime (an app that's down is simply recreated). It takes seconds:
 nothing is built.

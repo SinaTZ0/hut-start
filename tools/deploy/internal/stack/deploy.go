@@ -19,7 +19,12 @@ import (
 var (
 	goProxyBlocked = regexp.MustCompile(`proxy\.golang\.org.*403 Forbidden`)
 	npmBlocked     = regexp.MustCompile(`registry\.npmjs\.org.*(ETIMEDOUT|ECONNRESET|UND_ERR_SOCKET|timed out|other side closed)`)
+	diskFull       = regexp.MustCompile(`no space left on device`)
 )
+
+// BuildCacheKeep is how much of the build cache a deploy leaves behind, least recently used removed first. The pnpm
+// store and the dependency layers are used by every build, so they're what stays and the next build stays quick.
+const BuildCacheKeep = "3GB"
 
 // Deploy builds the images and starts the stack. A running, healthy app is replaced without downtime (RolloutApp);
 // otherwise (the first deploy, or an app that's down anyway) Compose starts everything at once. Either way `migrate`
@@ -54,6 +59,11 @@ func (s *Stack) Deploy(env *envfile.Settings) error {
 			return ui.Fail("This server can't download npm packages from registry.npmjs.org. Set NPM_REGISTRY in .env to a " +
 				"mirror it can reach\n(e.g. NPM_REGISTRY=https://registry.npmmirror.com): choose Settings, edit .env, then " +
 				"apply (deploy/deploy.sh apply).")
+		}
+		if diskFull.Match(log.Bytes()) {
+			return ui.Fail("The server's disk is full. Nothing that was running was replaced. Free space with\n" +
+				"  docker builder prune -f && docker image prune -f\n(check with deploy/deploy.sh status), then choose " +
+				"Settings → Apply (deploy/deploy.sh apply).")
 		}
 		return ui.Fail("The build failed (see above). Nothing that was running was replaced. Once it's fixed, choose " +
 			"Settings → Apply\n(deploy/deploy.sh apply).")
@@ -131,6 +141,9 @@ func (s *Stack) Deploy(env *envfile.Settings) error {
 	// Each build leaves the previous images behind, untagged; on a small disk they add up. Only this stack's: Compose
 	// labels what it builds with the project, and other projects' untagged images on the server aren't ours to remove.
 	_ = Docker(nil, "image", "prune", "-f", "--filter", "label=com.docker.compose.project="+s.ProjectName()).Run()
+	// The build cache grows by every build's new layers and is never cleared on its own. It's shared by all builds on
+	// the server, but trimming only its least recently used part costs another project at most a slower next build.
+	_ = DockerQuiet("builder", "prune", "-f", "--keep-storage", BuildCacheKeep)
 	return nil
 }
 
