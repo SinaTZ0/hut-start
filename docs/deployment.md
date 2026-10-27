@@ -81,8 +81,9 @@ outlives the connection: a shell that starts the menu and stays when it exits, w
 A deploy started from the menu goes on to the end after the connection drops, and running `deploy/deploy.sh` again
 reattaches to the window. `Ctrl-b d` leaves it on purpose. A command (`deploy/deploy.sh update`) runs directly, as
 cron and scripts need, so it stops with the connection; run a long one from the menu, or inside the window. A command
-beside the window (`deploy/deploy.sh status` while a deploy runs in it) is fine. Without tmux installed (`sudo apt
-install tmux`) the menu says so and runs directly. When a deploy does stop halfway, a build or migration that's cut off
+beside the window (`deploy/deploy.sh status` while a deploy runs in it) is fine. Without tmux installed, the menu asks
+each time it opens: install it (with the server's package manager, through `sudo`), or continue without it, in which
+case it runs directly. When a deploy does stop halfway, a build or migration that's cut off
 changes nothing, but one cut off while swapping in the new app can leave the old and the new app both running, until
 Apply runs again.
 
