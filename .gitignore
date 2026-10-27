@@ -33,3 +33,6 @@
 
 # Local design exports used when customizing the template; not committed
 /target/
+
+# Server SSH credentials, kept locally
+/server-ssh.txt
