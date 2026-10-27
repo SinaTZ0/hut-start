@@ -29,7 +29,7 @@ const twListTone = defineStyles({
   frost: {
     layout: "gap-0.5",
     geometry: "rounded-full border p-1",
-    appearance: "border-border bg-background-alt/78 backdrop-blur-md",
+    appearance: "border-border bg-frost backdrop-blur-md",
   },
 });
 
@@ -142,8 +142,7 @@ const twPopupTone = defineStyles({
   },
   frost: {
     geometry: "w-(--popup-width) rounded-lg",
-    appearance:
-      "bg-background-alt/78 text-popover-foreground shadow-md ring-1 ring-border backdrop-blur-xl backdrop-saturate-130",
+    appearance: "bg-frost text-popover-foreground shadow-md ring-1 ring-border backdrop-blur-xl backdrop-saturate-130",
   },
 });
 

@@ -86,7 +86,7 @@ const twVariant = defineStyles({
   },
   "tool-frost": {
     geometry: "rounded-full",
-    appearance: "border-border bg-background-alt/78 text-heading backdrop-blur-md",
+    appearance: "border-border bg-frost text-heading backdrop-blur-md",
     hover: "hover:bg-accent",
     state: "aria-expanded:bg-accent data-popup-open:bg-accent",
   },

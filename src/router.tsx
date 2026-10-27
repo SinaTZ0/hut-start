@@ -43,11 +43,18 @@ function pageTransitionTypes({ fromLocation, toLocation, pathChanged }: Location
  * `view-transition-name` in `styles.css`) is only in the new snapshot. The old page then fades out as one viewport-sized
  * snapshot: a named `#main` in both would glide up or down whenever the scroll position differs between the pages.
  * The next navigation clears the mark before the browser takes its old snapshot.
+ *
+ * It also records whether the old page's header was compact (`data-page-leaving-compact`), which the fade can't read
+ * once the new page is in: the old page's content under a compact header is cut from its snapshot (`styles.css` →
+ * Header).
  */
 function markEnteringPage(router: AnyRouter) {
   const root = document.documentElement;
   router.subscribe("onBeforeNavigate", () => {
     delete root.dataset.pageEntering;
+    const compact = document.querySelector("[data-site-header]")?.hasAttribute("data-scrolled");
+    if (compact) root.dataset.pageLeavingCompact = "";
+    else delete root.dataset.pageLeavingCompact;
   });
   router.subscribe("onBeforeRouteMount", ({ pathChanged }) => {
     if (pathChanged) root.dataset.pageEntering = "";

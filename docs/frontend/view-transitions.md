@@ -71,6 +71,11 @@ different scroll positions, both pages would glide up or down across the screen.
 - The header (its own snapshot) and the footer (part of `root`) look much the same on both pages, so the cross-fade
   keeps them visually steady. The header's own transitions are off during a page fade: it takes the new page's state
   at once (compact when Back restores a scrolled page) and leaves the blend to the cross-fade.
+- A snapshot is flat, so the header's backdrop blurs see nothing of the page under it during the fade. Its frosted
+  paper (`--frost`) turns nearly opaque for the fade and eases back after it. And since the header and the page fade
+  apart, each page's snapshot loses the strip under a compact header (`data-page-leaving-compact` from
+  `src/router.tsx` for the old page, the live header for the new one); otherwise the content a compact header covers
+  would show through it as its paper fades.
 - To style only page navigations, scope rules with `:active-view-transition-type(page)`; for one direction, with
   `page-forward` or `page-back`.
 

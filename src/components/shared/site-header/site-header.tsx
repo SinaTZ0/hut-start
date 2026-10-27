@@ -131,6 +131,7 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
     <>
       <header
         data-site-header
+        data-scrolled={scrolled || undefined}
         className="pointer-events-none absolute inset-x-0 top-0 isolate z-30 lg:sticky lg:-mb-19 lg:h-19"
       >
         {tone === "glass" && (
@@ -150,7 +151,7 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
           <div
             aria-hidden
             className={cn(
-              "absolute inset-0 -z-10 bg-background-alt/78 backdrop-blur-lg backdrop-saturate-140 transition-opacity duration-300 ease-out motion-reduce:transition-none",
+              "absolute inset-0 -z-10 bg-frost backdrop-blur-lg backdrop-saturate-140 transition duration-300 ease-out motion-reduce:transition-none",
               !scrolled && "opacity-0",
             )}
           />

@@ -186,6 +186,7 @@
   --color-band-control: var(--band-control);
   --color-band-hover: var(--band-hover);
   /* Glass on the hero photo (the `glass` buttons): a white frost, a lit edge, and one step brighter on hover */
+  --color-frost: var(--frost);
   --color-glass: var(--glass);
   --color-glass-hover: var(--glass-hover);
   --color-glass-edge: var(--glass-edge);
@@ -279,6 +280,9 @@
   --band-line-strong: rgb(255 255 255 / 22%);
   --band-control: rgb(255 255 255 / 60%);
   --band-hover: rgb(255 255 255 / 8%);
+  /* Frosted paper: the page's paper, translucent over a backdrop blur (the header bar once scrolled, its tools and menu
+     over a light page) */
+  --frost: color-mix(in srgb, var(--background-alt) 78%, transparent);
   --glass: rgb(255 255 255 / 16%);
   --glass-hover: rgb(255 255 255 / 24%);
   --glass-edge: rgb(255 255 255 / 35%);
@@ -677,6 +681,24 @@
 :root:active-view-transition-type(page) [data-site-header],
 :root:active-view-transition-type(page) [data-site-header] * {
   transition: none;
+}
+/* Its snapshot is flat: the backdrop blurs inside see nothing of the page under it, so the translucent paper would show
+   the page sharp through it. The frost turns nearly opaque for the fade instead, and eases back after it (the frosted
+   surfaces transition their background colour). */
+:root:active-view-transition-type(page) [data-site-header] {
+  @variant lg {
+    --frost: color-mix(in srgb, var(--background-alt) 96%, transparent);
+  }
+}
+/* Header and page fade apart, so a compact header's paper fading out would show the content it covered fading out
+   slower under it, and fading in, the content it is about to cover. Each page's snapshot loses the strip under a
+   compact header: the old page's as recorded when the navigation started (`data-page-leaving-compact`,
+   `src/router.tsx`), the new page's live. */
+:root[data-page-leaving-compact]:active-view-transition-type(page)::view-transition-old(root),
+:root:has([data-site-header][data-scrolled]):active-view-transition-type(page)::view-transition-new(root) {
+  @variant lg {
+    clip-path: inset(--spacing(15) 0 0 0);
+  }
 }
 ::view-transition-group(site-header),
 ::view-transition-old(site-header),
