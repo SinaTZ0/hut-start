@@ -19,18 +19,18 @@ const NEW_STUDENTS_HREF = SERVICES.find((service) => service.id === "new-student
 
 /*===== Helpers =====*/
 
-/** The site's name with the city picked out in gold, wherever the language puts it. */
-function NameWithCity() {
+/** The site's name with «صنعتی» (Technology) picked out in gold, wherever the language puts it. */
+function NameWithAccent() {
   const name = m.site_name();
-  const city = m.home_hero_city();
-  const at = name.indexOf(city);
+  const accent = m.home_hero_accent();
+  const at = name.indexOf(accent);
   if (at === -1) return name;
 
   return (
     <>
       {name.slice(0, at)}
-      <span className="text-highlight">{city}</span>
-      {name.slice(at + city.length)}
+      <span className="text-highlight">{accent}</span>
+      {name.slice(at + accent.length)}
     </>
   );
 }
@@ -45,11 +45,28 @@ function eventTiming(event: EventWithStatus): string {
   return `${dates} · ${when}`;
 }
 
+/** The two calls to action: stacked as one column on phones, each as wide as the name; side by side from `sm`. */
+function HeroActions() {
+  return (
+    <div className="grid gap-3 sm:flex sm:flex-wrap">
+      <SiteLink href={ABOUT_HREF} className={buttonVariants({ variant: "highlight", size: "lg" })}>
+        {m.home_hero_about()}
+        <ArrowLeftIcon data-icon="inline-end" className="ltr:-scale-x-100" />
+      </SiteLink>
+      <SiteLink href={NEW_STUDENTS_HREF} className={buttonVariants({ variant: "glass-clear", size: "lg" })}>
+        {m.service_new_students()}
+        <ExternalLinkIcon data-icon="inline-end" className="size-4" />
+      </SiteLink>
+    </div>
+  );
+}
+
 /*===== Hero =====*/
 
 /**
- * The first screen: the campus photograph edge to edge under a pine scrim. The name and two actions sit at the top;
- * the place, the next academic milestone and the systems rail stand along its foot.
+ * The first screen: the campus photograph edge to edge under a pine scrim. The name sits at the top; the place, the
+ * next academic milestone and the systems rail stand along its foot. The two actions follow the name on wide screens;
+ * on phones they wait above the rail, so the campus stays in view between the name and the foot.
  */
 export function Hero({ next, children }: { next?: EventWithStatus; children: ReactNode }) {
   return (
@@ -65,29 +82,24 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
       <div className="flex min-h-hero flex-col px-edge pt-10 pb-6 md:pt-section">
         {/*===== Name and Actions =====*/}
         <div className="max-w-215">
-          <h1 id="home-hero" className="mb-4 text-display text-on-band text-shadow-photo">
-            <NameWithCity />
+          <h1 id="home-hero" className="mb-4 text-display text-balance text-on-band text-shadow-photo">
+            <NameWithAccent />
           </h1>
-          <p className="text-body-lg text-on-band-soft text-shadow-photo">
-            {m.home_hero_lede_1()}
-            <br />
-            {m.home_hero_lede_2()}
+          {/* On wide screens one line as wide as the name, its subtitle, rather than a short, ragged pair; on phones,
+              where it can't fit, a sentence per line, so a wrap never strands a word. */}
+          <p className="text-lede text-balance text-on-band text-shadow-photo">
+            <span className="block md:inline">{m.home_hero_lede_1()}</span>{" "}
+            <span className="block md:inline">{m.home_hero_lede_2()}</span>
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <SiteLink href={ABOUT_HREF} className={buttonVariants({ variant: "highlight", size: "lg" })}>
-              {m.home_hero_about()}
-              <ArrowLeftIcon data-icon="inline-end" className="ltr:-scale-x-100" />
-            </SiteLink>
-            <SiteLink href={NEW_STUDENTS_HREF} className={buttonVariants({ variant: "outline-band", size: "lg" })}>
-              {m.service_new_students()}
-              <ExternalLinkIcon data-icon="inline-end" className="size-4" />
-            </SiteLink>
+          {/* Rendered twice, once per place; `hidden` keeps the other copy out of the page and the accessibility tree. */}
+          <div className="mt-6 hidden md:block">
+            <HeroActions />
           </div>
         </div>
 
         {/*===== Foot of the Photo =====*/}
         <div className="mt-auto">
-          <div className="mt-10 mb-4 flex flex-col items-start gap-4 md:my-0 md:ms-auto md:w-fit">
+          <div className="mt-32 mb-4 flex flex-col items-start gap-4 md:my-0 md:ms-auto md:w-fit">
             <p className="inline-flex items-center gap-1.5 text-caption text-on-band-soft text-shadow-photo">
               <MapPinIcon aria-hidden className="size-4 text-highlight" />
               {m.home_hero_place()}
@@ -99,6 +111,7 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
           </div>
 
           {/*------ Next Milestone ------*/}
+          {/* On phones the link to the calendar closes the label row, and the milestone runs under it at full width. */}
           <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-band-line pt-6">
             <CalendarIcon aria-hidden className="size-5 text-highlight" />
             <span className="text-caption font-bold text-highlight">{m.home_hero_notice()}</span>
@@ -115,11 +128,15 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
             </p>
             <a
               href="#home-calendar"
-              className="order-2 inline-flex min-h-10 items-center gap-2 text-body-sm font-semibold underline-offset-4 hover:underline md:order-none"
+              className="ms-auto inline-flex min-h-10 items-center gap-2 text-body-sm font-semibold underline-offset-4 hover:underline"
             >
               {m.home_hero_view_calendar()}
               <ArrowLeftIcon aria-hidden className={cn(textLinkArrowClasses, "size-4.5 text-highlight")} />
             </a>
+          </div>
+
+          <div className="mt-8 md:hidden">
+            <HeroActions />
           </div>
 
           <div className="mt-6">{children}</div>

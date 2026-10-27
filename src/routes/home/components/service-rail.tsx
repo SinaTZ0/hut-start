@@ -27,7 +27,8 @@ const cellFocusClasses = "focus-visible:-outline-offset-4";
 /*===== Service Rail =====*/
 
 /**
- * The daily systems as one white rail along the foot of the hero. Its last cell opens the other student systems:
+ * The daily systems as one frosted-glass rail along the foot of the hero, so the photo runs on under it instead of
+ * stopping at a white slab. Its last cell opens the other student systems:
  * on wide screens it rises over the photo above the rail, which stays put; on phones it opens under the rail and the page
  * below glides down.
  */
@@ -46,28 +47,32 @@ export function ServiceRail() {
       </h2>
 
       {/*===== Rail =====*/}
-      <ul className="grid grid-cols-2 overflow-hidden rounded-md shadow-md sm:grid-cols-3 lg:grid-cols-6">
+      {/* The rail's own border shows where the cells' outer seams fall under the clip. */}
+      <ul className="grid grid-cols-2 overflow-hidden rounded-md border border-band-line bg-band-deep/45 shadow-glass backdrop-blur-xl backdrop-saturate-150 sm:grid-cols-3 lg:grid-cols-6">
         {RAIL_SERVICES.map((service) => (
-          <li key={service.id} className={seamClasses}>
+          <li key={service.id} className={`${seamClasses} border-band-line`}>
             <SiteLink
               href={service.href}
-              className={`flex h-full flex-col items-center gap-1 bg-card px-3 py-5 text-center text-foreground transition-colors duration-200 hover:bg-accent motion-reduce:transition-none ${cellFocusClasses}`}
+              className={`flex h-full flex-col items-center gap-1 px-3 py-5 text-center text-on-band transition-colors duration-200 hover:bg-band-hover motion-reduce:transition-none ${cellFocusClasses}`}
             >
-              <service.icon aria-hidden className="mb-1.5 size-6 text-brand-text" />
-              <span className="text-title text-heading">{service.title()}</span>
-              <span className="line-clamp-1 text-caption text-muted-foreground sm:line-clamp-2">
+              <service.icon
+                aria-hidden
+                className="mb-1.5 box-content size-6 rounded-sm bg-band-decor p-2.5 text-highlight"
+              />
+              <span className="text-title">{service.title()}</span>
+              <span className="line-clamp-1 text-caption text-on-band-muted sm:line-clamp-2">
                 {service.description()}
               </span>
             </SiteLink>
           </li>
         ))}
-        <li className={seamClasses}>
+        <li className={`${seamClasses} border-band-line`}>
           <button
             type="button"
             aria-expanded={open}
             aria-controls={open ? panelId : undefined}
             onClick={() => setOpen((isOpen) => !isOpen)}
-            className={`group/all flex size-full flex-col items-center justify-center gap-1 bg-band px-3 py-5 text-center text-on-band transition-colors duration-200 hover:bg-band-deep aria-expanded:bg-band-deep motion-reduce:transition-none ${cellFocusClasses}`}
+            className={`group/all flex size-full flex-col items-center justify-center gap-1 bg-highlight/15 px-3 py-5 text-center text-highlight transition-colors duration-200 hover:bg-highlight/25 aria-expanded:bg-highlight/25 motion-reduce:transition-none ${cellFocusClasses}`}
           >
             <MenuIcon aria-hidden className="mb-1.5 size-6 text-highlight" />
             <span className="text-title">
@@ -86,31 +91,33 @@ export function ServiceRail() {
       {/* On wide screens the panel floats above the rail instead of taking room in the hero, so opening it never moves
           the rail, and the list is pinned to the panel's bottom, so it rises out of the rail instead of dropping from
           the top. The panel clips while it grows, so it reaches 12px past the list on each side, with matching
-          padding, to leave room for the list's shadow. */}
+          padding, to leave room for the list's shadow. The list is the rail's glass, tinted denser: up there it
+          floats over the bright building, not the dark foot. */}
       <CollapsibleContent
         id={panelId}
+        fade={false}
         className="-mx-3 md:absolute md:inset-x-0 md:bottom-full md:flex md:flex-col md:justify-end"
       >
         <div className="px-3 pt-4 pb-5 md:pt-1 md:pb-4">
-          <ul className="grid grid-cols-1 overflow-hidden rounded-md shadow-md sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="grid grid-cols-1 overflow-hidden rounded-md border border-band-line bg-band-deep/75 shadow-glass backdrop-blur-xl backdrop-saturate-150 sm:grid-cols-2 lg:grid-cols-4">
             {MORE_SERVICES.map((service) => (
-              <li key={service.id} className={seamClasses}>
+              <li key={service.id} className={`${seamClasses} border-band-line`}>
                 <SiteLink
                   href={service.href}
-                  className={`flex h-full items-start gap-3 bg-card px-5 py-4 text-foreground transition-colors duration-200 hover:bg-accent motion-reduce:transition-none ${cellFocusClasses}`}
+                  className={`flex h-full items-start gap-3 px-5 py-4 text-on-band transition-colors duration-200 hover:bg-band-hover motion-reduce:transition-none ${cellFocusClasses}`}
                 >
-                  <service.icon aria-hidden className="mt-0.5 size-5.5 shrink-0 text-brand-text" />
+                  <service.icon aria-hidden className="mt-0.5 size-5.5 shrink-0 text-highlight" />
                   <span>
-                    <span className="block text-title text-heading">{service.title()}</span>
-                    <span className="block text-caption text-muted-foreground">{service.description()}</span>
+                    <span className="block text-title">{service.title()}</span>
+                    <span className="block text-caption text-on-band-muted">{service.description()}</span>
                   </span>
                 </SiteLink>
               </li>
             ))}
-            <li className={`${seamClasses} sm:col-span-2`}>
+            <li className={`${seamClasses} border-band-line sm:col-span-2`}>
               <SiteLink
                 href={ALL_SERVICES_HREF}
-                className={`flex h-full items-center justify-between gap-3 bg-band px-5 py-4 text-title text-on-band transition-colors duration-200 hover:bg-band-deep motion-reduce:transition-none ${cellFocusClasses}`}
+                className={`flex h-full items-center justify-between gap-3 bg-highlight/15 px-5 py-4 text-title text-highlight transition-colors duration-200 hover:bg-highlight/25 motion-reduce:transition-none ${cellFocusClasses}`}
               >
                 {m.home_services_guide()}
                 <ArrowLeftIcon aria-hidden className={cn(textLinkArrowClasses, "size-4.5 text-highlight")} />

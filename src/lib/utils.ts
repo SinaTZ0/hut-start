@@ -22,6 +22,7 @@ export const cn = createCn({
             "title",
             "stat",
             "stat-sm",
+            "lede",
             "body-lg",
             "body",
             "body-sm",

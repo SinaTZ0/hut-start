@@ -29,8 +29,10 @@ const twSharedStyles = defineStyles({
 /*===== Appearance =====*/
 
 // One `highlight` (gold) button per band: the main call to action. `default` (pine) is for in-app actions, and
-// `outline-band` is the quiet button beside the gold one on a pine band. Hover tints by one step; the movement is the
-// shared press and arrow nudge above.
+// `outline-band` is the quiet button beside the gold one on a pine band, and `glass` the same on a photo (the home
+// hero): frosted glass, with the photo blurred through it, or `glass-clear`, the same pane without the white frost,
+// where the photo shows through softened a little under a sheen. Hover tints by one step; the movement is the shared press and arrow nudge
+// above.
 const twVariant = defineStyles({
   default: {
     appearance: "bg-primary text-primary-foreground",
@@ -48,6 +50,18 @@ const twVariant = defineStyles({
   "outline-band": {
     appearance: "border-band-control bg-transparent text-on-band",
     hover: "hover:border-on-band hover:bg-band-hover",
+    state: "aria-expanded:bg-band-hover",
+  },
+  glass: {
+    appearance: "border-glass-edge bg-glass text-on-band shadow-glass-sm backdrop-blur-xl backdrop-saturate-150",
+    hover: "hover:bg-glass-hover",
+    state: "aria-expanded:bg-glass-hover",
+  },
+  // The sheen is a background image, so hover fills the colour under it: a gradient can't transition.
+  "glass-clear": {
+    appearance:
+      "border-glass-edge bg-transparent bg-glass-sheen text-on-band shadow-glass-sm backdrop-blur-sm text-shadow-photo",
+    hover: "hover:bg-band-hover",
     state: "aria-expanded:bg-band-hover",
   },
   secondary: {

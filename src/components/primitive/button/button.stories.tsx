@@ -92,6 +92,25 @@ export const OnBand: Story = {
   ),
 };
 
+// On a photo (the home hero) the quiet button is glass: frosted, or clear.
+export const OnPhoto: Story = {
+  render: (args) => (
+    <div className="relative isolate flex flex-wrap items-center gap-3 overflow-hidden rounded-lg p-8">
+      <img src="/images/home/campus-hero.jpg" alt="" className="absolute inset-0 -z-10 size-full object-cover" />
+      <Button {...args} variant="highlight" size="lg">
+        آشنایی با دانشگاه
+        <ArrowLeftIcon data-icon="inline-end" className="ltr:-scale-x-100" />
+      </Button>
+      <Button {...args} variant="glass" size="lg">
+        راهنمای نودانشجویان
+      </Button>
+      <Button {...args} variant="glass-clear" size="lg">
+        راهنمای نودانشجویان
+      </Button>
+    </div>
+  ),
+};
+
 // `lg` is for hero and call-to-action bands, and the full-width submit of a form.
 export const PrimaryAction: Story = {
   render: (args) => (
