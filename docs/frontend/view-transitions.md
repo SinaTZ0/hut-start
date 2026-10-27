@@ -52,8 +52,10 @@ router's `onBeforeRouteMount` event fires in between. `markEnteringPage` in `src
 snapshot in the new state only:
 
 - The old page fades out whole, as part of `root`, which is the size of the viewport.
-- The new header and footer fade in with `root`; the new `#main` fades in while moving `--page-shift` (2rem) in from
-  one side.
+- The new footer fades in with `root`; the new `#main` fades in while moving `--page-shift` (2rem) in from one side.
+- The site header has its own snapshot (`site-header`), so it cross-fades in place above the sliding `#main`. In
+  `root` it would be drawn under `#main`'s snapshot, hidden wherever the new page's top is opaque (a page restored
+  mid-scroll) until the fade ends.
 - Forward points left in RTL (`app-identity.md`), so a forward page arrives from the left and a back page from the
   right. `--page-shift` is negative under `dir="rtl"` and positive otherwise, so an LTR page gets the mirror image.
 
@@ -66,8 +68,9 @@ different scroll positions, both pages would glide up or down across the screen.
 - The durations live in `styles.css`: `root` for the fade, `::view-transition-new(page)` for the slide. They are kept
   short because the page ignores clicks while the animation runs.
 - `prefers-reduced-motion: reduce` turns the animation off, so navigation is instant.
-- The header and footer are part of the `root` snapshot. They look the same on both pages, so the cross-fade keeps
-  them visually steady.
+- The header (its own snapshot) and the footer (part of `root`) look much the same on both pages, so the cross-fade
+  keeps them visually steady. The header's own transitions are off during a page fade: it takes the new page's state
+  at once (compact when Back restores a scrolled page) and leaves the blend to the cross-fade.
 - To style only page navigations, scope rules with `:active-view-transition-type(page)`; for one direction, with
   `page-forward` or `page-back`.
 

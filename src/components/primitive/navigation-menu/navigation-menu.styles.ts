@@ -8,8 +8,11 @@ const twRootStyles = defineStyles({
   layout: "group/navigation-menu relative flex max-w-max flex-1 items-center justify-center",
 });
 
+// The tones' capsules fade in and out with the header bar when the page scrolls past its top, glass included.
 const twListStyles = defineStyles({
   layout: "flex flex-1 list-none items-center justify-center",
+  interaction: "transition-[background-color,border-color,backdrop-filter] duration-300 ease-out",
+  motion: "motion-reduce:transition-none",
 });
 
 /*===== Tones =====*/

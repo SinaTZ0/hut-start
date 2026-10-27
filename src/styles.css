@@ -661,6 +661,33 @@
   animation-duration: 200ms;
 }
 
+/*------ Header ------*/
+/* On wide screens the site header has a snapshot of its own during a page fade (`site-header`), so it cross-fades in
+   place above the new page's sliding `#main`: in `root` it would sit under that snapshot, hidden wherever the new
+   page's top is opaque (the home page restored mid-scroll, under its dark bands) until the fade ends, then pop back.
+   Below `lg` the header scrolls away with the page, and a snapshot of its own would fly between the two pages' scroll
+   positions. The header also takes its new state at once and leaves the blend to the cross-fade: going back to a page
+   left scrolled, the router restores the scroll after the new page renders at its top, so the header's own
+   transitions (`site-header.tsx`) would start mid-fade. */
+:root:active-view-transition-type(page) [data-site-header] {
+  @variant lg {
+    view-transition-name: site-header;
+  }
+}
+:root:active-view-transition-type(page) [data-site-header],
+:root:active-view-transition-type(page) [data-site-header] * {
+  transition: none;
+}
+::view-transition-group(site-header),
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation-duration: 200ms;
+}
+/* Snapshots stack in capture order, and `page`, named in the new state only, comes last */
+::view-transition-group(site-header) {
+  z-index: 1;
+}
+
 /*------ Direction ------*/
 /* Forward and back navigations (types `page-forward` / `page-back`) also slide the new page in. Only the new snapshot
    names `#main` (`data-page-entering`, set by `markEnteringPage` in `src/router.tsx`), so the old page still fades out

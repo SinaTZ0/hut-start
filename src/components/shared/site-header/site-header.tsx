@@ -129,19 +129,31 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
 
   return (
     <>
-      <header className="pointer-events-none absolute inset-x-0 top-0 isolate z-30 lg:sticky lg:-mb-19 lg:h-19">
+      <header
+        data-site-header
+        className="pointer-events-none absolute inset-x-0 top-0 isolate z-30 lg:sticky lg:-mb-19 lg:h-19"
+      >
         {tone === "glass" && (
           <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-30 bg-header-scrim lg:h-42.5" />
         )}
         <div
           className={cn(
-            "pointer-events-auto flex h-15 items-center gap-6 border-b border-transparent px-edge transition-all duration-300 ease-out motion-reduce:transition-none",
-            scrolled
-              ? "border-border bg-background-alt/78 text-heading shadow-lg backdrop-blur-lg backdrop-saturate-140"
-              : "lg:h-19",
+            "pointer-events-auto relative flex h-15 items-center gap-6 border-b border-transparent px-edge transition-all duration-300 ease-out motion-reduce:transition-none",
+            scrolled ? "border-border text-heading shadow-lg" : "lg:h-19",
             tone === "glass" ? "text-on-band" : "text-heading",
           )}
         >
+          {/*------ Frosted Paper ------*/}
+          {/* A layer of its own that fades, not the bar's background: an element with a backdrop filter cuts off the
+              backdrop of the blurs inside it, so on the bar the menu's glass capsule would only blur the photo once
+              the bar's own filter finished fading, and pop in at the end. */}
+          <div
+            aria-hidden
+            className={cn(
+              "absolute inset-0 -z-10 bg-background-alt/78 backdrop-blur-lg backdrop-saturate-140 transition-opacity duration-300 ease-out motion-reduce:transition-none",
+              !scrolled && "opacity-0",
+            )}
+          />
           <Brand tone={tone} compact={scrolled} />
           <MainNav tone={tone} className="mx-auto hidden lg:flex" />
           <HeaderTools viewer={viewer} tone={tone} />
