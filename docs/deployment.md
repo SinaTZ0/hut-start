@@ -75,6 +75,17 @@ restores) show a spinner. Esc or Ctrl-C at a prompt gives up on the action and g
 `NO_TUI=1 deploy/deploy.sh` keeps plain numbered prompts (`NO_GUM=1`, from the Bash script, works too), and `NO_COLOR=1`
 turns colours off.
 
+**Closing the SSH connection.** Whatever runs on the connection's terminal ends with it, a deploy halfway included.
+So the menu (`deploy/deploy.sh` without a command, on a terminal) opens in a tmux window, one per checkout, which
+outlives the connection: a shell that starts the menu and stays when it exits, with its output, until you type `exit`.
+A deploy started from the menu goes on to the end after the connection drops, and running `deploy/deploy.sh` again
+reattaches to the window. `Ctrl-b d` leaves it on purpose. A command (`deploy/deploy.sh update`) runs directly, as
+cron and scripts need, so it stops with the connection; run a long one from the menu, or inside the window. A command
+beside the window (`deploy/deploy.sh status` while a deploy runs in it) is fine. Without tmux installed (`sudo apt
+install tmux`) the menu says so and runs directly. When a deploy does stop halfway, a build or migration that's cut off
+changes nothing, but one cut off while swapping in the new app can leave the old and the new app both running, until
+Apply runs again.
+
 **How it's built.** The tool is a Go program in `tools/deploy/` (one package per area: settings, `.env`, the stack,
 certificates, backups, the status lines, the menu). It's built into a static binary per architecture,
 `deploy/bin/linux-amd64/deploy`, which is committed, so the server gets it with `git clone` and `git pull` and needs
