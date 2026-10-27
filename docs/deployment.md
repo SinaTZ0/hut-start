@@ -77,7 +77,8 @@ turns colours off.
 
 **Closing the SSH connection.** Whatever runs on the connection's terminal ends with it, a deploy halfway included.
 So the menu (`deploy/deploy.sh` without a command, on a terminal) opens in a tmux window, one per checkout, which
-outlives the connection: a shell that starts the menu and stays when it exits, with its output, until you type `exit`.
+outlives the connection. Quit closes the window; if the tool fails instead, a shell stays with the error on screen,
+until you type `exit`.
 A deploy started from the menu goes on to the end after the connection drops, and running `deploy/deploy.sh` again
 reattaches to the window. `Ctrl-b d` leaves it on purpose. A command (`deploy/deploy.sh update`) runs directly, as
 cron and scripts need, so it stops with the connection; run a long one from the menu, or inside the window. A command
