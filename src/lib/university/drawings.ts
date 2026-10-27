@@ -24,8 +24,12 @@ export function departmentDrawings(slug: string): Drawings | null {
   };
 }
 
-/** The home page's drawings: the glance band's, the learning and welcome panels' corners, and the research vignette. */
+/**
+ * The home page's drawings: the hero's campus (the hero photo's view redrawn, the photo's size, so it lies over it), the
+ * glance band's, the learning and welcome panels' corners, and the research vignette.
+ */
 export const HOME_DRAWINGS = {
+  campus: "/images/home/campus-sketch.webp",
   glance: "/images/home/glance.webp",
   learning: "/images/home/learning.webp",
   welcome: "/images/home/welcome.webp",

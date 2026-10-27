@@ -1,10 +1,11 @@
 import { ArrowLeftIcon, CalendarIcon, ExternalLinkIcon, MapPinIcon } from "lucide-react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { buttonVariants } from "#/components/primitive/button/button.styles";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { textLinkArrowClasses } from "#/components/shared/text-link/text-link.styles";
 import { formatDate, formatDateRange, formatRelativeDays } from "#/lib/locale";
+import { HOME_DRAWINGS } from "#/lib/university/drawings";
 import { NAV_SECTIONS } from "#/lib/university/navigation";
 import { SERVICES } from "#/lib/university/services";
 import { cn } from "#/lib/utils";
@@ -64,7 +65,8 @@ function HeroActions() {
 /*===== Hero =====*/
 
 /**
- * The first screen: the campus photograph edge to edge under a pine scrim. The name sits at the top; the place, the
+ * The first screen: the campus photograph edge to edge under a pine scrim, turning into a notebook drawing of the same
+ * view on the side the name stands on (`hero-sketch`, wide screens only). The name sits at the top; the place, the
  * next academic milestone and the systems rail stand along its foot. The two actions follow the name on wide screens;
  * on phones they wait above the rail, so the campus stays in view between the name and the foot.
  */
@@ -75,9 +77,15 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
         src="/images/home/campus-hero.jpg"
         alt={m.home_hero_image_alt()}
         fetchPriority="high"
-        className="absolute inset-x-0 top-0 -z-20 h-hero w-full object-cover object-hero"
+        className="absolute inset-x-0 top-0 -z-20 h-hero w-full hero-photo-fade object-cover object-hero"
       />
       <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-hero bg-hero-scrim" />
+      {/* Over the scrim, which is there to quiet the photo, not the drawing */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 -z-10 hidden h-hero hero-sketch md:block"
+        style={{ "--art": `url("${HOME_DRAWINGS.campus}")` } as CSSProperties}
+      />
 
       <div className="flex min-h-hero flex-col px-edge pt-10 pb-6 md:pt-section">
         {/*===== Name and Actions =====*/}

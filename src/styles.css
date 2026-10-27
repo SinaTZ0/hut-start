@@ -279,6 +279,9 @@
      for the page, `art-band` for a pine band. */
   --art-ink: color-mix(in srgb, var(--heading) 46%, transparent);
   --art-band: color-mix(in srgb, var(--on-band) 13%, transparent);
+  /* The home hero's drawing of the campus: the picture itself there, so stronger than a band's backdrop. The hero is
+     pine in both themes, so it keeps this in dark too. */
+  --art-hero: color-mix(in srgb, var(--on-band) 30%, transparent);
 
   --elevation-sm: 0 1px 2px rgb(16 61 64 / 4%);
   --elevation-md: 0 1px 2px rgb(16 61 64 / 4%), 0 8px 24px -12px rgb(16 61 64 / 12%);
@@ -447,6 +450,30 @@
 /* The campus photo keeps the building and the mountains in frame */
 @utility object-hero {
   object-position: center 35%;
+}
+
+/* The campus as a notebook drawing under the name (app-identity.md → Brand): on the start side the photo gives way to
+   the same view drawn in ink, and the drawing gives way to the photo toward the end, the idea becoming the place. The
+   drawing (`--art`) is the photo's size and drawn over it, and both layers take the photo's crop (`cover` at
+   `object-hero`), so its lines stay on the building and the peaks at every width. Wide screens only: on phones the
+   name fills the width, so the hero stays the photograph. */
+@utility hero-photo-fade {
+  @variant md {
+    mask-image: linear-gradient(var(--toward-end), transparent 16%, #000 62%);
+  }
+}
+
+@utility hero-sketch {
+  background-color: var(--art-hero);
+  mask-image: var(--art), linear-gradient(var(--toward-end), #000 20%, transparent 66%);
+  mask-size:
+    cover,
+    100% 100%;
+  mask-position:
+    center 35%,
+    0 0;
+  mask-repeat: no-repeat;
+  mask-composite: intersect;
 }
 
 /* The semester track: one cell per day (`--days`), cut by a 2px gap with a repeating mask from the start side. On

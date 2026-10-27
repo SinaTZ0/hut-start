@@ -39,7 +39,8 @@ translation ([i18n.md](./i18n.md)).
   (pine); on bands it stays white. It always sits beside the visible university name, so it is decorative (`alt=""`).
   Icon tiles that hold it are `rounded-sm`, 48px.
 - **Photography**: real photographs of the campus, its people and events. The hero is the campus with Alvand behind
-  it, edge to edge, under a pine scrim (`bg-hero-scrim`) that keeps the text on it readable. News and achievement
+  it, edge to edge, under a pine scrim (`bg-hero-scrim`) that keeps the text on it readable. On the start side, under
+  the name, the photo gives way to the same view drawn in the notebook hand (see Home drawings). News and achievement
   photos sit in fixed ratios (`aspect-wide`, `aspect-photo`, `video`) and zoom slightly on hover. Labels on photos are
   `Badge variant="media"`.
 - **Signature drawings**: each department has its own engineering sketch in the manner of a Da Vinci notebook (fine
@@ -56,7 +57,12 @@ translation ([i18n.md](./i18n.md)).
   seedling among gears in the learning panel's corner, a book, dividers and an iwan in the welcome panel's corner (kept
   small, clear of its text), and a telescope and microscope under the research units' introduction (`art-ink`). Each
   department's cell in the glance grid carries its mark (`mark.webp`, its key object cut from its hero drawing). The
-  photo hero takes no drawing. The home echoes the department page too: its figures hang from dimension lines, and
+  hero has the campus itself (`campus-sketch.webp`): the hero photo's view redrawn as a notebook study (Alvand
+  hatched, the building in line, compass circles and a dimension line on the peaks, an ornithopter in the sky), the
+  photo's size and laid over it, so the lines stay on the building at every crop (`hero-sketch`, `hero-photo-fade`). It
+  holds the start side, under the name, in a pale ink of its own (`art-hero`), and hands over to the photo toward the
+  end, the idea becoming the place. Phones keep the plain photo: the name spans their width, so there is no side
+  for the drawing to hold. A new hero photo needs a new drawing of it. The home echoes the department page too: its figures hang from dimension lines, and
   the news, semester and achievements heads draw a ruler to their link (`SectionHead ruled`).
 - **Form drawings**: the public forms (`/feedback`, `/consultation`) each have one in `public/images/forms/` (listed in
   `FORM_DRAWINGS`): a quill, a sealed letter and a balance scale for complaints; an open book with dividers, a compass
