@@ -1,7 +1,6 @@
 import { captchaContract } from "#/orpc/captcha/contract";
 import { consultationContract } from "#/orpc/consultation/contract";
 import { departmentContract } from "#/orpc/department/contract";
-import { designPreviewContract } from "#/orpc/design-preview/contract";
 import { feedbackContract } from "#/orpc/feedback/contract";
 import { homeFeedContract } from "#/orpc/home-feed/contract";
 import { mediaContract } from "#/orpc/media/contract";
@@ -15,7 +14,6 @@ export const contract = {
   captcha: captchaContract,
   consultation: consultationContract,
   department: departmentContract,
-  designPreview: designPreviewContract,
   feedback: feedbackContract,
   homeFeed: homeFeedContract,
   media: mediaContract,

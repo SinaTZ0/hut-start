@@ -114,13 +114,12 @@
   --font-sans: "Vazirmatn Variable", "Segoe UI", Tahoma, system-ui, sans-serif;
 
   /*------ Header room ------*/
-  /* Inline, since they read the site layout's header variables (`[data-header]` below), which only exist inside it.
-     `header-over` is how much of the header lies over the page's top: `main` leaves that much room, and the home hero
-     slides up under it. The hero fills the first screen the header leaves, but never goes below 560px; its body is
-     what's left under the header's part (`hero-body`). */
-  --spacing-header-over: var(--header-over);
-  --spacing-hero: max(35rem, calc(100svh - var(--header-room)));
-  --spacing-hero-body: calc(max(35rem, calc(100svh - var(--header-room))) - var(--header-over));
+  /* Inline, since they read `--header-height` (base layer below), which changes with the screen width. The header lies
+     over the page's top: `main` leaves its height free, and the home hero slides up under it. The hero fills the first
+     screen, but never goes below 560px; its body is what's left under the header (`hero-body`). */
+  --spacing-header: var(--header-height);
+  --spacing-hero: max(35rem, 100svh);
+  --spacing-hero-body: calc(max(35rem, 100svh) - var(--header-height));
 
   /*------ shadcn semantic colors ------*/
   --color-background: var(--background);
@@ -422,7 +421,7 @@
   }
 }
 
-/* The glass header's scrim over the home photo: pine at the top edge, gone by the foot, so white text reads on any sky */
+/* The header's scrim over the home photo: pine at the top edge, gone by the foot, so white text reads on any sky */
 @utility bg-header-scrim {
   background-image: linear-gradient(
     to bottom,
@@ -430,21 +429,6 @@
     color-mix(in srgb, var(--band-deep) 38%, transparent) 50%,
     transparent
   );
-}
-
-/* The pine header by day: the band's colours turned to paper inside it, so the bar keeps the band's shape (full-height
-   tabs, gold rule) on a light ground, and is pine again at night. Everything on the bar already takes the band tokens. */
-@utility band-paper-by-day {
-  &:not(:is(.dark *)) {
-    --band-deep: var(--background-alt);
-    --on-band: var(--heading);
-    --on-band-soft: var(--foreground);
-    --on-band-muted: var(--muted-foreground);
-    --band-line: var(--border);
-    --band-line-strong: var(--border);
-    --band-control: var(--input);
-    --band-hover: var(--accent);
-  }
 }
 
 /* The university emblem (a white PNG) drawn in `currentColor`, so it takes pine on light grounds and white on bands */
@@ -589,23 +573,12 @@
 /*===== Base =====*/
 
 @layer base {
-  /* The header's two designs (`SiteHeader`): the pine band takes its height in the page (`header-room`); the glass bar
-     takes none and lies over the page's top (`header-over`). The heights match the bars at the top of the page. */
-  [data-header] {
-    --header-room: 3.75rem;
-    --header-over: 0rem;
+  /* The header bar's height at the top of the page (`SiteHeader`), which lies over the page's top */
+  :root {
+    --header-height: 3.75rem;
 
     @variant lg {
-      --header-room: 4.5rem;
-    }
-  }
-  [data-header="glass"] {
-    --header-room: 0rem;
-    --header-over: 3.75rem;
-
-    @variant lg {
-      --header-room: 0rem;
-      --header-over: 4.75rem;
+      --header-height: 4.75rem;
     }
   }
   * {

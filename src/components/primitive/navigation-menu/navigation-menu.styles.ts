@@ -13,13 +13,11 @@ const twListStyles = defineStyles({
 });
 
 /*===== Tones =====*/
-// What the menu sits on. `paper`: a light bar. `band`: a pine bar, where each tab fills the bar's height and a gold
-// rule under it marks hover and the open section. `glass`: a photo, with the tabs in a frosted glass capsule and the card in dark glass. `frost`: the same
+// What the menu sits on. `paper`: a light bar. `glass`: a photo, with the tabs in a frosted glass capsule and the card in dark glass. `frost`: the same
 // capsule in frosted paper, for a bar laid over a light page.
 
 const twListTone = defineStyles({
   paper: { layout: "gap-1" },
-  band: { layout: "h-full gap-0" },
   glass: {
     layout: "gap-0.5",
     geometry: "rounded-full border p-1",
@@ -34,7 +32,6 @@ const twListTone = defineStyles({
 
 const twItemTone = defineStyles({
   paper: { layout: "relative" },
-  band: { layout: "relative h-full" },
   glass: { layout: "relative" },
   frost: { layout: "relative" },
 });
@@ -60,15 +57,6 @@ const twTriggerTone = defineStyles({
     hover: "hover:bg-accent hover:text-heading",
     state: "data-popup-open:bg-accent data-popup-open:text-heading",
   },
-  // The gold rule sits on the bar's bottom edge, drawn from the middle out.
-  band: {
-    layout: "relative",
-    geometry: "h-full px-4",
-    appearance:
-      "text-on-band-soft after:absolute after:inset-x-4 after:-bottom-px after:h-0.5 after:scale-x-0 after:rounded-full after:bg-highlight after:transition-transform after:duration-200 after:ease-out",
-    hover: "hover:text-on-band hover:after:scale-x-100",
-    state: "data-popup-open:text-on-band data-popup-open:after:scale-x-100",
-  },
   glass: {
     geometry: "h-9 rounded-full px-4",
     appearance: "text-on-band",
@@ -93,7 +81,6 @@ const twTriggerIconStyles = defineStyles({
 
 const twTriggerIconTone = defineStyles({
   paper: { appearance: "text-muted-foreground" },
-  band: { appearance: "opacity-70" },
   glass: { appearance: "opacity-70" },
   frost: { appearance: "text-muted-foreground" },
 });
@@ -112,7 +99,6 @@ const twContentStyles = defineStyles({
 
 const twContentTone = defineStyles({
   paper: { geometry: "p-6" },
-  band: { geometry: "p-6" },
   glass: { geometry: "p-6" },
   frost: { geometry: "p-6" },
 });
@@ -145,10 +131,6 @@ const twPopupTone = defineStyles({
   paper: {
     geometry: "w-(--popup-width) rounded-md",
     appearance: "bg-popover text-popover-foreground shadow-md ring-1 ring-border",
-  },
-  band: {
-    geometry: "w-(--popup-width) rounded-lg",
-    appearance: "bg-card text-card-foreground shadow-lg ring-1 ring-border",
   },
   glass: {
     geometry: "w-(--popup-width) rounded-lg",
@@ -183,10 +165,6 @@ const twLinkStyles = defineStyles({
 
 const twLinkTone = defineStyles({
   paper: {
-    hover: "hover:bg-accent hover:text-heading",
-    state: "data-active:bg-accent data-active:text-heading",
-  },
-  band: {
     hover: "hover:bg-accent hover:text-heading",
     state: "data-active:bg-accent data-active:text-heading",
   },

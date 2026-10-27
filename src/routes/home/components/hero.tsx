@@ -72,10 +72,10 @@ function HeroActions() {
  */
 export function Hero({ next, children }: { next?: EventWithStatus; children: ReactNode }) {
   return (
-    // With the glass header the hero slides up under it (`header-over`), so the photo starts at the top of the screen.
+    // The hero slides up under the header (`--header-height`), so the photo starts at the top of the screen.
     <section
       aria-labelledby="home-hero"
-      className="relative isolate -mt-header-over overflow-hidden bg-band-deep pt-header-over text-on-band"
+      className="relative isolate -mt-header overflow-hidden bg-band-deep pt-header text-on-band"
     >
       <img
         src="/images/home/campus-hero.jpg"

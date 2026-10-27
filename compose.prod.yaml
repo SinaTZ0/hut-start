@@ -83,8 +83,6 @@ services:
       # The mirror of hut.ac.ir's homepage (docs/backend/home-feed.md). Empty secret turns the manual trigger off.
       HOME_FEED_SYNC_MINUTES: ${HOME_FEED_SYNC_MINUTES:-30}
       HOME_FEED_SYNC_SECRET: ${HOME_FEED_SYNC_SECRET:-}
-      # The design preview's key (src/lib/design-variants.ts). Empty turns it off.
-      DESIGN_PREVIEW_KEY: ${DESIGN_PREVIEW_KEY:-}
     healthcheck:
       test:
         - CMD

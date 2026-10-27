@@ -11,7 +11,6 @@ import (
 	"deploy/internal/ports"
 	"deploy/internal/project"
 	"deploy/internal/stack"
-	"deploy/internal/status"
 	"deploy/internal/ui"
 )
 
@@ -130,9 +129,6 @@ func (t *Tool) Setup(args []string) error {
 	ui.Info("  Site          https://%s", envfile.Get(env, "DOMAIN"))
 	ui.Info("  Error viewer  https://%s   password: %s (also in .env)", envfile.Get(env, "ERRORS_DOMAIN"),
 		envfile.Get(env, "ERROR_VIEWER_ADMIN_PASSWORD"))
-	if key := envfile.Get(env, "DESIGN_PREVIEW_KEY"); key != "" {
-		ui.Info("  Design preview  %s", status.PreviewLink(envfile.Get(env, "DOMAIN"), key))
-	}
 	ui.Info("")
 	ui.Info("  The first admin: sign up on the site, then choose Make admin (or: deploy/deploy.sh admin <email>).")
 	ui.Info("  A nightly database backup: add this line with crontab -e")

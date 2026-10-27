@@ -65,7 +65,6 @@ func Lines(p *project.Project, s *stack.Stack, env *envfile.Settings) []string {
 		func() *Line { return Settings(p, env) },
 		func() *Line { return URL("Site", envfile.Get(p.EnvFile(), "DOMAIN")) },
 		func() *Line { return URL("Errors", envfile.Get(p.EnvFile(), "ERRORS_DOMAIN")) },
-		func() *Line { return Preview(p.EnvFile()) },
 		func() *Line { return Ports(s) },
 		func() *Line { return SSL(p) },
 		func() *Line { return Backup(p) },
@@ -212,24 +211,6 @@ func URL(label, domain string) *Line {
 		return &Line{Green, label, text("200 OK")}
 	}
 	return &Line{Yellow, label, text(fmt.Sprint(resp.StatusCode))}
-}
-
-// Preview shows the design preview's link, which turns it on in the browser that opens it (DESIGN_PREVIEW_KEY,
-// src/lib/design-variants.ts). The key is a secret by name, so this is the one place it's shown: here it's for sharing.
-func Preview(envPath string) *Line {
-	key := envfile.Get(envPath, "DESIGN_PREVIEW_KEY")
-	if key == "" {
-		return &Line{Dim, "Preview", "off  (set DESIGN_PREVIEW_KEY in Settings to turn it on)"}
-	}
-	return &Line{Green, "Preview", PreviewLink(envfile.Get(envPath, "DOMAIN"), key)}
-}
-
-// PreviewLink is the address that turns the design preview on: the site with `?preview=<key>`.
-func PreviewLink(domain, key string) string {
-	if domain == "" {
-		domain = "<DOMAIN>"
-	}
-	return fmt.Sprintf("https://%s/?preview=%s", domain, key)
 }
 
 // Ports says whether Caddy holds 80 and 443. Docker publishes them through `docker-proxy`, or with no listening process

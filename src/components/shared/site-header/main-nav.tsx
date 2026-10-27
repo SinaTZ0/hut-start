@@ -17,16 +17,10 @@ import { useClosedOnNavigation } from "./use-closed-on-navigation";
 
 /*===== Styles =====*/
 
-// The summary tile and the group headings, per tone: pine on the band's white card, glass in the dark glass card.
+// The summary tile and the group headings, per tone: quiet ink in the paper cards, light in the dark glass card.
 const panelTone = {
   paper: { summary: "bg-accent text-muted-foreground", title: "text-heading", link: "default", group: "" },
   frost: { summary: "bg-accent text-muted-foreground", title: "text-heading", link: "default", group: "" },
-  band: {
-    summary: "w-64 rounded-md bg-band p-6 text-on-band-soft",
-    title: "text-on-band",
-    link: "highlight",
-    group: "mb-2 border-b pb-2",
-  },
   glass: {
     summary: "border border-band-line-strong bg-glass text-on-band-soft",
     title: "text-on-band",
@@ -45,7 +39,7 @@ function SectionPanel({ section, tone }: { section: NavSection; tone: Navigation
   const styles = panelTone[tone];
 
   return (
-    <div className={cn("flex", tone === "band" ? "gap-8" : "gap-6")}>
+    <div className="flex gap-6">
       {/*------ Summary ------*/}
       <div className={cn("flex w-56 flex-col gap-2 rounded-sm p-5 text-body-sm", styles.summary)}>
         <p className={cn("text-h4", styles.title)}>{section.title()}</p>
@@ -57,7 +51,7 @@ function SectionPanel({ section, tone }: { section: NavSection; tone: Navigation
 
       {/*------ Groups ------*/}
       {section.groups.map((group) => (
-        <div key={group.title()} className={tone === "band" ? "w-48" : "w-44"}>
+        <div key={group.title()} className="w-44">
           <h2 className={cn("mb-1 px-2 text-title text-highlight-text", styles.group)}>
             {group.href ? (
               <SiteLink href={group.href} className="underline-offset-4 hover:underline">

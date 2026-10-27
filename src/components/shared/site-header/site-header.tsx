@@ -7,7 +7,6 @@ import { LocaleSwitcher } from "#/components/shared/locale-switcher/locale-switc
 import { LogoMark } from "#/components/shared/logo-mark/logo-mark";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { ThemeToggle } from "#/components/shared/theme-toggle/theme-toggle";
-import { useDesignVariant } from "#/hooks/use-design-preview";
 import { useLocaleLinks } from "#/hooks/use-locale-links";
 import { PORTAL_HREF } from "#/lib/university/navigation";
 import { cn } from "#/lib/utils";
@@ -21,20 +20,18 @@ import { TabBar } from "./tab-bar";
 import { useScrolled } from "./use-scrolled";
 
 /*===== Tones =====*/
-// The header has two designs while the choice is open (`header` in `src/lib/design-variants.ts`): a pine band, and a
-// transparent bar over the page's top. What the bar sits on decides its tone (`navigation-menu.styles.ts` → Tones), and
-// the tone the tools' button variants.
+// The bar is transparent over the page's top, so what it sits on decides its tone (`navigation-menu.styles.ts` →
+// Tones), and the tone the tools' button variants.
 
 type HeaderTone = NavigationMenuTone;
 
-const TOOL_VARIANT = { paper: "tool", band: "tool-band", glass: "tool-glass", frost: "tool-frost" } as const;
-const LOCALE_VARIANT = { paper: "ghost", band: "tool-band", glass: "tool-glass", frost: "tool-frost" } as const;
-const PORTAL_VARIANT = { paper: "outline", band: "outline-band", glass: "tool-glass", frost: "tool-frost" } as const;
+const TOOL_VARIANT = { paper: "tool", glass: "tool-glass", frost: "tool-frost" } as const;
+const LOCALE_VARIANT = { paper: "ghost", glass: "tool-glass", frost: "tool-frost" } as const;
+const PORTAL_VARIANT = { paper: "outline", glass: "tool-glass", frost: "tool-frost" } as const;
 
 const brandTone = {
   paper: { name: "text-heading", other: "text-muted-foreground" },
   frost: { name: "text-heading", other: "text-muted-foreground" },
-  band: { name: "text-on-band", other: "text-on-band-muted" },
   glass: { name: "text-on-band text-shadow-photo", other: "text-on-band-soft text-shadow-photo" },
 } as const satisfies Record<HeaderTone, { name: string; other: string }>;
 
@@ -95,7 +92,7 @@ function HeaderTools({ viewer, tone }: { viewer: Viewer | null; tone: HeaderTone
   const toolVariant = TOOL_VARIANT[tone];
 
   return (
-    <div className={cn("hidden items-center lg:flex", tone === "band" ? "gap-0.5" : "gap-1.5")}>
+    <div className="hidden items-center gap-1.5 lg:flex">
       <ServiceSearch variant={toolVariant} />
       <ThemeToggle variant={toolVariant} />
       <LocaleSwitcher links={localeLinks} variant={LOCALE_VARIANT[tone]} />
@@ -111,91 +108,48 @@ function HeaderTools({ viewer, tone }: { viewer: Viewer | null; tone: HeaderTone
           <UserIcon />
         </Link>
       )}
-      {tone === "band" && <span aria-hidden className="mx-2.5 h-6 w-px bg-band-line-strong" />}
       <PortalLink tone={tone} />
     </div>
-  );
-}
-
-/*===== Pine Band =====*/
-
-/**
- * One bar: brand, the menu, tools and the portal. It's light by day and pine at night (`band-paper-by-day`). On wide
- * screens it sticks to the top and turns compact once the page scrolls; the header keeps its full height in the page,
- * so nothing under it moves.
- */
-function PineHeader({ viewer }: { viewer: Viewer | null }) {
-  const compact = useScrolled();
-
-  return (
-    <header className="pointer-events-none relative z-30 lg:sticky lg:top-0 lg:h-18">
-      <div
-        className={cn(
-          "pointer-events-auto flex h-15 items-center gap-6 border-b border-band-line bg-band-deep px-edge text-on-band transition-all duration-200 ease-out band-paper-by-day motion-reduce:transition-none",
-          compact ? "shadow-lg" : "lg:h-18",
-        )}
-      >
-        <Brand tone="band" compact={compact} />
-        <MainNav tone="band" className="mx-auto hidden self-stretch lg:flex" />
-        <HeaderTools viewer={viewer} tone="band" />
-        <div className="ms-auto lg:hidden">
-          <PortalLink tone="band" iconOnly />
-        </div>
-      </div>
-    </header>
-  );
-}
-
-/*===== Over the Page =====*/
-
-/**
- * A transparent bar laid over the page's top: white on the home page's photo, under a scrim that keeps it readable, with
- * the menu in a glass capsule; ink on the other pages, in frosted paper. On wide screens it sticks to the top and
- * turns to frosted paper once the page scrolls. It takes no room in the page: `main` and the hero leave room for it
- * (`--header-over` in `styles.css`).
- */
-function GlassHeader({ viewer }: { viewer: Viewer | null }) {
-  const scrolled = useScrolled();
-  const onPhoto = useMatches({ select: (matches) => matches.at(-1)?.fullPath === "/" });
-  const tone: HeaderTone = scrolled ? "paper" : onPhoto ? "glass" : "frost";
-
-  return (
-    <header className="pointer-events-none absolute inset-x-0 top-0 isolate z-30 lg:sticky lg:-mb-19 lg:h-19">
-      {tone === "glass" && (
-        <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-30 bg-header-scrim lg:h-42.5" />
-      )}
-      <div
-        className={cn(
-          "pointer-events-auto flex h-15 items-center gap-6 border-b border-transparent px-edge transition-all duration-300 ease-out motion-reduce:transition-none",
-          scrolled
-            ? "border-border bg-background-alt/78 text-heading shadow-lg backdrop-blur-lg backdrop-saturate-140"
-            : "lg:h-19",
-          tone === "glass" ? "text-on-band" : "text-heading",
-        )}
-      >
-        <Brand tone={tone} compact={scrolled} />
-        <MainNav tone={tone} className="mx-auto hidden lg:flex" />
-        <HeaderTools viewer={viewer} tone={tone} />
-        <div className="ms-auto lg:hidden">
-          <PortalLink tone={tone} iconOnly />
-        </div>
-      </div>
-    </header>
   );
 }
 
 /*===== Site Header =====*/
 
 /**
- * The header in the design this browser sees, then the phone tab bar. Below `lg` the bar keeps only the brand and the
- * portal, and the menu and tools move to the tab bar at the bottom of the screen.
+ * A transparent bar laid over the page's top: white on the home page's photo, under a scrim that keeps it readable, with
+ * the menu in a glass capsule; ink on the other pages, in frosted paper. On wide screens it sticks to the top and
+ * turns to frosted paper once the page scrolls. It takes no room in the page: `main` and the hero leave room for it
+ * (`--header-height` in `styles.css`). Below `lg` the bar keeps only the brand and the portal, and the menu and tools
+ * move to the tab bar at the bottom of the screen.
  */
 export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
-  const design = useDesignVariant("header");
+  const scrolled = useScrolled();
+  const onPhoto = useMatches({ select: (matches) => matches.at(-1)?.fullPath === "/" });
+  const tone: HeaderTone = scrolled ? "paper" : onPhoto ? "glass" : "frost";
 
   return (
     <>
-      {design === "glass" ? <GlassHeader viewer={viewer} /> : <PineHeader viewer={viewer} />}
+      <header className="pointer-events-none absolute inset-x-0 top-0 isolate z-30 lg:sticky lg:-mb-19 lg:h-19">
+        {tone === "glass" && (
+          <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-30 bg-header-scrim lg:h-42.5" />
+        )}
+        <div
+          className={cn(
+            "pointer-events-auto flex h-15 items-center gap-6 border-b border-transparent px-edge transition-all duration-300 ease-out motion-reduce:transition-none",
+            scrolled
+              ? "border-border bg-background-alt/78 text-heading shadow-lg backdrop-blur-lg backdrop-saturate-140"
+              : "lg:h-19",
+            tone === "glass" ? "text-on-band" : "text-heading",
+          )}
+        >
+          <Brand tone={tone} compact={scrolled} />
+          <MainNav tone={tone} className="mx-auto hidden lg:flex" />
+          <HeaderTools viewer={viewer} tone={tone} />
+          <div className="ms-auto lg:hidden">
+            <PortalLink tone={tone} iconOnly />
+          </div>
+        </div>
+      </header>
       <TabBar viewer={viewer} />
     </>
   );

@@ -15,7 +15,7 @@ export function LocaleSwitcher({
   className,
 }: {
   links: LocaleLink[];
-  /** `ghost`, or one of the `tool` variants for a header bar on a band or a photo. */
+  /** `ghost`, or one of the `tool` variants for a header bar on a photo or laid over a light page. */
   variant?: ButtonProps["variant"];
   className?: string;
 }) {

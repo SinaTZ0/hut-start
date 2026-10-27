@@ -76,14 +76,8 @@ const twVariant = defineStyles({
     hover: "hover:bg-accent",
     state: "aria-expanded:bg-accent data-popup-open:bg-accent",
   },
-  // The same tools on a pine bar, on a photo (frosted glass), and laid over a light page (frosted paper). With a `sm`
-  // size they make a pill, such as the header's portal button.
-  "tool-band": {
-    geometry: "rounded-full",
-    appearance: "text-on-band-soft",
-    hover: "hover:bg-band-hover hover:text-on-band",
-    state: "aria-expanded:bg-band-hover data-popup-open:bg-band-hover",
-  },
+  // The same tools on a photo (frosted glass), and laid over a light page (frosted paper). With a `sm` size they make a
+  // pill, such as the header's portal button.
   "tool-glass": {
     geometry: "rounded-full",
     appearance: "border-glass-edge bg-glass text-on-band backdrop-blur-md",

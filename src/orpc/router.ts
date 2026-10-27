@@ -1,7 +1,6 @@
 import { createCaptchaChallengeProcedure } from "#/orpc/captcha/procedure";
 import { submitConsultationProcedure } from "#/orpc/consultation/procedure";
 import { getDepartmentProcedure, listDepartmentsProcedure } from "#/orpc/department/procedure";
-import { getDesignPreviewProcedure } from "#/orpc/design-preview/procedure";
 import { submitFeedbackProcedure } from "#/orpc/feedback/procedure";
 import { getHomeFeedProcedure, syncHomeFeedProcedure } from "#/orpc/home-feed/procedure";
 import { implementer } from "#/orpc/implementer.server";
@@ -22,9 +21,6 @@ export const router = implementer.router({
   department: {
     get: getDepartmentProcedure,
     list: listDepartmentsProcedure,
-  },
-  designPreview: {
-    get: getDesignPreviewProcedure,
   },
   feedback: {
     submit: submitFeedbackProcedure,
