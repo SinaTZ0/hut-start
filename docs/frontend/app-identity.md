@@ -39,8 +39,10 @@ translation ([i18n.md](./i18n.md)).
   (pine); on bands it stays white. It always sits beside the visible university name, so it is decorative (`alt=""`).
   Icon tiles that hold it are `rounded-sm`, 48px.
 - **Photography**: real photographs of the campus, its people and events. The hero is the campus with Alvand behind
-  it, edge to edge, under a pine scrim (`bg-hero-scrim`) that keeps the text on it readable. On the start side, under
-  the name, the photo gives way to the same view drawn in the notebook hand (see Home drawings). News and achievement
+  it, edge to edge, under a scrim (`bg-hero-scrim`) that keeps the text on it readable. On wide screens the scrim is
+  a light, neutral dusk, not pine, so the sky and the trees keep their colour; the milestone at the foot sits on the
+  systems rail's pine glass instead. Over the peaks the photo gives way to the same view drawn in the notebook hand
+  (see Home drawings). News and achievement
   photos sit in fixed ratios (`aspect-wide`, `aspect-photo`, `video`) and zoom slightly on hover. Labels on photos are
   `Badge variant="media"`.
 - **Signature drawings**: each department has its own engineering sketch in the manner of a Da Vinci notebook (fine
@@ -60,9 +62,15 @@ translation ([i18n.md](./i18n.md)).
   hero has the campus itself (`campus-sketch.webp`): the hero photo's view redrawn as a notebook study (Alvand
   hatched, the building in line, compass circles and a dimension line on the peaks, an ornithopter in the sky), the
   photo's size and laid over it, so the lines stay on the building at every crop (`hero-sketch`, `hero-photo-fade`). It
-  holds the start side, under the name, in a pale ink of its own (`art-hero`), and hands over to the photo toward the
-  end, the idea becoming the place. Phones keep the plain photo: the name spans their width, so there is no side
-  for the drawing to hold. A new hero photo needs a new drawing of it. The home echoes the department page too: its figures hang from dimension lines, and
+  holds the photo's right side, over the peaks, in a strong ink of its own (`art-hero`), and hands over to the photo
+  toward the left, the idea becoming the place. It belongs to the photo, which doesn't mirror, so it stays there in
+  both languages: behind the name in Persian, across from it in English, where the name stands on the photo's own
+  flag. It keeps to the sky and the peaks, fading out by the line of the buttons: over the trees and buildings, lines
+  on a busy photo read as haze, so the campus below stays a whole photograph. The sky above it is a fantastical star
+  chart (`hero-sky.webp`: meridians, constellations, a spiral orbit, a crescent; `art-hero-sky`), and a sun hangs on a
+  line with its disc on the clouds' glow (`hero-sun.webp`, the photo's size like the campus; `art-hero-sun`, with
+  `art-halo` so it holds on the bright sky). Phones keep the plain photo: the name spans their width, so there is no
+  side for the drawing to hold. A new hero photo needs a new drawing of it, and the sun moved to its glow. The home echoes the department page too: its figures hang from dimension lines, and
   the news, semester and achievements heads draw a ruler to their link (`SectionHead ruled`).
 - **Form drawings**: the public forms (`/feedback`, `/consultation`) each have one in `public/images/forms/` (listed in
   `FORM_DRAWINGS`): a quill, a sealed letter and a balance scale for complaints; an open book with dividers, a compass

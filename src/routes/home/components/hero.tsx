@@ -18,6 +18,10 @@ import { type EventWithStatus, fromJalali } from "../semester";
 const ABOUT_HREF = NAV_SECTIONS.find((section) => section.id === "about")?.href ?? "";
 const NEW_STUDENTS_HREF = SERVICES.find((service) => service.id === "new-students")?.href ?? "";
 
+/** The systems rail's pine glass, for a card at the photo's foot; wide screens only */
+const glassCardClasses =
+  "md:rounded-md md:border md:border-band-line md:bg-band-deep/45 md:px-5 md:shadow-glass md:backdrop-blur-xl md:backdrop-saturate-150";
+
 /*===== Helpers =====*/
 
 /** The site's name with «صنعتی» (Technology) picked out in gold, wherever the language puts it. */
@@ -65,10 +69,12 @@ function HeroActions() {
 /*===== Hero =====*/
 
 /**
- * The first screen: the campus photograph edge to edge under a pine scrim, turning into a notebook drawing of the same
- * view on the side the name stands on (`hero-sketch`, wide screens only). The name sits at the top; the place, the
- * next academic milestone and the systems rail stand along its foot. The two actions follow the name on wide screens;
- * on phones they wait above the rail, so the campus stays in view between the name and the foot.
+ * The first screen: the campus photograph edge to edge under a scrim, turning into a notebook drawing of the same view
+ * over the peaks (`hero-sketch`, wide screens only), under a star chart and a hanging sun on the clouds' glow
+ * (`hero-sky`, `hero-sun`). The drawings keep to the photo's right side in both languages: behind the name in Persian,
+ * across from it in English. The name sits at the top; the next academic milestone and the systems rail stand along its
+ * foot (the place too, on phones). The two actions follow the name on wide screens; on phones they wait above the rail,
+ * so the campus stays in view between the name and the foot.
  */
 export function Hero({ next, children }: { next?: EventWithStatus; children: ReactNode }) {
   return (
@@ -84,12 +90,20 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
         className="absolute inset-x-0 top-0 -z-20 h-hero w-full hero-photo-fade object-cover object-hero"
       />
       <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-hero bg-hero-scrim" />
-      {/* Over the scrim, which is there to quiet the photo, not the drawing */}
+      {/* Over the scrim, which is there to quiet the photo, not the drawings */}
       <div
         aria-hidden
         className="absolute inset-x-0 top-0 -z-10 hidden h-hero hero-sketch md:block"
         style={{ "--art": `url("${HOME_DRAWINGS.campus}")` } as CSSProperties}
       />
+      <div
+        aria-hidden
+        className="absolute top-0 hero-sky -z-10 hidden md:block"
+        style={{ "--art": `url("${HOME_DRAWINGS.sky}")` } as CSSProperties}
+      />
+      <div aria-hidden className="absolute inset-x-0 top-0 -z-10 hidden h-hero art-halo md:block">
+        <div className="size-full hero-sun" style={{ "--art": `url("${HOME_DRAWINGS.sun}")` } as CSSProperties} />
+      </div>
 
       <div className="flex min-h-hero-body flex-col px-edge pt-10 pb-6 md:pt-section">
         {/*===== Name and Actions =====*/}
@@ -111,36 +125,39 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
 
         {/*===== Foot of the Photo =====*/}
         <div className="mt-auto">
-          <div className="mt-32 mb-4 flex flex-col items-start gap-4 md:my-0 md:ms-auto md:w-fit">
-            <p className="inline-flex items-center gap-1.5 text-caption text-on-band-soft text-shadow-photo">
-              <MapPinIcon aria-hidden className="size-4 text-highlight" />
-              {m.home_hero_place()}
-            </p>
-            <p aria-hidden className="hidden flex-col border-s-2 border-highlight ps-4 text-body-sm md:flex">
-              <span>{m.home_hero_motto_root()}</span>
-              <strong className="text-h3 text-on-band">{m.home_hero_motto_future()}</strong>
-            </p>
-          </div>
+          {/* Phones only: on wide screens the photo shows the place, and the foot keeps to the milestone and the rail */}
+          <p className="mt-32 mb-4 inline-flex items-center gap-1.5 text-caption text-on-band-soft text-shadow-photo md:hidden">
+            <MapPinIcon aria-hidden className="size-4 text-highlight" />
+            {m.home_hero_place()}
+          </p>
 
           {/*------ Next Milestone ------*/}
-          {/* On phones the link to the calendar closes the label row, and the milestone runs under it at full width. */}
-          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-band-line pt-6">
-            <CalendarIcon aria-hidden className="size-5 text-highlight" />
-            <span className="text-caption font-bold text-highlight">{m.home_hero_notice()}</span>
-            <p className="order-1 min-w-0 basis-full md:order-none md:flex-1 md:basis-auto">
-              {next ? (
-                <>
-                  <strong className="font-extrabold">{next.label()}</strong>
-                  {next.cohort && <span className="text-body-sm text-on-band-muted"> ({next.cohort()})</span>}
-                  <span className="block text-body-sm text-on-band-muted md:ms-3 md:inline">{eventTiming(next)}</span>
-                </>
-              ) : (
-                <strong className="font-extrabold">{m.home_hero_calendar_fallback({ term: SEMESTER.name() })}</strong>
-              )}
-            </p>
+          {/* On phones one row over a rule: the link to the calendar closes the label row, and the milestone runs under
+              it at full width (the card's box is `contents` there, so its children join the row). On wide screens the
+              milestone and the link are two cards of the rail's glass, at either end, with the campus between them. */}
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-band-line pt-6 md:flex-nowrap md:items-stretch md:border-t-0 md:pt-0">
+            <div className={cn("contents", glassCardClasses, "md:flex md:min-w-0 md:items-center md:gap-x-4 md:py-3")}>
+              <CalendarIcon aria-hidden className="size-5 shrink-0 text-highlight" />
+              <span className="text-caption font-bold text-highlight">{m.home_hero_notice()}</span>
+              <p className="order-1 min-w-0 basis-full md:order-none md:basis-auto">
+                {next ? (
+                  <>
+                    <strong className="font-extrabold">{next.label()}</strong>
+                    {next.cohort && <span className="text-body-sm text-on-band-muted"> ({next.cohort()})</span>}
+                    <span className="block text-body-sm text-on-band-muted md:ms-3 md:inline">{eventTiming(next)}</span>
+                  </>
+                ) : (
+                  <strong className="font-extrabold">{m.home_hero_calendar_fallback({ term: SEMESTER.name() })}</strong>
+                )}
+              </p>
+            </div>
             <a
               href="#home-calendar"
-              className="ms-auto inline-flex min-h-10 items-center gap-2 text-body-sm font-semibold underline-offset-4 hover:underline"
+              className={cn(
+                "ms-auto inline-flex min-h-10 shrink-0 items-center gap-2 text-body-sm font-semibold underline-offset-4 hover:underline",
+                glassCardClasses,
+                "md:transition-colors md:duration-200 md:hover:bg-band-deep/65 md:hover:no-underline md:motion-reduce:transition-none",
+              )}
             >
               {m.home_hero_view_calendar()}
               <ArrowLeftIcon aria-hidden className={cn(textLinkArrowClasses, "size-4.5 text-highlight")} />

@@ -30,6 +30,9 @@ export function departmentDrawings(slug: string): Drawings | null {
  */
 export const HOME_DRAWINGS = {
   campus: "/images/home/campus-sketch.webp",
+  /** The hero's sky: a star chart, and a sun the photo's size so it lies on the clouds' glow */
+  sky: "/images/home/hero-sky.webp",
+  sun: "/images/home/hero-sun.webp",
   glance: "/images/home/glance.webp",
   learning: "/images/home/learning.webp",
   welcome: "/images/home/welcome.webp",

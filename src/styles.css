@@ -291,9 +291,13 @@
      for the page, `art-band` for a pine band. */
   --art-ink: color-mix(in srgb, var(--heading) 46%, transparent);
   --art-band: color-mix(in srgb, var(--on-band) 13%, transparent);
-  /* The home hero's drawing of the campus: the picture itself there, so stronger than a band's backdrop. The hero is
-     pine in both themes, so it keeps this in dark too. */
-  --art-hero: color-mix(in srgb, var(--on-band) 30%, transparent);
+  /* The home hero's drawing of the campus: the picture itself there, in the sky behind the name, so far stronger than a
+     band's backdrop. The hero is pine in both themes, so it keeps this in dark too. */
+  --art-hero: color-mix(in srgb, var(--on-band) 75%, transparent);
+  /* The star chart over the hero's sky, behind the campus drawing in strength, and the sun hung on the clouds' glow,
+     strong enough to hold on the brightest part of the sky */
+  --art-hero-sky: color-mix(in srgb, var(--on-band) 45%, transparent);
+  --art-hero-sun: color-mix(in srgb, var(--on-band) 70%, transparent);
   /* A main menu card's ground: under the links, so fainter than a page's drawing. `art-menu-glass` is for the dark glass
      card over the hero photo, the same in both themes. */
   --art-menu: color-mix(in srgb, var(--heading) 20%, transparent);
@@ -413,22 +417,16 @@
     rgb(11 47 50 / 45%) 55%,
     transparent 78%
   );
-  background-image:
-    var(--scrim-foot),
-    linear-gradient(var(--toward-end), rgb(11 47 50 / 72%) 0%, rgb(11 47 50 / 40%) 40%, transparent 65%);
+  --scrim-side: linear-gradient(var(--toward-end), rgb(11 47 50 / 72%) 0%, rgb(11 47 50 / 40%) 40%, transparent 65%);
+  background-image: var(--scrim-foot), var(--scrim-side);
 
-  /* On wide screens the frosted systems rail sits on the photo's foot, so the foot eases off behind it and the glass has
-     the campus to blur. It still ends solid at the very edge, where the arc takes over. (On phones the rail sits
+  /* On wide screens the copy has the drawing and its own glass cards behind it, so the shade is light and a neutral
+     dusk rather than pine: pine over the sky and the trees turned the campus teal and grey. The foot keeps only what
+     the rail's glass needs, and still ends solid at the very edge, where the arc takes over. (On phones the rail sits
      below the photo.) */
   @variant md {
-    --scrim-foot: linear-gradient(
-      to top,
-      var(--band-deep) 0%,
-      rgb(11 47 50 / 55%) 7%,
-      rgb(11 47 50 / 68%) 30%,
-      rgb(11 47 50 / 45%) 55%,
-      transparent 78%
-    );
+    --scrim-foot: linear-gradient(to top, var(--band-deep) 0%, rgb(10 22 24 / 45%) 16%, transparent 40%);
+    --scrim-side: linear-gradient(var(--toward-end), rgb(10 18 22 / 48%) 0%, rgb(10 18 22 / 12%) 40%, transparent 58%);
   }
 }
 
@@ -479,28 +477,71 @@
   object-position: center 35%;
 }
 
-/* The campus as a notebook drawing under the name (app-identity.md → Brand): on the start side the photo gives way to
-   the same view drawn in ink, and the drawing gives way to the photo toward the end, the idea becoming the place. The
+/* The campus as a notebook drawing (app-identity.md → Brand): on the right the photo gives way to the same view drawn in
+   ink, over the peaks, and the drawing gives way to the photo toward the left, the idea becoming the place. The
    drawing (`--art`) is the photo's size and drawn over it, and both layers take the photo's crop (`cover` at
-   `object-hero`), so its lines stay on the building and the peaks at every width. Wide screens only: on phones the
-   name fills the width, so the hero stays the photograph. */
+   `object-hero`), so its lines stay on the building and the peaks at every width. The drawings belong to the photo,
+   which doesn't mirror, so they keep its right side in both languages (`to left`, not `--toward-end`): behind the
+   name in Persian, across from it in English, where the name stands on the photo's flag. Wide screens only: on
+   phones the name fills the width, so the hero stays the photograph.
+   The drawing keeps to the sky and the peaks, and fades out by the line of the buttons: over the trees and the
+   buildings, lines on a busy photo read as haze. Below it the photo is whole, lifted a little in colour, so the hero
+   keeps the campus's daylight. */
 @utility hero-photo-fade {
   @variant md {
-    mask-image: linear-gradient(var(--toward-end), transparent 16%, #000 62%);
+    mask-image:
+      linear-gradient(to left, rgb(0 0 0 / 15%) 10%, #000 55%), linear-gradient(to bottom, transparent 30%, #000 48%);
+    filter: saturate(1.12);
   }
 }
 
 @utility hero-sketch {
   background-color: var(--art-hero);
-  mask-image: var(--art), linear-gradient(var(--toward-end), #000 20%, transparent 66%);
+  mask-image:
+    var(--art), linear-gradient(to left, #000 15%, transparent 55%),
+    linear-gradient(to bottom, #000 30%, transparent 48%);
   mask-size:
     cover,
+    100% 100%,
     100% 100%;
   mask-position:
     center 35%,
+    0 0,
     0 0;
   mask-repeat: no-repeat;
   mask-composite: intersect;
+}
+
+/* A star chart across the hero's sky (`--art`, its lines thinning out toward the sheet's foot): meridians from a pole
+   above the header, constellations, a spiral orbit and a crescent. It holds the photo's right side with the campus
+   drawing and fades out toward the left, foot-aligned so its densest part stays clear of the header. */
+@utility hero-sky {
+  right: 0;
+  width: 78%;
+  height: calc(var(--spacing-hero) * 0.62);
+  background-color: var(--art-hero-sky);
+  mask-image: var(--art), linear-gradient(to left, #000 55%, transparent);
+  mask-size:
+    100% auto,
+    100% 100%;
+  mask-position:
+    bottom,
+    0 0;
+  mask-repeat: no-repeat;
+  mask-composite: intersect;
+}
+
+/* A sun hanging on a line, its disc on the clouds' glow in the photo: the drawing (`--art`) is the photo's size and
+   takes its crop, like the campus drawing, so the glow stays inside the disc at every width */
+@utility hero-sun {
+  background-color: var(--art-hero-sun);
+  mask: var(--art) center 35% / cover no-repeat;
+}
+
+/* A dark edge around a drawing's lines, so white ink holds on a bright sky. On a wrapper: a filter on the masked
+   element itself is masked away with the paper. */
+@utility art-halo {
+  filter: drop-shadow(0 0 1px rgb(0 0 0 / 55%)) drop-shadow(0 0 3px rgb(0 0 0 / 25%));
 }
 
 /* The semester track: one cell per day (`--days`), cut by a 2px gap with a repeating mask from the start side. On
