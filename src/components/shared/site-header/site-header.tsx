@@ -1,13 +1,16 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useMatches } from "@tanstack/react-router";
 import { LogInIcon, UserIcon } from "lucide-react";
+import { useRef } from "react";
 
+import type { NavigationMenuTone } from "#/components/primitive/navigation-menu/navigation-menu";
 import { buttonVariants } from "#/components/primitive/button/button.styles";
 import { LocaleSwitcher } from "#/components/shared/locale-switcher/locale-switcher";
 import { LogoMark } from "#/components/shared/logo-mark/logo-mark";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { ThemeToggle } from "#/components/shared/theme-toggle/theme-toggle";
+import { useDesignVariant } from "#/hooks/use-design-preview";
 import { useLocaleLinks } from "#/hooks/use-locale-links";
-import { CONTACT_LINK, PORTAL_HREF } from "#/lib/university/navigation";
+import { PORTAL_HREF } from "#/lib/university/navigation";
 import { cn } from "#/lib/utils";
 import type { Viewer } from "#/orpc/session/contract";
 import { m } from "#/paraglide/messages";
@@ -16,33 +19,49 @@ import { AccountMenu } from "./account-menu";
 import { MainNav } from "./main-nav";
 import { ServiceSearch } from "./service-search";
 import { TabBar } from "./tab-bar";
+import { useScrolled } from "./use-scrolled";
 
-/*===== Styles =====*/
+/*===== Tones =====*/
+// The header has two designs while the choice is open (`header` in `src/lib/design-variants.ts`): a pine band, and a
+// transparent bar over the page's top. What the bar sits on decides its tone (`navigation-menu.styles.ts` → Tones), and
+// the tone the tools' button variants.
 
-const utilityLinkClasses = "inline-flex min-h-10 items-center gap-1.5 underline-offset-4 hover:underline";
+type HeaderTone = NavigationMenuTone;
+
+const TOOL_VARIANT = { paper: "tool", band: "tool-band", glass: "tool-glass", frost: "tool-frost" } as const;
+const LOCALE_VARIANT = { paper: "ghost", band: "tool-band", glass: "tool-glass", frost: "tool-frost" } as const;
+const PORTAL_VARIANT = { paper: "outline", band: "outline-band", glass: "tool-glass", frost: "tool-frost" } as const;
+
+const brandTone = {
+  paper: { name: "text-heading", other: "text-muted-foreground" },
+  frost: { name: "text-heading", other: "text-muted-foreground" },
+  band: { name: "text-on-band", other: "text-on-band-muted" },
+  glass: { name: "text-on-band text-shadow-photo", other: "text-on-band-soft text-shadow-photo" },
+} as const satisfies Record<HeaderTone, { name: string; other: string }>;
 
 /*===== Brand =====*/
 
 /**
- * The emblem and the university's name, with its name in the other language under it. The English line is set in
- * spaced capitals; spacing would break the joins of Persian letters, so the Persian line isn't.
+ * The emblem and the university's name, with its name in the other language under it on wide screens until the bar
+ * turns compact. The English line is set in spaced capitals; spacing would break the joins of Persian letters, so the
+ * Persian line isn't.
  */
-function Brand() {
+function Brand({ tone, compact }: { tone: HeaderTone; compact: boolean }) {
   const otherLocale = locales.find((locale) => locale !== getLocale());
+  const styles = brandTone[tone];
 
   return (
-    <Link to="/" className="flex shrink-0 items-center gap-2 rounded-sm text-heading sm:gap-3">
-      <span className="grid size-9 place-items-center rounded-sm bg-primary text-primary-foreground sm:size-10">
-        <LogoMark className="size-6 sm:size-7" />
-      </span>
+    <Link to="/" className="flex shrink-0 items-center gap-2.5 rounded-sm sm:gap-3">
+      <LogoMark className={cn("size-7.5 text-current", !compact && "lg:size-9", styles.name)} />
       <span className="flex flex-col">
-        <span className="text-title sm:text-h4">{m.site_name()}</span>
-        {otherLocale && (
+        <span className={cn("text-title sm:text-h4", styles.name)}>{m.site_name()}</span>
+        {otherLocale && !compact && (
           <span
             lang={otherLocale}
             className={cn(
-              "hidden text-caption text-muted-foreground sm:block",
+              "hidden text-caption sm:block",
               otherLocale === "en" && "tracking-wider uppercase",
+              styles.other,
             )}
           >
             {m.site_name({}, { locale: otherLocale })}
@@ -53,69 +72,133 @@ function Brand() {
   );
 }
 
+/*===== Portal =====*/
+
+/** The university portal: an icon on phones, labelled «پرتال» on wide screens. */
+function PortalLink({ tone, iconOnly = false }: { tone: HeaderTone; iconOnly?: boolean }) {
+  return (
+    <SiteLink
+      href={PORTAL_HREF}
+      aria-label={iconOnly ? m.nav_portal() : undefined}
+      className={buttonVariants({ variant: PORTAL_VARIANT[tone], size: iconOnly ? "icon-sm" : "sm" })}
+    >
+      <LogInIcon data-icon={iconOnly ? undefined : "inline-start"} className="rtl:-scale-x-100" />
+      {!iconOnly && m.nav_portal_short()}
+    </SiteLink>
+  );
+}
+
+/*===== Tools =====*/
+
+/** Systems search, theme, language, and the account menu or sign-in, then the portal: wide screens only. */
+function HeaderTools({ viewer, tone }: { viewer: Viewer | null; tone: HeaderTone }) {
+  const localeLinks = useLocaleLinks();
+  const toolVariant = TOOL_VARIANT[tone];
+
+  return (
+    <div className={cn("hidden items-center lg:flex", tone === "band" ? "gap-0.5" : "gap-1.5")}>
+      <ServiceSearch variant={toolVariant} />
+      <ThemeToggle variant={toolVariant} />
+      <LocaleSwitcher links={localeLinks} variant={LOCALE_VARIANT[tone]} />
+      {viewer ? (
+        <AccountMenu viewer={viewer} variant={toolVariant} />
+      ) : (
+        // A link styled as a button: `<Button render={<Link />}>` would announce it as a button (`role="button"`).
+        <Link
+          to="/auth"
+          aria-label={m.nav_sign_in()}
+          className={buttonVariants({ variant: toolVariant, size: "icon-sm" })}
+        >
+          <UserIcon />
+        </Link>
+      )}
+      {tone === "band" && <span aria-hidden className="mx-2.5 h-6 w-px bg-band-line-strong" />}
+      <PortalLink tone={tone} />
+    </div>
+  );
+}
+
+/*===== Pine Band =====*/
+
+/**
+ * One pine bar: brand, the menu (its sections' panels open the bar's full width), tools and the portal. On wide
+ * screens it sticks to the top and turns compact once the page scrolls; the header keeps its full height in the page,
+ * so nothing under it moves.
+ */
+function PineHeader({ viewer }: { viewer: Viewer | null }) {
+  const barRef = useRef<HTMLDivElement>(null);
+  const compact = useScrolled();
+
+  return (
+    <header className="pointer-events-none relative z-30 lg:sticky lg:top-0 lg:h-18">
+      <div
+        ref={barRef}
+        className={cn(
+          "pointer-events-auto flex h-15 items-center gap-6 border-b border-band-line bg-band-deep px-edge text-on-band transition-all duration-200 ease-out motion-reduce:transition-none",
+          compact ? "shadow-lg" : "lg:h-18",
+        )}
+      >
+        <Brand tone="band" compact={compact} />
+        <MainNav tone="band" anchor={barRef} className="mx-auto hidden self-stretch lg:flex" />
+        <HeaderTools viewer={viewer} tone="band" />
+        <div className="ms-auto lg:hidden">
+          <PortalLink tone="band" iconOnly />
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/*===== Over the Page =====*/
+
+/**
+ * A transparent bar laid over the page's top: white on the home page's photo, under a scrim that keeps it readable, with
+ * the menu in a glass capsule; ink on the other pages, in frosted paper. On wide screens it sticks to the top and
+ * turns to frosted paper once the page scrolls. It takes no room in the page: `main` and the hero leave room for it
+ * (`--header-over` in `styles.css`).
+ */
+function GlassHeader({ viewer }: { viewer: Viewer | null }) {
+  const scrolled = useScrolled();
+  const onPhoto = useMatches({ select: (matches) => matches.at(-1)?.fullPath === "/" });
+  const tone: HeaderTone = scrolled ? "paper" : onPhoto ? "glass" : "frost";
+
+  return (
+    <header className="pointer-events-none absolute inset-x-0 top-0 isolate z-30 lg:sticky lg:-mb-19 lg:h-19">
+      {tone === "glass" && (
+        <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-30 bg-header-scrim lg:h-42.5" />
+      )}
+      <div
+        className={cn(
+          "pointer-events-auto flex h-15 items-center gap-6 border-b border-transparent px-edge transition-all duration-300 ease-out motion-reduce:transition-none",
+          scrolled
+            ? "border-border bg-background-alt/78 text-heading shadow-lg backdrop-blur-lg backdrop-saturate-140"
+            : "lg:h-19",
+          tone === "glass" ? "text-on-band" : "text-heading",
+        )}
+      >
+        <Brand tone={tone} compact={scrolled} />
+        <MainNav tone={tone} className="mx-auto hidden lg:flex" />
+        <HeaderTools viewer={viewer} tone={tone} />
+        <div className="ms-auto lg:hidden">
+          <PortalLink tone={tone} iconOnly />
+        </div>
+      </div>
+    </header>
+  );
+}
+
 /*===== Site Header =====*/
 
 /**
- * A pine utility bar (contact, the university portal), then the main bar: brand, the main menu, and the tools
- * (systems search, theme, language, the account menu or sign-in). Below `lg` the main bar keeps only the brand, and
- * the menu and tools move to the tab bar at the bottom of the screen.
+ * The header in the design this browser sees, then the phone tab bar. Below `lg` the bar keeps only the brand and the
+ * portal, and the menu and tools move to the tab bar at the bottom of the screen.
  */
 export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
-  const localeLinks = useLocaleLinks();
+  const design = useDesignVariant("header");
 
   return (
     <>
-      <header className="relative z-30">
-        {/*===== Utility Bar =====*/}
-        <div className="bg-band-deep text-caption text-on-band">
-          <div className="flex items-center justify-end gap-4 px-edge sm:justify-between">
-            <p className="hidden items-center gap-2 before:size-1.5 before:rounded-full before:bg-highlight sm:flex">
-              {m.nav_official_site()}
-            </p>
-            <ul className="flex gap-6">
-              <li>
-                <SiteLink href={CONTACT_LINK.href} className={utilityLinkClasses}>
-                  {CONTACT_LINK.label()}
-                </SiteLink>
-              </li>
-              <li>
-                <SiteLink href={PORTAL_HREF} className={utilityLinkClasses}>
-                  {m.nav_portal()}
-                  <LogInIcon aria-hidden className="size-4 rtl:-scale-x-100" />
-                </SiteLink>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/*===== Main Bar =====*/}
-        <div className="border-b bg-background-alt">
-          <div className="flex h-16 items-center justify-between gap-4 px-edge">
-            <Brand />
-            <MainNav className="hidden lg:flex" />
-
-            {/*------ Tools ------*/}
-            <div className="hidden items-center gap-1 border-s ps-4 lg:flex">
-              <ServiceSearch />
-              <ThemeToggle />
-              <LocaleSwitcher links={localeLinks} />
-              {viewer ? (
-                <AccountMenu viewer={viewer} />
-              ) : (
-                // A link styled as a button: `<Button render={<Link />}>` would announce it as a button (`role="button"`).
-                <Link
-                  to="/auth"
-                  aria-label={m.nav_sign_in()}
-                  className={buttonVariants({ variant: "tool", size: "icon-sm" })}
-                >
-                  <UserIcon />
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
+      {design === "glass" ? <GlassHeader viewer={viewer} /> : <PineHeader viewer={viewer} />}
       <TabBar viewer={viewer} />
     </>
   );

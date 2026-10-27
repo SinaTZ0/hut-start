@@ -32,9 +32,9 @@
   "site_dept_chem": "Chemical Engineering",
   "site_dept_mining": "Mining Engineering",
   "site_dept_bs": "Basic Sciences",
-  "nav_official_site": "Official website of Hamedan University of Technology",
   "nav_contact": "Contact us",
   "nav_portal": "University portal",
+  "nav_portal_short": "Portal",
   "nav_search_services": "Search the systems",
   "nav_search_label": "Which system do you need?",
   "nav_search_placeholder": "e.g. Golestan, meals, loans…",
@@ -783,5 +783,15 @@
   "privacy_s6_title": "Links to other websites",
   "privacy_s6_p1": "This website may contain links to other electronic portals. Once you leave the Hamedan University of Technology website, the university has no technical or legal control over the destination sites. It therefore accepts no responsibility for their privacy policies or content, and recommends that you read the privacy statement of those sites before using them.",
   "privacy_s7_title": "Contacting the university",
-  "privacy_s7_p1": "If you have any question, concern, comment or report about this statement, you can reach the responsible officials through the contact channels in the “Contact us” section of the Hamedan University of Technology portal."
+  "privacy_s7_p1": "If you have any question, concern, comment or report about this statement, you can reach the responsible officials through the contact channels in the “Contact us” section of the Hamedan University of Technology portal.",
+  "design_preview_title": "Design preview",
+  "design_preview_description": "Switch between the designs still being chosen. Only this browser sees the change.",
+  "design_preview_none": "Nothing on this page has more than one design.",
+  "design_preview_copy": "Copy link",
+  "design_preview_copied": "Link copied. Whoever opens it sees these designs.",
+  "design_preview_copy_failed": "Couldn't copy the link.",
+  "design_preview_reset": "Defaults",
+  "design_header": "Header",
+  "design_header_pine": "Pine band",
+  "design_header_glass": "Over the photo"
 }

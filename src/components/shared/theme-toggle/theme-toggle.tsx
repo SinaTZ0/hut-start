@@ -1,6 +1,6 @@
 import { MoonIcon, SunIcon } from "lucide-react";
 
-import { Button } from "#/components/primitive/button/button";
+import { Button, type ButtonProps } from "#/components/primitive/button/button";
 import { useTheme } from "#/hooks/use-theme";
 import { m } from "#/paraglide/messages";
 
@@ -9,13 +9,20 @@ import { m } from "#/paraglide/messages";
  * Switches between light and dark and saves the choice. A toggle button ("dark mode", pressed when
  * dark). The icon is chosen with CSS (`dark:`), so it's right on the server-rendered page too.
  */
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({
+  variant = "tool",
+  className,
+}: {
+  /** One of the `tool` variants, for what the toggle sits on. */
+  variant?: ButtonProps["variant"];
+  className?: string;
+}) {
   const { theme, setTheme } = useTheme();
   const isDark = theme === "dark";
 
   return (
     <Button
-      variant="tool"
+      variant={variant}
       size="icon-sm"
       aria-label={m.theme_dark_mode()}
       aria-pressed={theme === null ? undefined : isDark}

@@ -1,63 +1,89 @@
 import { NavigationMenu as NavigationMenuPrimitive } from "@base-ui/react/navigation-menu";
 import { ChevronDownIcon } from "lucide-react";
-import type { ComponentPropsWithRef } from "react";
+import { type ComponentPropsWithRef, createContext, useContext } from "react";
 
 import { cn } from "#/lib/utils";
 import {
-  navigationMenuContentClasses,
+  navigationMenuContentVariants,
   navigationMenuIndicatorArrowClasses,
   navigationMenuIndicatorClasses,
-  navigationMenuItemClasses,
-  navigationMenuLinkClasses,
-  navigationMenuListClasses,
-  navigationMenuPopupClasses,
+  navigationMenuItemVariants,
+  navigationMenuLinkVariants,
+  navigationMenuListVariants,
+  navigationMenuPopupVariants,
   navigationMenuPositionerClasses,
   navigationMenuRootClasses,
-  navigationMenuTriggerClasses,
-  navigationMenuTriggerIconClasses,
+  type NavigationMenuTone,
+  navigationMenuTriggerIconVariants,
   navigationMenuTriggerStyle,
+  navigationMenuTriggerVariants,
   navigationMenuViewportClasses,
 } from "./navigation-menu.styles";
 
+/*===== Tone =====*/
+
+// Set once on the root; every part, the portalled popup included, reads it from here.
+const ToneContext = createContext<NavigationMenuTone>("paper");
+
 /*===== Navigation Menu =====*/
+
+export type NavigationMenuProps = NavigationMenuPrimitive.Root.Props &
+  Pick<NavigationMenuPrimitive.Positioner.Props, "align" | "anchor" | "sideOffset" | "collisionPadding"> & {
+    /** What the menu sits on (`navigation-menu.styles.ts` → Tones). */
+    tone?: NavigationMenuTone;
+  };
 
 /**
  * A `<nav>` of triggers and links. Triggers open on hover (after `delay`) as well as on click and keyboard, and every
- * section's content shows in one shared popup, rendered here, that follows the open trigger and resizes to fit.
+ * section's content shows in one shared popup, rendered here, that follows the open trigger and resizes to fit. Give
+ * it an `anchor` to open under that element instead, such as the whole header bar.
  */
 function NavigationMenu({
   align = "start",
+  anchor,
+  sideOffset,
+  collisionPadding,
+  tone = "paper",
   className,
   children,
   ...props
-}: NavigationMenuPrimitive.Root.Props & Pick<NavigationMenuPrimitive.Positioner.Props, "align">) {
+}: NavigationMenuProps) {
   return (
-    <NavigationMenuPrimitive.Root
-      data-slot="navigation-menu"
-      className={cn(navigationMenuRootClasses, className)}
-      {...props}
-    >
-      {children}
-      <NavigationMenuPositioner align={align} />
-    </NavigationMenuPrimitive.Root>
+    <ToneContext value={tone}>
+      <NavigationMenuPrimitive.Root
+        data-slot="navigation-menu"
+        className={cn(navigationMenuRootClasses, className)}
+        {...props}
+      >
+        {children}
+        <NavigationMenuPositioner
+          align={align}
+          anchor={anchor}
+          sideOffset={sideOffset}
+          collisionPadding={collisionPadding}
+        />
+      </NavigationMenuPrimitive.Root>
+    </ToneContext>
   );
 }
 
 function NavigationMenuList({ className, ...props }: ComponentPropsWithRef<typeof NavigationMenuPrimitive.List>) {
+  const tone = useContext(ToneContext);
   return (
     <NavigationMenuPrimitive.List
       data-slot="navigation-menu-list"
-      className={cn(navigationMenuListClasses, className)}
+      className={cn(navigationMenuListVariants({ tone }), className)}
       {...props}
     />
   );
 }
 
 function NavigationMenuItem({ className, ...props }: ComponentPropsWithRef<typeof NavigationMenuPrimitive.Item>) {
+  const tone = useContext(ToneContext);
   return (
     <NavigationMenuPrimitive.Item
       data-slot="navigation-menu-item"
-      className={cn(navigationMenuItemClasses, className)}
+      className={cn(navigationMenuItemVariants({ tone }), className)}
       {...props}
     />
   );
@@ -66,14 +92,15 @@ function NavigationMenuItem({ className, ...props }: ComponentPropsWithRef<typeo
 /*===== Trigger =====*/
 
 function NavigationMenuTrigger({ className, children, ...props }: NavigationMenuPrimitive.Trigger.Props) {
+  const tone = useContext(ToneContext);
   return (
     <NavigationMenuPrimitive.Trigger
       data-slot="navigation-menu-trigger"
-      className={cn(navigationMenuTriggerClasses, className)}
+      className={cn(navigationMenuTriggerVariants({ tone }), className)}
       {...props}
     >
       {children}
-      <ChevronDownIcon aria-hidden className={navigationMenuTriggerIconClasses} />
+      <ChevronDownIcon aria-hidden className={navigationMenuTriggerIconVariants({ tone })} />
     </NavigationMenuPrimitive.Trigger>
   );
 }
@@ -81,10 +108,11 @@ function NavigationMenuTrigger({ className, children, ...props }: NavigationMenu
 /*===== Content =====*/
 
 function NavigationMenuContent({ className, ...props }: NavigationMenuPrimitive.Content.Props) {
+  const tone = useContext(ToneContext);
   return (
     <NavigationMenuPrimitive.Content
       data-slot="navigation-menu-content"
-      className={cn(navigationMenuContentClasses, className)}
+      className={cn(navigationMenuContentVariants({ tone }), className)}
       {...props}
     />
   );
@@ -104,6 +132,7 @@ function NavigationMenuPositioner({
   collisionAvoidance = { side: "none" },
   ...props
 }: NavigationMenuPrimitive.Positioner.Props) {
+  const tone = useContext(ToneContext);
   return (
     <NavigationMenuPrimitive.Portal>
       <NavigationMenuPrimitive.Positioner
@@ -116,7 +145,7 @@ function NavigationMenuPositioner({
         className={cn(navigationMenuPositionerClasses, className)}
         {...props}
       >
-        <NavigationMenuPrimitive.Popup className={navigationMenuPopupClasses}>
+        <NavigationMenuPrimitive.Popup className={navigationMenuPopupVariants({ tone })}>
           <NavigationMenuPrimitive.Viewport className={navigationMenuViewportClasses} />
         </NavigationMenuPrimitive.Popup>
       </NavigationMenuPrimitive.Positioner>
@@ -128,10 +157,11 @@ function NavigationMenuPositioner({
 
 /** A link in the menu. Inside content it's a panel row; beside the triggers, give it `navigationMenuTriggerStyle()`. */
 function NavigationMenuLink({ className, ...props }: NavigationMenuPrimitive.Link.Props) {
+  const tone = useContext(ToneContext);
   return (
     <NavigationMenuPrimitive.Link
       data-slot="navigation-menu-link"
-      className={cn(navigationMenuLinkClasses, className)}
+      className={cn(navigationMenuLinkVariants({ tone }), className)}
       {...props}
     />
   );
@@ -148,6 +178,8 @@ function NavigationMenuIndicator({ className, ...props }: ComponentPropsWithRef<
     </NavigationMenuPrimitive.Icon>
   );
 }
+
+export type { NavigationMenuTone };
 
 export {
   NavigationMenu,

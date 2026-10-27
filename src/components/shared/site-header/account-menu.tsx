@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { LogOutIcon, NotebookTextIcon, UserIcon } from "lucide-react";
 
-import { Button } from "#/components/primitive/button/button";
+import { Button, type ButtonProps } from "#/components/primitive/button/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,8 +19,11 @@ import { m } from "#/paraglide/messages";
 
 export type AccountMenuProps = {
   viewer: Viewer;
-  /** `tool`: the header's round icon button. `tab`: a phone tab bar item, labelled, with the menu opening above it. */
-  variant?: "tool" | "tab";
+  /**
+   * `tab`: a phone tab bar item, labelled, with the menu opening above it. Anything else is the header's round icon
+   * button in that `tool` variant.
+   */
+  variant?: ButtonProps["variant"];
 };
 
 /** The signed-in viewer's menu: who they are, their notes, and signing out. */
@@ -35,7 +38,7 @@ export function AccountMenu({ viewer, variant = "tool" }: AccountMenuProps) {
           {m.nav_account()}
         </DropdownMenuTrigger>
       ) : (
-        <DropdownMenuTrigger render={<Button variant="tool" size="icon-sm" aria-label={m.nav_account()} />}>
+        <DropdownMenuTrigger render={<Button variant={variant} size="icon-sm" aria-label={m.nav_account()} />}>
           <UserIcon />
         </DropdownMenuTrigger>
       )}

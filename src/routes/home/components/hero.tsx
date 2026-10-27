@@ -72,7 +72,11 @@ function HeroActions() {
  */
 export function Hero({ next, children }: { next?: EventWithStatus; children: ReactNode }) {
   return (
-    <section aria-labelledby="home-hero" className="relative isolate overflow-hidden bg-band-deep text-on-band">
+    // With the glass header the hero slides up under it (`header-over`), so the photo starts at the top of the screen.
+    <section
+      aria-labelledby="home-hero"
+      className="relative isolate -mt-header-over overflow-hidden bg-band-deep pt-header-over text-on-band"
+    >
       <img
         src="/images/home/campus-hero.jpg"
         alt={m.home_hero_image_alt()}
@@ -87,7 +91,7 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
         style={{ "--art": `url("${HOME_DRAWINGS.campus}")` } as CSSProperties}
       />
 
-      <div className="flex min-h-hero flex-col px-edge pt-10 pb-6 md:pt-section">
+      <div className="flex min-h-hero-body flex-col px-edge pt-10 pb-6 md:pt-section">
         {/*===== Name and Actions =====*/}
         <div className="max-w-215">
           <h1 id="home-hero" className="mb-4 text-display text-balance text-on-band text-shadow-photo">

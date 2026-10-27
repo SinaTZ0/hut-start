@@ -92,9 +92,7 @@
   /* The phone tab bar fixed to the bottom; the page keeps this much room under the footer for it */
   --spacing-tab-bar: 4rem;
 
-  /* The home hero fills the first screen under the header (utility bar + main bar), but never below 560px; the arc
-     under it scales with the width. */
-  --spacing-hero: max(35rem, calc(100svh - 6.5rem));
+  /* The arc under the home hero scales with the width. */
   --spacing-arc: clamp(0.875rem, 2.2vw, 2rem);
   /* The room a section keeps above its heading when an arc hangs over it (`pt-after-arc`): the arc already separates
      it from the band above, so it needs less than `py-section`. */
@@ -114,6 +112,15 @@
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: "Vazirmatn Variable", "Segoe UI", Tahoma, system-ui, sans-serif;
+
+  /*------ Header room ------*/
+  /* Inline, since they read the site layout's header variables (`[data-header]` below), which only exist inside it.
+     `header-over` is how much of the header lies over the page's top: `main` leaves that much room, and the home hero
+     slides up under it. The hero fills the first screen the header leaves, but never goes below 560px; its body is
+     what's left under the header's part (`hero-body`). */
+  --spacing-header-over: var(--header-over);
+  --spacing-hero: max(35rem, calc(100svh - var(--header-room)));
+  --spacing-hero-body: calc(max(35rem, calc(100svh - var(--header-room))) - var(--header-over));
 
   /*------ shadcn semantic colors ------*/
   --color-background: var(--background);
@@ -415,6 +422,16 @@
   }
 }
 
+/* The glass header's scrim over the home photo: pine at the top edge, gone by the foot, so white text reads on any sky */
+@utility bg-header-scrim {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--band-deep) 72%, transparent),
+    color-mix(in srgb, var(--band-deep) 38%, transparent) 50%,
+    transparent
+  );
+}
+
 /* The university emblem (a white PNG) drawn in `currentColor`, so it takes pine on light grounds and white on bands */
 @utility mask-logo {
   mask: url("/images/logo.png") center / contain no-repeat;
@@ -557,6 +574,25 @@
 /*===== Base =====*/
 
 @layer base {
+  /* The header's two designs (`SiteHeader`): the pine band takes its height in the page (`header-room`); the glass bar
+     takes none and lies over the page's top (`header-over`). The heights match the bars at the top of the page. */
+  [data-header] {
+    --header-room: 3.75rem;
+    --header-over: 0rem;
+
+    @variant lg {
+      --header-room: 4.5rem;
+    }
+  }
+  [data-header="glass"] {
+    --header-room: 0rem;
+    --header-over: 3.75rem;
+
+    @variant lg {
+      --header-room: 0rem;
+      --header-over: 4.75rem;
+    }
+  }
   * {
     @apply border-border outline-ring/50;
   }

@@ -1,7 +1,7 @@
 import { SearchIcon } from "lucide-react";
 import { useDeferredValue, useId, useState } from "react";
 
-import { Button } from "#/components/primitive/button/button";
+import { Button, type ButtonProps } from "#/components/primitive/button/button";
 import { Input } from "#/components/primitive/input/input";
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "#/components/primitive/item/item";
 import { Label } from "#/components/primitive/label/label";
@@ -63,10 +63,10 @@ export function ServiceSearchPanel() {
 /*===== Service Search =====*/
 
 /** The header's search button on wide screens: a panel that filters the university's systems as the visitor types. */
-export function ServiceSearch() {
+export function ServiceSearch({ variant = "tool" }: { variant?: ButtonProps["variant"] }) {
   return (
     <Popover>
-      <PopoverTrigger render={<Button variant="tool" size="icon-sm" aria-label={m.nav_search_services()} />}>
+      <PopoverTrigger render={<Button variant={variant} size="icon-sm" aria-label={m.nav_search_services()} />}>
         <SearchIcon />
       </PopoverTrigger>
       <PopoverContent align="end" sideOffset={16} className="w-95">

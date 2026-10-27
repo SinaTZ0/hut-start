@@ -48,6 +48,16 @@ const envSchema = z.object({
   HOME_FEED_SYNC_MINUTES: z.coerce.number().int().min(0).default(30),
   // Lets `homeFeed.sync` be called with `Authorization: Bearer <secret>`. Unset or empty turns the procedure off.
   HOME_FEED_SYNC_SECRET: z.preprocess((value) => (value === "" ? undefined : value), z.string().min(32).optional()),
+  // Turns on the design preview, where reviewers switch between designs still being chosen (`src/lib/design-variants.ts`):
+  // a browser that opens a link with `?preview=<key>` sees the switch panel. Unset or empty turns it off, and everyone
+  // gets the default designs. At least 8 letters, digits, `_` or `-`, since it goes in a link.
+  DESIGN_PREVIEW_KEY: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z
+      .string()
+      .regex(/^[\w-]{8,}$/)
+      .optional(),
+  ),
 });
 
 /*===== Validation =====*/
