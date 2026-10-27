@@ -9,7 +9,6 @@ export const routes = rootRoute("__root.tsx", [
     route("/feedback", "feedback/feedback.tsx"),
     route("/privacy", "privacy/privacy.tsx"),
     route("/consultation", "consultation/consultation.tsx"),
-    route("/deploy-test", "deploy-test/deploy-test.tsx"),
     route("/departments/$departmentSlug", "departments_departmentSlug/departments-department-slug.tsx"),
     layout("notes_layout/notes-layout.tsx", [route("/notes", "notes/notes.tsx")]),
   ]),

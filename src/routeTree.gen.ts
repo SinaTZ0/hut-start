@@ -17,7 +17,6 @@ import { Route as homeHomeRouteImport } from './routes/home/home'
 import { Route as notes_layoutNotesLayoutRouteImport } from './routes/notes_layout/notes-layout'
 import { Route as authAuthRouteImport } from './routes/auth/auth'
 import { Route as consultationConsultationRouteImport } from './routes/consultation/consultation'
-import { Route as deployTestDeployTestRouteImport } from './routes/deploy-test/deploy-test'
 import { Route as feedbackFeedbackRouteImport } from './routes/feedback/feedback'
 import { Route as privacyPrivacyRouteImport } from './routes/privacy/privacy'
 import { Route as rpcRpcRouteImport } from './routes/rpc/rpc'
@@ -64,11 +63,6 @@ const consultationConsultationRoute =
     path: '/consultation',
     getParentRoute: () => site_layoutSiteLayoutRoute,
   } as any)
-const deployTestDeployTestRoute = deployTestDeployTestRouteImport.update({
-  id: '/deploy-test',
-  path: '/deploy-test',
-  getParentRoute: () => site_layoutSiteLayoutRoute,
-} as any)
 const feedbackFeedbackRoute = feedbackFeedbackRouteImport.update({
   id: '/feedback',
   path: '/feedback',
@@ -108,7 +102,6 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof sitemapSitemapRoute
   '/auth': typeof authAuthRoute
   '/consultation': typeof consultationConsultationRoute
-  '/deploy-test': typeof deployTestDeployTestRoute
   '/feedback': typeof feedbackFeedbackRoute
   '/privacy': typeof privacyPrivacyRoute
   '/rpc/$': typeof rpcRpcRoute
@@ -123,7 +116,6 @@ export interface FileRoutesByTo {
   '/': typeof homeHomeRoute
   '/auth': typeof authAuthRoute
   '/consultation': typeof consultationConsultationRoute
-  '/deploy-test': typeof deployTestDeployTestRoute
   '/feedback': typeof feedbackFeedbackRoute
   '/privacy': typeof privacyPrivacyRoute
   '/rpc/$': typeof rpcRpcRoute
@@ -141,7 +133,6 @@ export interface FileRoutesById {
   '/_site-layout/_notes-layout': typeof notes_layoutNotesLayoutRouteWithChildren
   '/_site-layout/auth': typeof authAuthRoute
   '/_site-layout/consultation': typeof consultationConsultationRoute
-  '/_site-layout/deploy-test': typeof deployTestDeployTestRoute
   '/_site-layout/feedback': typeof feedbackFeedbackRoute
   '/_site-layout/privacy': typeof privacyPrivacyRoute
   '/rpc/$': typeof rpcRpcRoute
@@ -158,7 +149,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/auth'
     | '/consultation'
-    | '/deploy-test'
     | '/feedback'
     | '/privacy'
     | '/rpc/$'
@@ -173,7 +163,6 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/consultation'
-    | '/deploy-test'
     | '/feedback'
     | '/privacy'
     | '/rpc/$'
@@ -190,7 +179,6 @@ export interface FileRouteTypes {
     | '/_site-layout/_notes-layout'
     | '/_site-layout/auth'
     | '/_site-layout/consultation'
-    | '/_site-layout/deploy-test'
     | '/_site-layout/feedback'
     | '/_site-layout/privacy'
     | '/rpc/$'
@@ -266,13 +254,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof consultationConsultationRouteImport
       parentRoute: typeof site_layoutSiteLayoutRoute
     }
-    '/_site-layout/deploy-test': {
-      id: '/_site-layout/deploy-test'
-      path: '/deploy-test'
-      fullPath: '/deploy-test'
-      preLoaderRoute: typeof deployTestDeployTestRouteImport
-      parentRoute: typeof site_layoutSiteLayoutRoute
-    }
     '/_site-layout/feedback': {
       id: '/_site-layout/feedback'
       path: '/feedback'
@@ -337,7 +318,6 @@ interface site_layoutSiteLayoutRouteChildren {
   notes_layoutNotesLayoutRoute: typeof notes_layoutNotesLayoutRouteWithChildren
   authAuthRoute: typeof authAuthRoute
   consultationConsultationRoute: typeof consultationConsultationRoute
-  deployTestDeployTestRoute: typeof deployTestDeployTestRoute
   feedbackFeedbackRoute: typeof feedbackFeedbackRoute
   privacyPrivacyRoute: typeof privacyPrivacyRoute
   departments_departmentSlugDepartmentsDepartmentSlugRoute: typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
@@ -348,7 +328,6 @@ const site_layoutSiteLayoutRouteChildren: site_layoutSiteLayoutRouteChildren = {
   notes_layoutNotesLayoutRoute: notes_layoutNotesLayoutRouteWithChildren,
   authAuthRoute: authAuthRoute,
   consultationConsultationRoute: consultationConsultationRoute,
-  deployTestDeployTestRoute: deployTestDeployTestRoute,
   feedbackFeedbackRoute: feedbackFeedbackRoute,
   privacyPrivacyRoute: privacyPrivacyRoute,
   departments_departmentSlugDepartmentsDepartmentSlugRoute:
