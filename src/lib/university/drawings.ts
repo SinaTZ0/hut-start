@@ -30,9 +30,10 @@ export function departmentDrawings(slug: string): Drawings | null {
  */
 export const HOME_DRAWINGS = {
   campus: "/images/home/campus-sketch.webp",
-  /** The hero's sky: a star chart, and a sun the photo's size so it lies on the clouds' glow */
-  sky: "/images/home/hero-sky.webp",
-  sun: "/images/home/hero-sun.webp",
+  /** Leonardo's glider over the campus drawing's peaks, placed on its own so it doesn't slide with the photo's crop */
+  glider: "/images/home/hero-glider.webp",
+  /** The hero's sky: a sun with a face among orbits, constellations and a spiral */
+  astronomy: "/images/home/hero-astronomy.webp",
   glance: "/images/home/glance.webp",
   incubator: "/images/home/incubator.webp",
   welcome: "/images/home/welcome.webp",

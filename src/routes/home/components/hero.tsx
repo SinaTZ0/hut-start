@@ -98,12 +98,13 @@ function HeroActions() {
 
 /**
  * The first screen: the campus photograph edge to edge under a scrim, turning into a notebook drawing of the same view
- * over the peaks (`hero-sketch`, wide screens only), under a star chart and a hanging sun on the clouds' glow
- * (`hero-sky`, `hero-sun`). The drawings keep to the photo's right side in both languages: behind the name in Persian,
- * across from it in English. The name sits at the top; the next academic milestone and the systems rail stand along its
- * foot (the place too, on phones), under the old homepage's occasion poster when it shows one. The year's slogan heads
- * the name. The two actions follow the name on wide screens; on phones they wait above the rail, so the campus stays in
- * view between the name and the foot.
+ * over the peaks (`hero-sketch`, wide screens only), with a glider over them (`hero-glider`) and an astronomy sheet in
+ * the sky (`hero-astronomy`). The drawings keep to the photo's right side in both languages: behind the name in
+ * Persian, across from it in English. The campus drawing takes the photo's crop; the glider and the sky are measured
+ * from the name, so they keep their place against it. The name sits at the top; the next academic milestone and the
+ * systems rail stand along its foot (the place too, on phones), under the old homepage's occasion poster when it shows
+ * one. The year's slogan heads the name. The two actions follow the name on wide screens; on phones they wait above the
+ * rail, so the campus stays in view between the name and the foot.
  */
 export function Hero({
   next,
@@ -135,11 +136,15 @@ export function Hero({
       />
       <div
         aria-hidden
-        className="absolute top-0 hero-sky -z-10 hidden md:block"
-        style={{ "--art": `url("${HOME_DRAWINGS.sky}")` } as CSSProperties}
+        className="absolute hero-glider -z-10 hidden md:block"
+        style={{ "--art": `url("${HOME_DRAWINGS.glider}")` } as CSSProperties}
       />
-      <div aria-hidden className="absolute inset-x-0 top-0 -z-10 hidden h-hero art-halo md:block">
-        <div className="size-full hero-sun" style={{ "--art": `url("${HOME_DRAWINGS.sun}")` } as CSSProperties} />
+      {/* The halo is on a wrapper: a filter on the masked element itself is masked away */}
+      <div aria-hidden className="absolute inset-0 -z-10 hidden art-halo md:block">
+        <div
+          className="absolute hero-astronomy"
+          style={{ "--art": `url("${HOME_DRAWINGS.astronomy}")` } as CSSProperties}
+        />
       </div>
 
       <div className="flex min-h-hero-body flex-col px-edge pt-10 pb-6 md:pt-section">
