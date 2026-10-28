@@ -28,12 +28,21 @@ import { daysFromToday, isoToDate, type JDate } from "../semester";
 
 type NoticeTab = keyof HomeFeed["notices"];
 
-/** The notices panel's tabs: every notice first, then the two categories students check most. */
+/** The notices panel's tabs: every notice first, then each of the old homepage's categories, the ones students check
+ * most first. A tab's label is shorter than its category's name where it has to be, so six fit in two rows. */
 const NOTICE_TABS: { value: NoticeTab; title: () => string; more: () => string; href: string }[] = [
   { value: "latest", title: m.home_notices_tab_latest, more: m.home_notices_more_all, href: ALL_NOTICES_HREF },
-  ...(["education", "graduate"] as const).map((category) => ({
+  ...(
+    [
+      ["education", m.home_notices_tab_education],
+      ["graduate", m.home_notices_tab_graduate],
+      ["student", m.home_notices_tab_student],
+      ["industry", m.home_notices_tab_industry],
+      ["openEducation", m.home_notices_tab_open_education],
+    ] as const
+  ).map(([category, title]) => ({
     value: category,
-    title: NEWS_CATEGORIES[category].title,
+    title,
     more: () => m.home_notices_more({ category: NEWS_CATEGORIES[category].title() }),
     href: NEWS_CATEGORIES[category].moreHref,
   })),
@@ -88,9 +97,40 @@ function Story({ item, featured = false }: { item: FeedItem; featured?: boolean 
   );
 }
 
+/*===== Headline =====*/
+
+/** A story after the first three: its photo as a thumbnail beside the title and the date, without a call. */
+function Headline({ item }: { item: FeedItem }) {
+  return (
+    <Card render={<SiteLink href={item.url} />} size="sm" orientation="horizontal" className="h-full">
+      {item.imageUrl && (
+        <CardMedia className="aspect-wide sm:aspect-square sm:w-28">
+          <img src={item.imageUrl} alt="" loading="lazy" referrerPolicy="no-referrer" />
+        </CardMedia>
+      )}
+      <CardBody className="justify-center">
+        <CardHeader>
+          <CardKicker>
+            <span>{NEWS_CATEGORIES[item.category].title()}</span>
+            {item.publishedOn && (
+              <time dateTime={item.publishedOn}>
+                {formatDate(isoToDate(item.publishedOn), { day: "numeric", month: "long", year: "numeric" })}
+              </time>
+            )}
+          </CardKicker>
+          <CardTitle>
+            <h3 className="line-clamp-3">{item.title}</h3>
+          </CardTitle>
+        </CardHeader>
+      </CardBody>
+    </Card>
+  );
+}
+
 /*===== Notices =====*/
 
-/** A notice: its date as a calendar leaf, the title, then the date in words. Under «latest» it names its category. */
+/** A notice: its date as a calendar leaf, the title, then how long ago (the leaf has the date, the `<time>` the year).
+ * Under «latest» it names its category. */
 function NoticeRow({ item, today, showCategory }: { item: FeedItem; today: JDate; showCategory: boolean }) {
   const date = item.publishedOn ? isoToDate(item.publishedOn) : undefined;
   const parts = date && formatDateParts(date, { month: "short" });
@@ -118,13 +158,12 @@ function NoticeRow({ item, today, showCategory }: { item: FeedItem; today: JDate
             {showCategory && NEWS_CATEGORIES[item.category].title()}
             {showCategory && date && " · "}
             {item.publishedOn && date && (
-              <>
-                <time dateTime={item.publishedOn}>
-                  {formatDate(date, { day: "numeric", month: "long", year: "numeric" })}
-                </time>
-                {" · "}
+              <time
+                dateTime={item.publishedOn}
+                title={formatDate(date, { day: "numeric", month: "long", year: "numeric" })}
+              >
                 {formatRelativeDays(daysFromToday({ today, iso: item.publishedOn }))}
-              </>
+              </time>
             )}
           </p>
         )}
@@ -165,9 +204,11 @@ function Notices({ today, notices }: { today: JDate; notices: HomeFeed["notices"
         onValueChange={(value) => setActive(value as NoticeTab)}
         className="flex-1 lg:grid-rows-fill-last lg:content-stretch"
       >
-        <TabsList aria-label={m.home_notices_tabs()} className="mx-5 mt-4 w-auto self-stretch sm:mx-6">
+        {/* Six tabs don't fit the panel's width on one line: two rows of three. In the narrowest panels the longest
+            label («تحصیلات تکمیلی») wraps onto a second line (`compact`). */}
+        <TabsList aria-label={m.home_notices_tabs()} className="mx-5 mt-4 grid w-auto grid-cols-3 self-stretch sm:mx-6">
           {NOTICE_TABS.map((candidate) => (
-            <TabsTrigger key={candidate.value} value={candidate.value}>
+            <TabsTrigger key={candidate.value} value={candidate.value} size="compact">
               {candidate.title()}
             </TabsTrigger>
           ))}
@@ -204,7 +245,8 @@ function Notices({ today, notices }: { today: JDate; notices: HomeFeed["notices"
 
 /*===== News Section =====*/
 
-/** The featured story and two more on the start side; the notices panel on the end side. */
+/** The featured story, two more as cards and the rest as headlines on the start side; the notices panel on the end
+ * side. */
 export function NewsSection({
   today,
   news,
@@ -214,7 +256,9 @@ export function NewsSection({
   news: FeedItem[];
   notices: HomeFeed["notices"];
 }) {
-  const [featured, ...stories] = news;
+  const [featured, ...rest] = news;
+  const stories = rest.slice(0, 2);
+  const headlines = rest.slice(2);
 
   return (
     <section aria-labelledby="home-news">
@@ -231,6 +275,9 @@ export function NewsSection({
           {featured && <Story item={featured} featured />}
           {stories.map((item) => (
             <Story key={item.id} item={item} />
+          ))}
+          {headlines.map((item) => (
+            <Headline key={item.id} item={item} />
           ))}
         </div>
         <Notices today={today} notices={notices} />

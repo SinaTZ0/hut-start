@@ -58,7 +58,7 @@ function Home() {
 
   return (
     <>
-      <Hero next={semester.nextMilestone}>
+      <Hero next={semester.nextMilestone} occasion={feed.occasion}>
         <ServiceRail />
       </Hero>
 

@@ -9,6 +9,7 @@ import { HOME_DRAWINGS } from "#/lib/university/drawings";
 import { NAV_SECTIONS } from "#/lib/university/navigation";
 import { SERVICES } from "#/lib/university/services";
 import { cn } from "#/lib/utils";
+import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { SEMESTER } from "../content";
 import { type EventWithStatus, fromJalali } from "../semester";
@@ -50,6 +51,33 @@ function eventTiming(event: EventWithStatus): string {
   return `${dates} · ${when}`;
 }
 
+/**
+ * The occasion the old homepage pins over its photo (a mourning, a holiday), as a link to its page: a thumbnail beside
+ * the title on phones; on wide screens a poster card at the photo's end side, over the link to the calendar, in the
+ * rail's glass.
+ */
+function Occasion({ item }: { item: FeedItem }) {
+  return (
+    <SiteLink
+      href={item.url}
+      className="flex items-center gap-3 rounded-md border border-band-line bg-band-deep/45 p-2 shadow-glass backdrop-blur-xl backdrop-saturate-150 transition-colors duration-200 hover:bg-band-deep/65 motion-reduce:transition-none md:ms-auto md:w-64 md:flex-col md:items-stretch md:gap-0"
+    >
+      {item.imageUrl && (
+        // Hotlinked from the old site; no referrer, so its server never sees where it's shown.
+        <img
+          src={item.imageUrl}
+          alt=""
+          referrerPolicy="no-referrer"
+          className="aspect-5/3 w-24 shrink-0 rounded-sm object-cover md:w-full"
+        />
+      )}
+      <span className="line-clamp-2 min-w-0 text-body-sm font-semibold text-balance md:px-2 md:pt-2.5 md:pb-1.5">
+        {item.title}
+      </span>
+    </SiteLink>
+  );
+}
+
 /** The two calls to action: stacked as one column on phones, each as wide as the name; side by side from `sm`. */
 function HeroActions() {
   return (
@@ -73,10 +101,19 @@ function HeroActions() {
  * over the peaks (`hero-sketch`, wide screens only), under a star chart and a hanging sun on the clouds' glow
  * (`hero-sky`, `hero-sun`). The drawings keep to the photo's right side in both languages: behind the name in Persian,
  * across from it in English. The name sits at the top; the next academic milestone and the systems rail stand along its
- * foot (the place too, on phones). The two actions follow the name on wide screens; on phones they wait above the rail,
- * so the campus stays in view between the name and the foot.
+ * foot (the place too, on phones), under the old homepage's occasion poster when it shows one. The year's slogan heads
+ * the name. The two actions follow the name on wide screens; on phones they wait above the rail, so the campus stays in
+ * view between the name and the foot.
  */
-export function Hero({ next, children }: { next?: EventWithStatus; children: ReactNode }) {
+export function Hero({
+  next,
+  occasion,
+  children,
+}: {
+  next?: EventWithStatus;
+  occasion: FeedItem | null;
+  children: ReactNode;
+}) {
   return (
     // The hero slides up under the header (`--header-height`), so the photo starts at the top of the screen.
     <section
@@ -108,6 +145,11 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
       <div className="flex min-h-hero-body flex-col px-edge pt-10 pb-6 md:pt-section">
         {/*===== Name and Actions =====*/}
         <div className="max-w-215">
+          {/* The year's slogan, named at each Nowruz: `home_hero_slogan` changes with it. A gold dash, like a section's
+              kicker. */}
+          <p className="mb-3 flex items-center gap-2.5 text-kicker text-highlight text-shadow-photo before:block before:h-1 before:w-4.5 before:rounded-xs before:bg-highlight">
+            {m.home_hero_slogan()}
+          </p>
           <h1 id="home-hero" className="mb-4 text-display text-balance text-on-band text-shadow-photo">
             <NameWithAccent />
           </h1>
@@ -130,6 +172,8 @@ export function Hero({ next, children }: { next?: EventWithStatus; children: Rea
             <MapPinIcon aria-hidden className="size-4 text-highlight" />
             {m.home_hero_place()}
           </p>
+
+          {occasion && <Occasion item={occasion} />}
 
           {/*------ Next Milestone ------*/}
           {/* On phones one row over a rule: the link to the calendar closes the label row, and the milestone runs under
