@@ -6,7 +6,7 @@ import {
   tabsContentClasses,
   tabsIndicatorClasses,
   tabsListVariants,
-  tabsTriggerClasses,
+  tabsTriggerVariants,
 } from "./tabs.styles";
 
 /*===== Tabs =====*/
@@ -41,8 +41,17 @@ function TabsList({ className, variant = "default", children, ...props }: TabsLi
   );
 }
 
-function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
-  return <TabsPrimitive.Tab data-slot="tabs-trigger" className={cn(tabsTriggerClasses, className)} {...props} />;
+export type TabsTriggerProps = TabsPrimitive.Tab.Props & VariantProps<typeof tabsTriggerVariants>;
+
+function TabsTrigger({ className, size = "default", ...props }: TabsTriggerProps) {
+  return (
+    <TabsPrimitive.Tab
+      data-slot="tabs-trigger"
+      data-size={size}
+      className={cn(tabsTriggerVariants({ size }), className)}
+      {...props}
+    />
+  );
 }
 
 function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {

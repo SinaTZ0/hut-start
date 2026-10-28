@@ -64,6 +64,16 @@ const twTriggerStyles = defineStyles({
   icon: "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 });
 
+// `compact` is for many tabs in a narrow list (a grid of them, set on the list): less padding, and a label that doesn't
+// fit wraps onto a second line inside the tab's 40px instead of spilling out of it.
+const twTriggerSize = defineStyles({
+  default: {},
+  compact: {
+    geometry: "px-1.5",
+    typography: "text-center leading-tight whitespace-normal",
+  },
+});
+
 /*===== Indicator Styles =====*/
 
 // The pine fill behind the active tab of a `default` list; it slides to the chosen tab. Base UI measures the tab
@@ -101,8 +111,21 @@ const tabsListVariants = cva(joinStyles(twListStyles), {
   defaultVariants: { variant: "default" },
 });
 
-const tabsTriggerClasses = joinStyles(twTriggerStyles);
+const tabsTriggerVariants = cva(joinStyles(twTriggerStyles), {
+  variants: {
+    size: composeStyles(twTriggerSize),
+  },
+  defaultVariants: { size: "default" },
+});
 const tabsIndicatorClasses = joinStyles(twIndicatorStyles);
 const tabsContentClasses = joinStyles(twContentStyles);
 
-export { tabsClasses, tabsListVariants, tabsTriggerClasses, tabsIndicatorClasses, tabsContentClasses, twVariant };
+export {
+  tabsClasses,
+  tabsListVariants,
+  tabsTriggerVariants,
+  tabsIndicatorClasses,
+  tabsContentClasses,
+  twVariant,
+  twTriggerSize,
+};

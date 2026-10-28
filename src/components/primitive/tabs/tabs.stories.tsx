@@ -41,6 +41,40 @@ export const Line: Story = {
   args: { variant: "line" },
 };
 
+/** Six tabs in a narrow panel, as the home page's notices: two rows of three, a long label on two lines. */
+export const Compact: Story = {
+  render: (args) => (
+    <Tabs defaultValue="latest" className="max-w-64">
+      <TabsList {...args} className="grid w-auto grid-cols-3">
+        <TabsTrigger value="latest" size="compact">
+          آخرین
+        </TabsTrigger>
+        <TabsTrigger value="education" size="compact">
+          آموزش
+        </TabsTrigger>
+        <TabsTrigger value="graduate" size="compact">
+          تحصیلات تکمیلی
+        </TabsTrigger>
+        <TabsTrigger value="student" size="compact">
+          دانشجویی
+        </TabsTrigger>
+        <TabsTrigger value="industry" size="compact">
+          ارتباط با صنعت
+        </TabsTrigger>
+        <TabsTrigger value="open" size="compact">
+          آموزش آزاد
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="latest">اطلاعیه ثبت‌نام کارشناسی ارشد</TabsContent>
+      <TabsContent value="education">اطلاعیه حذف و اضافه</TabsContent>
+      <TabsContent value="graduate">اطلاعیه دفاع دانشجویان</TabsContent>
+      <TabsContent value="student">طرح احوال‌پرسی</TabsContent>
+      <TabsContent value="industry">طرح دستیار فناوری</TabsContent>
+      <TabsContent value="open">کارگاه آتشباری</TabsContent>
+    </Tabs>
+  ),
+};
+
 export const Vertical: Story = {
   render: (args) => (
     <Tabs defaultValue="profile" orientation="vertical" className="max-w-md">
