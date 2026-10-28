@@ -43,7 +43,8 @@ export function FeedRow({
       <SiteLink
         href={item.url}
         className={cn(
-          "group/row flex gap-4 py-5 sm:gap-6",
+          // The row takes the `accent` wash on hover and focus, padded so the wash clears the text between the rules.
+          "group/row flex gap-4 rounded-sm px-3 py-5 transition-colors duration-200 ease-out hover:bg-accent focus-visible:bg-accent motion-reduce:transition-none sm:gap-6 sm:px-4",
           lead ? "flex-col-reverse pt-6 sm:flex-row sm:items-start" : "items-start",
         )}
       >

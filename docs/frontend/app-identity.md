@@ -93,7 +93,7 @@ translation ([i18n.md](./i18n.md)).
 The site answers the visitor with small, quick movements: everything clickable responds to hover, keyboard focus and
 being used, but nothing moves on its own or calls attention to itself.
 
-- **Every interactive thing responds**, subtly. A link card lifts (darker edge, `shadow-md`), its photo zooms to 1.03
+- **Every interactive thing responds**, subtly. A link card lifts (darker edge, `shadow-md`, the `accent` wash), its photo zooms to 1.03
   and its arrow disc fills pine; a forward arrow nudges ahead a few pixels; a row takes the `accent` wash; a disclosure
   chevron turns; a tab switcher's pill slides to the chosen tab while its content cross-fades in from that side; a panel that opens grows out of its trigger while
   what follows glides aside (the Collapsible primitive). A new component gets the same kind of response.
