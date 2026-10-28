@@ -50,8 +50,8 @@ The site has no feed or open API: its headless API answers 403 and the publisher
 | `srha`   | tab دانشجوئی و فرهنگی    | `notice` / `student`         | its tab, آخرین, and the glance band's photo          |
 | `jtsr`   | tab آموزش های آزاد       | `notice` / `openEducation`   | its tab, and آخرین                                   |
 | `djmo`   | achievements             | `achievement` / `university` | the lead achievement and two more                    |
-| `smis`   | growth and career centre | `growth` / `growth`          | the first two Learning rows                          |
-| `qill`   | رویدادها                 | `event` / `openEducation`    | the last Learning row                                |
+| `smis`   | growth and career centre | `growth` / `growth`          | the incubator section's three rows                   |
+| `qill`   | رویدادها                 | `event` / `openEducation`    | the open-education section's three cards             |
 | `jclk`   | occasion slider (hero)   | `occasion` / `university`    | the hero's poster card (its first slide); optional   |
 
 Dates are Gregorian, written into the page's scripts (`moment('2026 10 25', 'YYYY MM DD')`).

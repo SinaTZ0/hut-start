@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, BookOpenIcon, ClockIcon } from "lucide-react";
+import { ArrowLeftIcon, ClockIcon, SproutIcon } from "lucide-react";
 import type { CSSProperties } from "react";
 
 import {
@@ -8,7 +8,6 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardKicker,
   CardTitle,
 } from "#/components/primitive/card/card";
 import { SectionHead } from "#/components/shared/section-head/section-head";
@@ -23,42 +22,44 @@ import { NEWS_CATEGORIES } from "../content";
 import { isoToDate } from "../semester";
 import { FeedMedia } from "./feed-media";
 
-/*===== Learning =====*/
+/*===== Incubator =====*/
 
-/** A pine panel with one link to the incubator, a seedling among gears drawn in its far corner; the events and short
- * courses listed beside it as compact cards, each ending like a news card: the date (when it has one) and the call
- * below a hairline. */
-export function Learning({ items }: { items: FeedItem[] }) {
+/** The incubator: a pine panel with its link, a seedling among gears drawn in its far corner; its newest stories
+ * beside it as compact cards, each ending like a news card: the date (when it has one) and the call below a hairline.
+ * Every card is the incubator's, so they carry no category kicker. */
+export function Incubator({ items }: { items: FeedItem[] }) {
   return (
-    <section aria-labelledby="home-learning" className="grid grid-cols-1 gap-10 lg:grid-cols-3">
+    <section aria-labelledby="home-incubator" className="grid grid-cols-1 gap-10 lg:grid-cols-3">
       {/*===== Panel =====*/}
-      <div className="relative isolate flex flex-col overflow-hidden rounded-lg bg-band px-5 py-6 text-on-band sm:p-8">
+      {/* "entrepreneurship" in the English title is wider than the panel just above `lg`; it hyphenates there, and
+          breaks anywhere where the browser has no hyphenation for the language, instead of widening the panel's text. */}
+      <div className="relative isolate flex flex-col overflow-hidden rounded-lg bg-band px-5 py-6 wrap-anywhere hyphens-auto text-on-band sm:p-8">
         {/* Small while the panel is only as tall as its text; beside the cards it fills the room above the link. The
             drawing's subject keeps to its start-bottom corner, so English mirrors it. */}
         <div
           aria-hidden
-          style={{ "--art": `url("${HOME_DRAWINGS.learning}")` } as CSSProperties}
+          style={{ "--art": `url("${HOME_DRAWINGS.incubator}")` } as CSSProperties}
           className="pointer-events-none absolute end-0 bottom-0 -z-10 aspect-6/7 w-32 mask-art text-art-band sm:w-44 lg:w-3/5 ltr:-scale-x-100"
         />
         <span
           aria-hidden
           className="mb-6 grid size-12 place-items-center self-end rounded-sm border border-band-line text-highlight"
         >
-          <BookOpenIcon className="size-6" />
+          <SproutIcon className="size-6" />
         </span>
         <SectionHead
           tone="band"
-          id="home-learning"
-          kicker={m.home_learning_kicker()}
-          title={m.home_learning_title()}
-          lede={m.home_learning_lede()}
+          id="home-incubator"
+          kicker={m.home_incubator_kicker()}
+          title={m.nav_research_incubator()}
+          lede={m.home_incubator_lede()}
           className="mb-6"
         />
         <SiteLink
           href={NEWS_CATEGORIES.growth.moreHref}
           className="mt-auto flex min-h-10 items-center justify-between gap-3 border-t border-band-line pt-5 text-body-sm font-bold text-highlight underline-offset-4 hover:underline"
         >
-          {m.nav_research_incubator()}
+          {m.home_incubator_more()}
           <ArrowLeftIcon aria-hidden className={cn(textLinkArrowClasses, "size-4.5")} />
         </SiteLink>
       </div>
@@ -71,11 +72,15 @@ export function Learning({ items }: { items: FeedItem[] }) {
               {item.imageUrl && <FeedMedia src={item.imageUrl} className="aspect-wide sm:aspect-4/3 sm:w-44" />}
               <CardBody>
                 <CardHeader>
-                  <CardKicker>{NEWS_CATEGORIES[item.category].title()}</CardKicker>
-                  <CardTitle>
+                  {/* Feed text is Persian on the English page too, so it takes its own direction. */}
+                  <CardTitle dir="auto">
                     <h3>{item.title}</h3>
                   </CardTitle>
-                  {item.summary && <CardDescription lines="2">{item.summary}</CardDescription>}
+                  {item.summary && (
+                    <CardDescription dir="auto" lines="2" className="max-sm:hidden">
+                      {item.summary}
+                    </CardDescription>
+                  )}
                 </CardHeader>
                 <CardFooter>
                   {item.publishedOn && (

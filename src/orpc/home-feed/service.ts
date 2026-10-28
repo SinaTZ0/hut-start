@@ -26,8 +26,8 @@ const NEWS_SHOWN = 5;
 const LATEST_NOTICES_SHOWN = 20;
 const CATEGORY_NOTICES_SHOWN = 10;
 const ACHIEVEMENTS_SHOWN = 3;
-const GROWTH_SHOWN = 2;
-const EVENTS_SHOWN = 1;
+const GROWTH_SHOWN = 3;
+const COURSES_SHOWN = 3;
 
 /** Newest first; undated items after the dated ones, in their block's order. */
 function byDateDescending(a: FeedItem, b: FeedItem): number {
@@ -62,7 +62,8 @@ export async function getHomeFeed({ db }: { db: Database }): Promise<HomeFeed> {
     },
     spotlight: block("notice", "student").find((item) => item.imageUrl) ?? null,
     achievements: block("achievement").slice(0, ACHIEVEMENTS_SHOWN),
-    learning: [...block("growth").slice(0, GROWTH_SHOWN), ...block("event").slice(0, EVENTS_SHOWN)],
+    growth: block("growth").slice(0, GROWTH_SHOWN),
+    courses: block("event").slice(0, COURSES_SHOWN),
     // The old slider's first slide is the one it opens on: the newest occasion.
     occasion: block("occasion")[0] ?? null,
   };

@@ -40,8 +40,10 @@ export const homeFeedSchema = z.object({
   spotlight: feedItemSchema.nullable(),
   /** The lead first. */
   achievements: z.array(feedItemSchema),
-  /** Growth-centre items, then events. */
-  learning: z.array(feedItemSchema),
+  /** The incubator's newest stories. */
+  growth: z.array(feedItemSchema),
+  /** The open-education center's newest courses and workshops. */
+  courses: z.array(feedItemSchema),
   /** The old homepage's current occasion poster, if it shows one. */
   occasion: feedItemSchema.nullable(),
 });

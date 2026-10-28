@@ -14,7 +14,7 @@ const twCardStyles = defineStyles({
   // Cards rest flat on a hairline.
   appearance: "border-border bg-card text-card-foreground",
   // The card lift, for a card rendered as a link (`render={<SiteLink … />}`): the edge darkens to `border-strong` and
-  // the card takes `shadow-md`. It is the one hover for every content card (news, achievements, learning rows).
+  // the card takes `shadow-md`. It is the one hover for every content card (news, achievements, incubator rows, courses).
   interaction: "transition-[border-color,box-shadow] duration-200 ease-out outline-none",
   hover: "[a&]:hover:border-border-strong [a&]:hover:shadow-md",
   focus:

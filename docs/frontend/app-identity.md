@@ -56,7 +56,7 @@ translation ([i18n.md](./i18n.md)).
   and figures hung from dimension lines.
 - **Home drawings**: the home page has drawings of its own in the same hand, in `public/images/home/` (listed in
   `src/lib/university/drawings.ts`): Avicenna's tomb before Alvand with an astrolabe across the glance band, a
-  seedling among gears in the learning panel's corner, a book, dividers and an iwan in the welcome panel's corner (kept
+  seedling among gears in the incubator panel's corner, a book, dividers and an iwan in the welcome panel's corner (kept
   small, clear of its text), and a telescope and microscope under the research units' introduction (`art-ink`). Each
   department's cell in the glance grid carries its mark (`mark.webp`, its key object cut from its hero drawing). The
   hero has the campus itself (`campus-sketch.webp`): the hero photo's view redrawn as a notebook study (Alvand

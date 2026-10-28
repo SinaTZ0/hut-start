@@ -97,7 +97,7 @@
      it from the band above, so it needs less than `py-section`. */
   --spacing-after-arc: clamp(2.5rem, 5vw, 3.5rem);
 
-  /* News cards and phone learning rows (16:7), the glance photo (16:10), a person's photo (4:5, the `portrait` media) */
+  /* News cards and phone incubator rows (16:7), the glance photo (16:10), a person's photo (4:5, the `portrait` media) */
   --aspect-wide: 16 / 7;
   --aspect-photo: 16 / 10;
   --aspect-portrait: 4 / 5;
@@ -173,7 +173,7 @@
   --color-info-surface: var(--info-surface);
 
   /*------ Band ------*/
-  /* The pine bands (utility bar, hero, glance, learning, welcome, footer) and what sits on them */
+  /* The pine bands (utility bar, hero, glance, incubator, welcome, footer) and what sits on them */
   --color-band: var(--band);
   --color-band-deep: var(--band-deep);
   --color-on-band: var(--on-band);

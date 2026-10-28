@@ -19,8 +19,8 @@ export const BLOCKS: readonly Block[] = [
   { instance: "srha", kind: "notice", category: "student", keep: 12 },
   { instance: "jtsr", kind: "notice", category: "openEducation", keep: 12 },
   { instance: "djmo", kind: "achievement", category: "university", keep: 3 },
-  { instance: "smis", kind: "growth", category: "growth", keep: 2 },
-  { instance: "qill", kind: "event", category: "openEducation", keep: 1 },
+  { instance: "smis", kind: "growth", category: "growth", keep: 3 },
+  { instance: "qill", kind: "event", category: "openEducation", keep: 3 },
   { instance: "jclk", kind: "occasion", category: "university", keep: 1, optional: true },
 ];
 

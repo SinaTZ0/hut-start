@@ -8,9 +8,10 @@ import { m } from "#/paraglide/messages";
 import { localizeHref } from "#/paraglide/runtime";
 import { Achievements } from "./components/achievements";
 import { Arc } from "./components/arc";
+import { Courses } from "./components/courses";
 import { Glance } from "./components/glance";
 import { Hero } from "./components/hero";
-import { Learning } from "./components/learning";
+import { Incubator } from "./components/incubator";
 import { NewsSection } from "./components/news-section";
 import { SemesterSection } from "./components/semester-section";
 import { ServiceRail } from "./components/service-rail";
@@ -48,7 +49,7 @@ const columnClasses = "mx-auto max-w-site px-gutter";
 
 /**
  * The university's front door: the campus photo with the daily systems, news and notices, the semester, the glance
- * band, achievements, events and courses, and a welcome for new students.
+ * band, achievements, the incubator, open-education courses, and a welcome for new students.
  */
 function Home() {
   const { data: feed } = useSuspenseQuery(homeFeedQuery());
@@ -80,10 +81,12 @@ function Home() {
       </div>
       <div className="border-y bg-background-alt">
         <div className={`${columnClasses} py-section`}>
-          <Learning items={feed.learning} />
+          <Incubator items={feed.growth} />
         </div>
       </div>
-      <div className={`${columnClasses} py-section`}>
+      {/* Courses and Welcome share the page's background, so one padding frames both and a gap parts them. */}
+      <div className={`${columnClasses} flex flex-col gap-section py-section`}>
+        <Courses items={feed.courses} />
         <Welcome />
       </div>
     </>

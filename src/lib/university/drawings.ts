@@ -26,7 +26,7 @@ export function departmentDrawings(slug: string): Drawings | null {
 
 /**
  * The home page's drawings: the hero's campus (the hero photo's view redrawn, the photo's size, so it lies over it), the
- * glance band's, the learning and welcome panels' corners, and the research vignette.
+ * glance band's, the incubator and welcome panels' corners, and the research vignette.
  */
 export const HOME_DRAWINGS = {
   campus: "/images/home/campus-sketch.webp",
@@ -34,7 +34,7 @@ export const HOME_DRAWINGS = {
   sky: "/images/home/hero-sky.webp",
   sun: "/images/home/hero-sun.webp",
   glance: "/images/home/glance.webp",
-  learning: "/images/home/learning.webp",
+  incubator: "/images/home/incubator.webp",
   welcome: "/images/home/welcome.webp",
   research: "/images/home/research.webp",
 };

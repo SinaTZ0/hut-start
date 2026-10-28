@@ -92,8 +92,8 @@ type-checking. A group with a distinct sub-concern can take a capitalized suffix
 
 ## Card or Item
 
-- A **Card** stands on its own surface, with its own edge and the card lift on hover: a news story, an achievement, a
-  learning row. A content card reads media, then a CardHeader with CardKicker (the category) and CardTitle, then a
+- A **Card** stands on its own surface, with its own edge and the card lift on hover: a news story, an achievement, an
+  incubator row. A content card reads media, then a CardHeader with CardKicker (the category) and CardTitle, then a
   CardFooter below a hairline: the date (a `<time>` with a clock icon) at its start and a CardCall (label and arrow) at
   its end. Compact horizontal cards (`size="sm"`) end the same way, and a card without a date keeps the call at the end.
   A card that isn't a link (a note) puts its buttons where the call would be. A photo label goes in CardMedia as a
