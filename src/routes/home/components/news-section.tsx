@@ -11,7 +11,6 @@ import {
   CardFooter,
   CardHeader,
   CardKicker,
-  CardMedia,
   CardTitle,
 } from "#/components/primitive/card/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/primitive/tabs/tabs";
@@ -23,6 +22,7 @@ import type { FeedItem, HomeFeed } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { ALL_NOTICES_HREF, NEWS_CATEGORIES } from "../content";
 import { daysFromToday, isoToDate, type JDate } from "../semester";
+import { FeedMedia } from "./feed-media";
 
 /*===== Constants =====*/
 
@@ -86,11 +86,12 @@ function Story({ item, featured = false }: { item: FeedItem; featured?: boolean 
       className={featured ? "sm:col-span-2" : undefined}
     >
       {item.imageUrl && (
-        <CardMedia className={featured ? "aspect-video sm:aspect-auto sm:min-h-70 sm:flex-1" : "aspect-wide"}>
-          {/* Hotlinked from the old site; no referrer, so its server never sees where it's shown. */}
-          <img src={item.imageUrl} alt="" loading="lazy" referrerPolicy="no-referrer" />
+        <FeedMedia
+          src={item.imageUrl}
+          className={featured ? "aspect-video sm:aspect-auto sm:min-h-70 sm:flex-1" : "aspect-wide"}
+        >
           {featured && <Badge variant="media">{m.home_news_featured()}</Badge>}
-        </CardMedia>
+        </FeedMedia>
       )}
       {featured ? <CardBody className="justify-center sm:flex-1">{text}</CardBody> : text}
     </Card>
@@ -103,11 +104,7 @@ function Story({ item, featured = false }: { item: FeedItem; featured?: boolean 
 function Headline({ item }: { item: FeedItem }) {
   return (
     <Card render={<SiteLink href={item.url} />} size="sm" orientation="horizontal" className="h-full">
-      {item.imageUrl && (
-        <CardMedia className="aspect-wide sm:aspect-square sm:w-28">
-          <img src={item.imageUrl} alt="" loading="lazy" referrerPolicy="no-referrer" />
-        </CardMedia>
-      )}
+      {item.imageUrl && <FeedMedia src={item.imageUrl} className="aspect-wide sm:aspect-square sm:w-28" />}
       <CardBody className="justify-center">
         <CardHeader>
           <CardKicker>

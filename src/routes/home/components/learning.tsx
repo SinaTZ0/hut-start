@@ -9,7 +9,6 @@ import {
   CardFooter,
   CardHeader,
   CardKicker,
-  CardMedia,
   CardTitle,
 } from "#/components/primitive/card/card";
 import { SectionHead } from "#/components/shared/section-head/section-head";
@@ -22,6 +21,7 @@ import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { NEWS_CATEGORIES } from "../content";
 import { isoToDate } from "../semester";
+import { FeedMedia } from "./feed-media";
 
 /*===== Learning =====*/
 
@@ -68,11 +68,7 @@ export function Learning({ items }: { items: FeedItem[] }) {
         {items.map((item) => (
           <li key={item.id}>
             <Card render={<SiteLink href={item.url} />} size="sm" orientation="horizontal">
-              {item.imageUrl && (
-                <CardMedia className="aspect-wide sm:aspect-4/3 sm:w-44">
-                  <img src={item.imageUrl} alt="" loading="lazy" referrerPolicy="no-referrer" />
-                </CardMedia>
-              )}
+              {item.imageUrl && <FeedMedia src={item.imageUrl} className="aspect-wide sm:aspect-4/3 sm:w-44" />}
               <CardBody>
                 <CardHeader>
                   <CardKicker>{NEWS_CATEGORIES[item.category].title()}</CardKicker>

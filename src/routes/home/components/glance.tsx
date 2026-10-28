@@ -13,6 +13,7 @@ import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { STATS } from "../content";
 import { isoToDate } from "../semester";
+import { FeedMedia } from "./feed-media";
 
 /*===== Constants =====*/
 
@@ -87,17 +88,9 @@ export function Glance({ spotlight }: { spotlight: FeedItem | null }) {
             {spotlight ? (
               <SiteLink
                 href={spotlight.url}
-                className="group/photo relative block aspect-photo overflow-hidden rounded-lg bg-band-deep text-on-band"
+                className="relative block aspect-photo overflow-hidden rounded-lg bg-band-deep text-on-band"
               >
-                {spotlight.imageUrl && (
-                  <img
-                    src={spotlight.imageUrl}
-                    alt=""
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 size-full object-cover transition-transform duration-300 motion-safe:group-hover/photo:scale-103"
-                  />
-                )}
+                {spotlight.imageUrl && <FeedMedia src={spotlight.imageUrl} className="size-full" />}
                 <span className="absolute inset-x-0 bottom-0 flex flex-col bg-linear-to-t from-band-deep/90 to-transparent px-6 pt-15 pb-5">
                   <span className="text-caption text-highlight">{m.home_glance_life()}</span>
                   <span className="text-h4">{spotlight.title}</span>

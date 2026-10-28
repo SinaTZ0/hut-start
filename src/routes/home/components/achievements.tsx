@@ -11,7 +11,6 @@ import {
   CardFooter,
   CardHeader,
   CardKicker,
-  CardMedia,
   CardTitle,
 } from "#/components/primitive/card/card";
 import {
@@ -31,6 +30,7 @@ import { NAV_SECTIONS } from "#/lib/university/navigation";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { NEWS_CATEGORIES, RESEARCH_UNITS } from "../content";
+import { FeedMedia } from "./feed-media";
 
 /*===== Constants =====*/
 
@@ -67,10 +67,9 @@ function AchievementCard({ item, lead = false }: { item: FeedItem; lead?: boolea
       orientation={lead ? "vertical" : "horizontal"}
     >
       {item.imageUrl && (
-        <CardMedia className={lead ? "aspect-2/1" : "aspect-2/1 sm:aspect-auto sm:w-2/5"}>
-          <img src={item.imageUrl} alt="" loading="lazy" referrerPolicy="no-referrer" />
+        <FeedMedia src={item.imageUrl} className={lead ? "aspect-2/1" : "aspect-2/1 sm:aspect-auto sm:w-2/5"}>
           {lead && <Badge variant="media">{m.home_achievements_spotlight()}</Badge>}
-        </CardMedia>
+        </FeedMedia>
       )}
       {lead ? text : <CardBody>{text}</CardBody>}
     </Card>
