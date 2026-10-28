@@ -65,10 +65,21 @@ function shortSummary(value: string): string {
   return `${cut.slice(0, cut.lastIndexOf(" ")).trimEnd()}…`;
 }
 
+// The old site's editors type Latin digits into Persian text («سال 1405», «نیمسال 4051»), where the rest of the page has
+// Persian ones. Digits inside a Latin word or code (B2B, IMG_9535) are left as they are.
+const LATIN_NUMBER = /(?<![A-Za-z_])[0-9]+(?![A-Za-z_])/g;
+
+/** `value` with its standalone Latin numbers in Persian digits. */
+function persianDigits(value: string): string {
+  return value.replace(LATIN_NUMBER, (number) =>
+    number.replace(/[0-9]/g, (digit) => String.fromCharCode(0x06f0 + Number(digit))),
+  );
+}
+
 const titleSchema = persianText()
   .min(1)
   // One ellipsis character in place of three dots, in case the title stays cut short.
-  .overwrite((value) => value.replace(/\.{3}$/, "…"));
+  .overwrite((value) => persianDigits(value.replace(/\.{3}$/, "…")));
 
 // Posts copied from the university's channel scatter emoji through the text (✅ 🔴 ❇️); in a card's two lines of lead
 // they're noise, and some draw as an empty box in the site's font.
@@ -78,7 +89,9 @@ const summarySchema = z
   .string()
   .nullable()
   .transform((value) => {
-    const text = value ? normalizePersianText(value.replace(PICTOGRAPHS, "").replace(/\s{2,}/g, " ")) : "";
+    const text = value
+      ? persianDigits(normalizePersianText(value.replace(PICTOGRAPHS, "").replace(/\s{2,}/g, " ")))
+      : "";
     return text ? shortSummary(text) : null;
   });
 

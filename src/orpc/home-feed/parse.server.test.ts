@@ -37,6 +37,21 @@ describe("parseHomePage", () => {
     });
   });
 
+  it("reads the occasion slider's poster, and leaves it empty when the slider is gone", () => {
+    const occasion = parseHomePage(homePage).find((block) => block.kind === "occasion");
+    expect(occasion?.items[0]).toMatchObject({
+      href: "https://hut.ac.ir/fa/w/-778?redirect=%2F",
+      title: "سالروز شهادت حضرت فاطمه زهرا (ع) تسلیت باد",
+      image: "/documents/38165/467382/Fatemieh-katibeh.jpg/70e4ce1c?t=1792903443603&imagePreview=1",
+    });
+
+    const withoutOccasions = homePage.replace(
+      "AssetPublisherPortlet_INSTANCE_jclk_",
+      "AssetPublisherPortlet_INSTANCE_gone_",
+    );
+    expect(parseHomePage(withoutOccasions).find((block) => block.kind === "occasion")?.items).toEqual([]);
+  });
+
   it("fails when a block is missing", () => {
     const withoutNews = homePage.replace(
       "AssetPublisherPortlet_INSTANCE_ekjl_",

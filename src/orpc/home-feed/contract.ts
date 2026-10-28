@@ -32,6 +32,9 @@ export const homeFeedSchema = z.object({
     latest: z.array(feedItemSchema),
     education: z.array(feedItemSchema),
     graduate: z.array(feedItemSchema),
+    student: z.array(feedItemSchema),
+    industry: z.array(feedItemSchema),
+    openEducation: z.array(feedItemSchema),
   }),
   /** The newest campus-life notice with a photo. */
   spotlight: feedItemSchema.nullable(),
@@ -39,6 +42,8 @@ export const homeFeedSchema = z.object({
   achievements: z.array(feedItemSchema),
   /** Growth-centre items, then events. */
   learning: z.array(feedItemSchema),
+  /** The old homepage's current occasion poster, if it shows one. */
+  occasion: feedItemSchema.nullable(),
 });
 
 export type HomeFeed = z.infer<typeof homeFeedSchema>;

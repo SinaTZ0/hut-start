@@ -22,7 +22,7 @@ import {
 } from "#/orpc/home-feed/validation";
 
 /*===== Read =====*/
-const NEWS_SHOWN = 3;
+const NEWS_SHOWN = 5;
 const LATEST_NOTICES_SHOWN = 20;
 const CATEGORY_NOTICES_SHOWN = 10;
 const ACHIEVEMENTS_SHOWN = 3;
@@ -38,8 +38,8 @@ function byDateDescending(a: FeedItem, b: FeedItem): number {
 }
 
 /**
- * Everything the home page's feed blocks show, in the request's locale. With nothing synced yet every list is empty
- * and the spotlight null.
+ * Everything the home page's feed blocks show, in the request's locale. With nothing synced yet every list is empty,
+ * and the spotlight and the occasion null.
  */
 export async function getHomeFeed({ db }: { db: Database }): Promise<HomeFeed> {
   const items = (await findPlacedArticles({ db })).map(toFeedItem);
@@ -56,10 +56,15 @@ export async function getHomeFeed({ db }: { db: Database }): Promise<HomeFeed> {
       latest: latest.slice(0, LATEST_NOTICES_SHOWN),
       education: block("notice", "education").slice(0, CATEGORY_NOTICES_SHOWN),
       graduate: block("notice", "graduate").slice(0, CATEGORY_NOTICES_SHOWN),
+      student: block("notice", "student").slice(0, CATEGORY_NOTICES_SHOWN),
+      industry: block("notice", "industry").slice(0, CATEGORY_NOTICES_SHOWN),
+      openEducation: block("notice", "openEducation").slice(0, CATEGORY_NOTICES_SHOWN),
     },
     spotlight: block("notice", "student").find((item) => item.imageUrl) ?? null,
     achievements: block("achievement").slice(0, ACHIEVEMENTS_SHOWN),
     learning: [...block("growth").slice(0, GROWTH_SHOWN), ...block("event").slice(0, EVENTS_SHOWN)],
+    // The old slider's first slide is the one it opens on: the newest occasion.
+    occasion: block("occasion")[0] ?? null,
   };
 }
 
@@ -83,7 +88,7 @@ type Listed = { item: FeedItemInput; placements: { kind: FeedKind; category: Fee
  * Validates each block's items and groups them by article: one story can be in two blocks. The first listing's
  * values are kept, except a full title wins over a cut-short one.
  *
- * @throws When a block has no valid item left: something changed on the old site.
+ * @throws When a block that isn't optional has no valid item left: something changed on the old site.
  */
 function listArticles(blocks: RawBlock[]): Map<string, Listed> {
   const listed = new Map<string, Listed>();
@@ -106,7 +111,9 @@ function listArticles(blocks: RawBlock[]): Map<string, Listed> {
         known.placements.push(placement);
       }
     }
-    if (position === 0) throw new Error(`Old homepage block ${block.instance} (${block.kind}) has no valid items`);
+    if (position === 0 && !block.optional) {
+      throw new Error(`Old homepage block ${block.instance} (${block.kind}) has no valid items`);
+    }
   }
   return listed;
 }

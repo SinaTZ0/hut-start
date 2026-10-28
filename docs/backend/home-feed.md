@@ -22,14 +22,18 @@ timer / homeFeed.sync / pnpm crawl:home
   is deleted.
 - **A failed run changes nothing.** If the homepage doesn't load, or any block is missing or has no valid item (the
   old site changed its layout), the run stops before writing and logs an error, which goes to the error viewer. The
-  home page keeps the last good feed.
+  home page keeps the last good feed. The one exception is the occasion slider, which is `optional`: the editors take it
+  down between occasions, so a run without it just clears the hero's poster.
 - **Article pages are read once.** The homepage cuts the titles of news, achievements and events short (`...`), and
   shows no summary. Each such article's own page is read on the run that first sees it, for the full title, the lead
   paragraph and the date. Later runs reuse what was stored. A page that fails to load is tried again on the next run.
   An edit made on the old site after that shows only after a refresh (`pnpm crawl:home -- --refresh`, or
   `{"refresh": true}` on the endpoint).
 - **Only the old site.** Links and images must be on `hut.ac.ir`; anything else is dropped. Text goes through
-  `normalizePersianText`. Emoji are removed from summaries, and the old site's placeholder image counts as no image.
+  `normalizePersianText`, and its standalone Latin numbers become Persian digits («سال 1405» → «سال ۱۴۰۵»), like the
+  rest of the page; digits inside a Latin word or code (B2B) stay. Emoji are removed from summaries, and the old site's
+  placeholder image counts as no image. A change to this cleaning reaches stored articles whose page was already read
+  only after a refresh.
 - **Persian only.** The old site's text is stored as `{ fa }` `LocalizedText`, so `/en` shows it in Persian.
 
 ## Old Homepage Blocks
@@ -37,17 +41,18 @@ timer / homeFeed.sync / pnpm crawl:home
 Each block on the old homepage is a Liferay asset publisher, found by its instance ID (`BLOCKS` in `parse.server.ts`).
 The site has no feed or open API: its headless API answers 403 and the publishers' RSS redirects. So the HTML is read.
 
-| Instance | Old block                | Kind / category              | Shown as                           |
-| -------- | ------------------------ | ---------------------------- | ---------------------------------- |
-| `ekjl`   | اخبار                    | `news` / `university`        | the featured story and two more    |
-| `yaez`   | tab آموزش                | `notice` / `education`       | the آموزش tab, and آخرین           |
-| `qicz`   | tab تحصیلات تکمیلی       | `notice` / `graduate`        | the تحصیلات تکمیلی tab, and آخرین  |
-| `goeq`   | tab ارتباط با صنعت       | `notice` / `industry`        | آخرین                              |
-| `srha`   | tab دانشجوئی و فرهنگی    | `notice` / `student`         | آخرین, and the glance band's photo |
-| `jtsr`   | tab آموزش های آزاد       | `notice` / `openEducation`   | آخرین                              |
-| `djmo`   | achievements             | `achievement` / `university` | the lead achievement and two more  |
-| `smis`   | growth and career centre | `growth` / `growth`          | the first two Learning rows        |
-| `qill`   | رویدادها                 | `event` / `openEducation`    | the last Learning row              |
+| Instance | Old block                | Kind / category              | Shown as                                             |
+| -------- | ------------------------ | ---------------------------- | ---------------------------------------------------- |
+| `ekjl`   | اخبار                    | `news` / `university`        | the featured story, two more cards and two headlines |
+| `yaez`   | tab آموزش                | `notice` / `education`       | its tab, and آخرین                                   |
+| `qicz`   | tab تحصیلات تکمیلی       | `notice` / `graduate`        | its tab, and آخرین                                   |
+| `goeq`   | tab ارتباط با صنعت       | `notice` / `industry`        | its tab, and آخرین                                   |
+| `srha`   | tab دانشجوئی و فرهنگی    | `notice` / `student`         | its tab, آخرین, and the glance band's photo          |
+| `jtsr`   | tab آموزش های آزاد       | `notice` / `openEducation`   | its tab, and آخرین                                   |
+| `djmo`   | achievements             | `achievement` / `university` | the lead achievement and two more                    |
+| `smis`   | growth and career centre | `growth` / `growth`          | the first two Learning rows                          |
+| `qill`   | رویدادها                 | `event` / `openEducation`    | the last Learning row                                |
+| `jclk`   | occasion slider (hero)   | `occasion` / `university`    | the hero's poster card (its first slide); optional   |
 
 Dates are Gregorian, written into the page's scripts (`moment('2026 10 25', 'YYYY MM DD')`).
 

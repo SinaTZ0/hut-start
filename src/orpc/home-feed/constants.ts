@@ -1,8 +1,8 @@
 /*===== Home Feed Values =====*/
 // Browser-safe: the contract and the home page use them too. Stored as plain text (`src/db/schema.ts`, Home Feed).
 
-/** The home page's blocks. */
-export const FEED_KINDS = ["news", "notice", "achievement", "growth", "event"] as const;
+/** The home page's blocks. An `occasion` is the poster the old homepage pins over its photo (a mourning, a holiday). */
+export const FEED_KINDS = ["news", "notice", "achievement", "growth", "event", "occasion"] as const;
 
 export type FeedKind = (typeof FEED_KINDS)[number];
 

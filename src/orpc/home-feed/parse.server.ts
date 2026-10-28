@@ -6,9 +6,10 @@ import type { FeedCategory, FeedKind } from "#/orpc/home-feed/constants";
 // hut.ac.ir is Liferay: each homepage block is an asset publisher, found by its instance ID. Its news and notices have
 // no feed or open API (the headless API answers 403, the publishers' RSS redirects), so the HTML is read. When the old
 // site moves or replaces a block, its instance ID changes; fix it here. `keep` is how many of the block's items the
-// home page can show, so no more of their pages are read than that.
+// home page can show, so no more of their pages are read than that. An `optional` block may be gone or empty (the
+// editors take the occasion slider down between occasions); every other block must be there.
 
-type Block = { instance: string; kind: FeedKind; category: FeedCategory; keep: number };
+type Block = { instance: string; kind: FeedKind; category: FeedCategory; keep: number; optional?: boolean };
 
 export const BLOCKS: readonly Block[] = [
   { instance: "ekjl", kind: "news", category: "university", keep: 5 },
@@ -20,6 +21,7 @@ export const BLOCKS: readonly Block[] = [
   { instance: "djmo", kind: "achievement", category: "university", keep: 3 },
   { instance: "smis", kind: "growth", category: "growth", keep: 2 },
   { instance: "qill", kind: "event", category: "openEducation", keep: 1 },
+  { instance: "jclk", kind: "occasion", category: "university", keep: 1, optional: true },
 ];
 
 const PORTLET_ID_PREFIX = "p_p_id_com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet_INSTANCE_";
@@ -86,18 +88,25 @@ function backgroundImage(style: string | undefined): string | null {
 }
 
 /*===== Homepage =====*/
+// News slides are `.new`, the rest `a.splide__slide`, except the occasion slider's: a `div` with the photo as an
+// `<img>` and the title as the link (`.parent-description`).
+const SLIDES = ".new, a.splide__slide, .splide__slide:has(> .parent-description)";
+
 /**
  * Reads the blocks in `BLOCKS` from the old homepage's HTML, in page order, each item once.
  *
- * @throws When a block is missing or has no items: the page's layout changed, and a partial result would empty a
- * block of the home page. The caller keeps the last good data.
+ * @throws When a block that isn't optional is missing or has no items: the page's layout changed, and a partial
+ * result would empty a block of the home page. The caller keeps the last good data.
  */
 export function parseHomePage(html: string): RawBlock[] {
   const $ = load(html);
 
   return BLOCKS.map((block) => {
     const portlet = $(`[id="${PORTLET_ID_PREFIX}${block.instance}_"]`);
-    if (portlet.length === 0) throw new Error(`Old homepage block ${block.instance} (${block.kind}) not found`);
+    if (portlet.length === 0) {
+      if (block.optional) return { ...block, items: [] };
+      throw new Error(`Old homepage block ${block.instance} (${block.kind}) not found`);
+    }
 
     // `.html()`: a script's content is raw text, which `.text()` may leave out.
     const dates = datesById(
@@ -108,8 +117,8 @@ export function parseHomePage(html: string): RawBlock[] {
     );
     const items = new Map<string, RawItem>();
 
-    // News slides are `.new`, the rest `a.splide__slide`. The slider repeats slides for its loop, hence the dedupe.
-    portlet.find(".new, a.splide__slide").each((_, element) => {
+    // The slider repeats slides for its loop, hence the dedupe.
+    portlet.find(SLIDES).each((_, element) => {
       const slide = $(element);
       const href = slide.is("a") ? slide.attr("href") : slide.find("a[href]").first().attr("href");
       if (!href || items.has(href)) return;
@@ -131,12 +140,16 @@ export function parseHomePage(html: string): RawBlock[] {
         title,
         summary: cleanText(slide.find(".desc, .description").first().text()),
         publishedOn: dateId ? (dates.get(dateId) ?? null) : null,
-        image: backgroundImage(slide.find('[style*="url("]').first().attr("style")),
+        image:
+          backgroundImage(slide.find('[style*="url("]').first().attr("style")) ??
+          cleanText(slide.find("img[src]").first().attr("src")),
         sourceAssetId: cleanText(titled.attr("data-analytics-asset-id")),
       });
     });
 
-    if (items.size === 0) throw new Error(`Old homepage block ${block.instance} (${block.kind}) has no items`);
+    if (items.size === 0 && !block.optional) {
+      throw new Error(`Old homepage block ${block.instance} (${block.kind}) has no items`);
+    }
     return { ...block, items: [...items.values()].slice(0, block.keep) };
   });
 }
