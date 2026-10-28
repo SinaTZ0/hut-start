@@ -59,6 +59,9 @@
   --text-lede--font-weight: 500;
   --text-body-lg: 1.125rem;
   --text-body-lg--line-height: 1.9;
+  /* An article's body: long Persian prose in one column, so a little larger and looser than the page's body text. */
+  --text-prose: 1rem;
+  --text-prose--line-height: 2.1;
   --text-body: 0.9375rem;
   --text-body--line-height: 1.8;
   --text-body-sm: 0.8125rem;
@@ -184,6 +187,7 @@
   --color-band-line-strong: var(--band-line-strong);
   --color-band-control: var(--band-control);
   --color-band-hover: var(--band-hover);
+  --color-viewer: var(--viewer);
   /* Glass on the hero photo (the `glass` buttons): a white frost, a lit edge, and one step brighter on hover */
   --color-frost: var(--frost);
   --color-glass: var(--glass);
@@ -304,6 +308,9 @@
 
   --elevation-sm: 0 1px 2px rgb(16 61 64 / 4%);
   --elevation-md: 0 1px 2px rgb(16 61 64 / 4%), 0 8px 24px -12px rgb(16 61 64 / 12%);
+
+  /* The photo viewer's backdrop: near-black pine in both themes, so photos read as they were taken. */
+  --viewer: rgb(5 16 17 / 97%);
 
   --chart-1: #1f7a72;
   --chart-2: #e7bc65;

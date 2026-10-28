@@ -58,7 +58,7 @@ export function SiteFooter() {
   const otherLocale = locales.find((locale) => locale !== getLocale());
 
   return (
-    <footer className="bg-band-deep text-body-sm text-on-band-muted">
+    <footer className="bg-band-deep text-body-sm text-on-band-muted print:hidden">
       <div className="mx-auto max-w-site px-gutter pt-section">
         <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-footer">
           {/*===== Brand =====*/}

@@ -21,6 +21,7 @@ import { Route as feedbackFeedbackRouteImport } from './routes/feedback/feedback
 import { Route as privacyPrivacyRouteImport } from './routes/privacy/privacy'
 import { Route as rpcRpcRouteImport } from './routes/rpc/rpc'
 import { Route as notesNotesRouteImport } from './routes/notes/notes'
+import { Route as articles_articleIdArticlesArticleIdRouteImport } from './routes/articles_articleId/articles-article-id'
 import { Route as departments_departmentSlugDepartmentsDepartmentSlugRouteImport } from './routes/departments_departmentSlug/departments-department-slug'
 import { Route as api_authApiAuthRouteImport } from './routes/api_auth/api-auth'
 
@@ -83,6 +84,12 @@ const notesNotesRoute = notesNotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => notes_layoutNotesLayoutRoute,
 } as any)
+const articles_articleIdArticlesArticleIdRoute =
+  articles_articleIdArticlesArticleIdRouteImport.update({
+    id: '/articles/$articleId',
+    path: '/articles/$articleId',
+    getParentRoute: () => site_layoutSiteLayoutRoute,
+  } as any)
 const departments_departmentSlugDepartmentsDepartmentSlugRoute =
   departments_departmentSlugDepartmentsDepartmentSlugRouteImport.update({
     id: '/departments/$departmentSlug',
@@ -106,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof privacyPrivacyRoute
   '/rpc/$': typeof rpcRpcRoute
   '/notes': typeof notesNotesRoute
+  '/articles/$articleId': typeof articles_articleIdArticlesArticleIdRoute
   '/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
   '/api/auth/$': typeof api_authApiAuthRoute
 }
@@ -120,6 +128,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof privacyPrivacyRoute
   '/rpc/$': typeof rpcRpcRoute
   '/notes': typeof notesNotesRoute
+  '/articles/$articleId': typeof articles_articleIdArticlesArticleIdRoute
   '/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
   '/api/auth/$': typeof api_authApiAuthRoute
 }
@@ -137,6 +146,7 @@ export interface FileRoutesById {
   '/_site-layout/privacy': typeof privacyPrivacyRoute
   '/rpc/$': typeof rpcRpcRoute
   '/_site-layout/_notes-layout/notes': typeof notesNotesRoute
+  '/_site-layout/articles/$articleId': typeof articles_articleIdArticlesArticleIdRoute
   '/_site-layout/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
   '/api/auth/$': typeof api_authApiAuthRoute
 }
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/rpc/$'
     | '/notes'
+    | '/articles/$articleId'
     | '/departments/$departmentSlug'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/rpc/$'
     | '/notes'
+    | '/articles/$articleId'
     | '/departments/$departmentSlug'
     | '/api/auth/$'
   id:
@@ -183,6 +195,7 @@ export interface FileRouteTypes {
     | '/_site-layout/privacy'
     | '/rpc/$'
     | '/_site-layout/_notes-layout/notes'
+    | '/_site-layout/articles/$articleId'
     | '/_site-layout/departments/$departmentSlug'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
@@ -282,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof notesNotesRouteImport
       parentRoute: typeof notes_layoutNotesLayoutRoute
     }
+    '/_site-layout/articles/$articleId': {
+      id: '/_site-layout/articles/$articleId'
+      path: '/articles/$articleId'
+      fullPath: '/articles/$articleId'
+      preLoaderRoute: typeof articles_articleIdArticlesArticleIdRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
     '/_site-layout/departments/$departmentSlug': {
       id: '/_site-layout/departments/$departmentSlug'
       path: '/departments/$departmentSlug'
@@ -320,6 +340,7 @@ interface site_layoutSiteLayoutRouteChildren {
   consultationConsultationRoute: typeof consultationConsultationRoute
   feedbackFeedbackRoute: typeof feedbackFeedbackRoute
   privacyPrivacyRoute: typeof privacyPrivacyRoute
+  articles_articleIdArticlesArticleIdRoute: typeof articles_articleIdArticlesArticleIdRoute
   departments_departmentSlugDepartmentsDepartmentSlugRoute: typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
 }
 
@@ -330,6 +351,8 @@ const site_layoutSiteLayoutRouteChildren: site_layoutSiteLayoutRouteChildren = {
   consultationConsultationRoute: consultationConsultationRoute,
   feedbackFeedbackRoute: feedbackFeedbackRoute,
   privacyPrivacyRoute: privacyPrivacyRoute,
+  articles_articleIdArticlesArticleIdRoute:
+    articles_articleIdArticlesArticleIdRoute,
   departments_departmentSlugDepartmentsDepartmentSlugRoute:
     departments_departmentSlugDepartmentsDepartmentSlugRoute,
 }

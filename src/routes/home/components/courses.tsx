@@ -3,12 +3,11 @@ import { ClockIcon } from "lucide-react";
 import { Card, CardCall, CardDescription, CardFooter, CardHeader, CardTitle } from "#/components/primitive/card/card";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
-import { formatDate } from "#/lib/locale";
+import { formatDate, isoToDate } from "#/lib/locale";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { NEWS_CATEGORIES } from "../content";
-import { isoToDate } from "../semester";
-import { FeedMedia } from "./feed-media";
+import { FeedMedia } from "#/components/shared/feed-media/feed-media";
 
 /*===== Courses =====*/
 

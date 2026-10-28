@@ -5,12 +5,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/primitive
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { textLinkArrowClasses } from "#/components/shared/text-link/text-link.styles";
-import { formatDate, formatDateParts, formatRelativeDays } from "#/lib/locale";
+import { formatDate, formatDateParts, formatRelativeDays, isoToDate } from "#/lib/locale";
 import type { FeedItem, HomeFeed } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { ALL_NOTICES_HREF, NEWS_CATEGORIES } from "../content";
-import { daysFromToday, isoToDate, type JDate } from "../semester";
-import { FeedList, FeedRow } from "./feed-row";
+import { daysFromToday, type JDate } from "../semester";
+import { FeedList, FeedRow } from "#/components/shared/feed-row/feed-row";
 
 /*===== Constants =====*/
 

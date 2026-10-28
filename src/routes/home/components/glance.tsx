@@ -5,15 +5,14 @@ import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { TextLink } from "#/components/shared/text-link/text-link";
 import { textLinkExternalClasses } from "#/components/shared/text-link/text-link.styles";
-import { formatDate, formatNumber } from "#/lib/locale";
+import { formatDate, formatNumber, isoToDate } from "#/lib/locale";
 import { departmentDrawings, HOME_DRAWINGS } from "#/lib/university/drawings";
 import { DEPARTMENTS, DEPARTMENTS_HREF, SOCIAL_LINKS } from "#/lib/university/navigation";
 import { cn } from "#/lib/utils";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { STATS } from "../content";
-import { isoToDate } from "../semester";
-import { FeedMedia } from "./feed-media";
+import { FeedMedia } from "#/components/shared/feed-media/feed-media";
 
 /*===== Constants =====*/
 

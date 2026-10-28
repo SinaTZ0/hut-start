@@ -149,7 +149,7 @@ function SearchSheet() {
  */
 export function TabBar({ viewer }: { viewer: Viewer | null }) {
   return (
-    <nav aria-label={m.nav_tab_bar()} className="fixed inset-x-0 bottom-0 z-40 border-t bg-card lg:hidden">
+    <nav aria-label={m.nav_tab_bar()} className="fixed inset-x-0 bottom-0 z-40 border-t bg-card lg:hidden print:hidden">
       <ul className="grid grid-cols-4">
         <li>
           <Link to="/" activeOptions={{ exact: true }} className={tabLinkClasses}>

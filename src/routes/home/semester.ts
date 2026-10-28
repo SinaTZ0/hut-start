@@ -7,6 +7,8 @@
 /** A Jalali date as [year, month, day]. */
 export type JDate = readonly [number, number, number];
 
+import { isoToDate } from "#/lib/locale";
+
 const DAY_MS = 86_400_000;
 
 // Latin digits and the Persian calendar in a fixed locale: these parts are parsed back into numbers, not shown.
@@ -122,13 +124,6 @@ export function semesterState({ events, today }: { events: CalendarEvent[]; toda
     nextMilestone: withStatus.find((event) => event.status !== "past" && event.milestone),
     totalDays,
   };
-}
-
-/*===== Publication Dates =====*/
-
-/** A publication date (ISO, Gregorian) as a `Date` at UTC noon, like the calendar's. */
-export function isoToDate(iso: string): Date {
-  return new Date(`${iso}T12:00:00Z`);
 }
 
 /** Whole days from `today` to a publication date (negative for the past). */

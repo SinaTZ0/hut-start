@@ -2,11 +2,10 @@ import type { ReactNode } from "react";
 
 import { CardDescription, CardKicker } from "#/components/primitive/card/card";
 import { SiteLink } from "#/components/shared/site-link/site-link";
-import { formatDate } from "#/lib/locale";
+import { formatDate, isoToDate } from "#/lib/locale";
 import { cn } from "#/lib/utils";
 import type { FeedItem } from "#/orpc/home-feed/contract";
-import { isoToDate } from "../semester";
-import { FeedMedia } from "./feed-media";
+import { FeedMedia } from "#/components/shared/feed-media/feed-media";
 
 /*===== Feed List =====*/
 
@@ -62,8 +61,10 @@ export function FeedRow({
               </time>
             )}
           </CardKicker>
-          {/* The title is the link's face: it underlines in the highlight colour on hover and focus. */}
+          {/* The title is the link's face: it underlines in the highlight colour on hover and focus. Feed text is
+              Persian on the English page too, so it keeps its own direction. */}
           <h3
+            dir="auto"
             className={cn(
               "font-heading text-heading decoration-highlight decoration-1 underline-offset-6 group-hover/row:underline group-focus-visible/row:underline",
               lead ? "text-h4 sm:text-h3" : "line-clamp-2 text-title",
@@ -73,7 +74,7 @@ export function FeedRow({
           </h3>
           {/* Clamped: the old site's lead paragraphs run long. */}
           {item.summary && (
-            <CardDescription lines={lead ? "3" : "2"} className={lead ? undefined : "max-sm:hidden"}>
+            <CardDescription dir="auto" lines={lead ? "3" : "2"} className={lead ? undefined : "max-sm:hidden"}>
               {item.summary}
             </CardDescription>
           )}

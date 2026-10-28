@@ -84,6 +84,13 @@ const twVariant = defineStyles({
     hover: "hover:bg-glass-hover",
     state: "aria-expanded:bg-glass-hover data-popup-open:bg-glass-hover",
   },
+  // The same round tools on a page's own surface, with an edge: a page's actions (share, print) and a carousel's arrows.
+  "tool-outline": {
+    geometry: "rounded-full",
+    appearance: "border-border bg-card text-heading",
+    hover: "hover:border-border-strong hover:bg-accent",
+    state: "aria-expanded:bg-accent data-popup-open:bg-accent",
+  },
   "tool-frost": {
     geometry: "rounded-full",
     appearance: "border-border bg-frost text-heading backdrop-blur-md",

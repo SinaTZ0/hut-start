@@ -21,6 +21,13 @@ export const OG_LOCALE: Record<Locale, string> = {
  */
 export const LOCALE_HEADER = "x-locale";
 
+/*===== Dates =====*/
+
+/** A publication date (ISO, Gregorian) as a `Date` at UTC noon, so it's the same day in every time zone. */
+export function isoToDate(iso: string): Date {
+  return new Date(`${iso}T12:00:00Z`);
+}
+
 /*===== Formatting =====*/
 // Formatters are built once per locale and option set: `Intl` constructors are slow, and these run in every render.
 const numberFormats = new Map<string, Intl.NumberFormat>();

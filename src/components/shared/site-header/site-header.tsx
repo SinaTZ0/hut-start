@@ -132,7 +132,7 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
       <header
         data-site-header
         data-scrolled={scrolled || undefined}
-        className="pointer-events-none absolute inset-x-0 top-0 isolate z-30 lg:sticky lg:-mb-19 lg:h-19"
+        className="pointer-events-none absolute inset-x-0 top-0 isolate z-30 lg:sticky lg:-mb-19 lg:h-19 print:hidden"
       >
         {tone === "glass" && (
           <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-30 bg-header-scrim lg:h-42.5" />

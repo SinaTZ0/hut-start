@@ -789,5 +789,80 @@
   "privacy_s6_title": "Links to other websites",
   "privacy_s6_p1": "This website may contain links to other electronic portals. Once you leave the Hamedan University of Technology website, the university has no technical or legal control over the destination sites. It therefore accepts no responsibility for their privacy policies or content, and recommends that you read the privacy statement of those sites before using them.",
   "privacy_s7_title": "Contacting the university",
-  "privacy_s7_p1": "If you have any question, concern, comment or report about this statement, you can reach the responsible officials through the contact channels in the “Contact us” section of the Hamedan University of Technology portal."
+  "privacy_s7_p1": "If you have any question, concern, comment or report about this statement, you can reach the responsible officials through the contact channels in the “Contact us” section of the Hamedan University of Technology portal.",
+  "common_carousel": "carousel",
+  "common_slide": "slide",
+  "common_previous_slide": "Previous slide",
+  "common_next_slide": "Next slide",
+  "article_kind_news": "News",
+  "article_kind_notice": "Notice",
+  "article_kind_achievement": "Achievement",
+  "article_kind_growth": "Incubator",
+  "article_kind_event": "Event",
+  "article_kind_occasion": "Occasion",
+  "article_kinds_news": "News",
+  "article_kinds_notice": "Notices",
+  "article_kinds_achievement": "Achievements",
+  "article_kinds_growth": "Incubator",
+  "article_kinds_event": "Events",
+  "article_kinds_occasion": "Occasions",
+  "article_reading_time": [
+    {
+      "declarations": ["input minutes", "local minutesText = minutes: number"],
+      "match": {
+        "": "{minutesText} min read"
+      }
+    }
+  ],
+  "article_share": "Share",
+  "article_copy_link": "Copy link",
+  "article_link_copied": "Link copied.",
+  "article_print": "Print",
+  "article_persian_only": "This article is published in Persian only.",
+  "article_attachments": "Attachments",
+  "article_file_size_kb": [
+    {
+      "declarations": ["input size", "local sizeText = size: number"],
+      "match": {
+        "": "{sizeText} KB"
+      }
+    }
+  ],
+  "article_file_size_mb": [
+    {
+      "declarations": ["input size", "local sizeText = size: number"],
+      "match": {
+        "": "{sizeText} MB"
+      }
+    }
+  ],
+  "article_photos": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "Photos · {countText}"
+      }
+    }
+  ],
+  "article_photo_position": [
+    {
+      "declarations": [
+        "input index",
+        "input count",
+        "local indexText = index: number",
+        "local countText = count: number"
+      ],
+      "match": {
+        "": "{indexText} of {countText}"
+      }
+    }
+  ],
+  "article_photo_open": "View the photo full size",
+  "article_viewer_title": "Article photos",
+  "article_source": "Source: {source}",
+  "article_related_kicker": "From the same category",
+  "article_related_title": "Read more",
+  "article_not_found_title": "Article not found",
+  "article_not_found_details": "The address may be wrong, or the article hasn't come over from the university's old site yet.",
+  "article_not_found_back": "Back to the home page"
 }

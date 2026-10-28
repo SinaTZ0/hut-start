@@ -19,7 +19,7 @@ import { NAV_SECTIONS } from "#/lib/university/navigation";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { NEWS_CATEGORIES, RESEARCH_UNITS } from "../content";
-import { FeedList, FeedRow } from "./feed-row";
+import { FeedList, FeedRow } from "#/components/shared/feed-row/feed-row";
 
 /*===== Constants =====*/
 

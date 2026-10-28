@@ -771,5 +771,80 @@
   "privacy_s6_title": "پیوند به سایر پایگاه‌های اینترنتی",
   "privacy_s6_p1": "این وبگاه ممکن است شامل پیوندهایی (لینک‌هایی) به سایر درگاه‌های الکترونیکی باشد. با خروج کاربر از وبگاه دانشگاه صنعتی همدان، کنترل فنی و حقوقی این دانشگاه بر تارنماهای مقصد سلب می‌گردد؛ بنابراین، دانشگاه هیچ‌گونه مسئولیتی در قبال سیاست‌های حریم خصوصی و محتوای این قبیل سامانه‌ها نداشته و پیشنهاد می‌شود کاربران پیش از استفاده، بیانیه حریم خصوصی پایگاه‌های مذکور را مطالعه نمایند.",
   "privacy_s7_title": "ارتباط با دانشگاه",
-  "privacy_s7_p1": "در صورت وجود هرگونه پرسش، ابهام، نظر یا گزارش پیرامون مفاد این بیانیه، کاربران محترم می‌توانند از طریق مجاری ارتباطی مندرج در بخش «تماس با ما» در پورتال دانشگاه صنعتی همدان، با مسئولین مربوطه در ارتباط باشند."
+  "privacy_s7_p1": "در صورت وجود هرگونه پرسش، ابهام، نظر یا گزارش پیرامون مفاد این بیانیه، کاربران محترم می‌توانند از طریق مجاری ارتباطی مندرج در بخش «تماس با ما» در پورتال دانشگاه صنعتی همدان، با مسئولین مربوطه در ارتباط باشند.",
+  "common_carousel": "اسلایدر",
+  "common_slide": "اسلاید",
+  "common_previous_slide": "اسلاید قبلی",
+  "common_next_slide": "اسلاید بعدی",
+  "article_kind_news": "خبر",
+  "article_kind_notice": "اطلاعیه",
+  "article_kind_achievement": "دستاورد",
+  "article_kind_growth": "مرکز رشد",
+  "article_kind_event": "رویداد",
+  "article_kind_occasion": "مناسبت",
+  "article_kinds_news": "اخبار",
+  "article_kinds_notice": "اطلاعیه‌ها",
+  "article_kinds_achievement": "دستاوردها",
+  "article_kinds_growth": "مرکز رشد",
+  "article_kinds_event": "رویدادها",
+  "article_kinds_occasion": "مناسبت‌ها",
+  "article_reading_time": [
+    {
+      "declarations": ["input minutes", "local minutesText = minutes: number"],
+      "match": {
+        "": "{minutesText} دقیقه مطالعه"
+      }
+    }
+  ],
+  "article_share": "اشتراک‌گذاری",
+  "article_copy_link": "کپی پیوند",
+  "article_link_copied": "پیوند کپی شد.",
+  "article_print": "چاپ",
+  "article_persian_only": "این مطلب فقط به فارسی منتشر شده است.",
+  "article_attachments": "پیوست‌ها",
+  "article_file_size_kb": [
+    {
+      "declarations": ["input size", "local sizeText = size: number"],
+      "match": {
+        "": "{sizeText} کیلوبایت"
+      }
+    }
+  ],
+  "article_file_size_mb": [
+    {
+      "declarations": ["input size", "local sizeText = size: number"],
+      "match": {
+        "": "{sizeText} مگابایت"
+      }
+    }
+  ],
+  "article_photos": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "تصاویر · {countText}"
+      }
+    }
+  ],
+  "article_photo_position": [
+    {
+      "declarations": [
+        "input index",
+        "input count",
+        "local indexText = index: number",
+        "local countText = count: number"
+      ],
+      "match": {
+        "": "{indexText} از {countText}"
+      }
+    }
+  ],
+  "article_photo_open": "نمایش بزرگ تصویر",
+  "article_viewer_title": "تصاویر مطلب",
+  "article_source": "منبع: {source}",
+  "article_related_kicker": "از همین دسته",
+  "article_related_title": "بیشتر بخوانید",
+  "article_not_found_title": "این مطلب پیدا نشد",
+  "article_not_found_details": "ممکن است نشانی اشتباه باشد، یا این مطلب هنوز از سایت قبلی دانشگاه به این‌جا نیامده باشد.",
+  "article_not_found_back": "بازگشت به صفحه اصلی"
 }

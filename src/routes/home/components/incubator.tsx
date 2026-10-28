@@ -13,14 +13,13 @@ import {
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { textLinkArrowClasses } from "#/components/shared/text-link/text-link.styles";
-import { formatDate } from "#/lib/locale";
+import { formatDate, isoToDate } from "#/lib/locale";
 import { HOME_DRAWINGS } from "#/lib/university/drawings";
 import { cn } from "#/lib/utils";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { NEWS_CATEGORIES } from "../content";
-import { isoToDate } from "../semester";
-import { FeedMedia } from "./feed-media";
+import { FeedMedia } from "#/components/shared/feed-media/feed-media";
 
 /*===== Incubator =====*/
 
