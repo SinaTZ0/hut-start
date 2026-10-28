@@ -18,6 +18,7 @@ import (
 	"deploy/internal/menu"
 	"deploy/internal/pgweb"
 	"deploy/internal/project"
+	"deploy/internal/runlog"
 	"deploy/internal/ui"
 )
 
@@ -59,7 +60,15 @@ func main() {
 		commands.Help(ui.Err)
 		os.Exit(2)
 	}
-	os.Exit(exitCode(run(args)))
+	// The menu keeps a log per action it runs.
+	var log *runlog.Log
+	if command != "menu" {
+		log = t.OpenLog(command, args)
+	}
+	err := run(args)
+	code := exitCode(err)
+	log.Close(err)
+	os.Exit(code)
 }
 
 // exitCode prints err the way the menu does and maps it to the exit code.

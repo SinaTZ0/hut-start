@@ -70,7 +70,7 @@ func Docker(env []string, args ...string) *exec.Cmd {
 // would swallow what the operator types ahead.
 func (s *Stack) Run(args ...string) error {
 	cmd := s.Command(nil, args...)
-	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
+	cmd.Stdout, cmd.Stderr = ui.Out, ui.Err
 	return interrupt.Check(cmd.Run())
 }
 
@@ -96,7 +96,7 @@ func DockerOutput(args ...string) (string, error) {
 // DockerQuiet runs `docker <args>`, with its errors on stderr and nothing else.
 func DockerQuiet(args ...string) error {
 	cmd := Docker(nil, args...)
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = ui.Err
 	return interrupt.Check(cmd.Run())
 }
 

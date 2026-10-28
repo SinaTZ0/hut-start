@@ -12,6 +12,7 @@ import (
 	"deploy/internal/envfile"
 	"deploy/internal/interrupt"
 	"deploy/internal/project"
+	"deploy/internal/runlog"
 	"deploy/internal/stack"
 	"deploy/internal/ui"
 )
@@ -34,6 +35,16 @@ func New(p *project.Project) *Tool {
 			PgdataExists: s.PgdataExists,
 		},
 	}
+}
+
+// OpenLog starts the log file of a command (runlog), for the ones that change something, and only in a checkout:
+// Set up before the clone has nowhere to keep it, and hands over to the clone's tool, which keeps its own. Status
+// and Logs only look. Nil when there's none; Close on nil does nothing.
+func (t *Tool) OpenLog(command string, args []string) *runlog.Log {
+	if command == "status" || command == "logs" || !t.P.IsCheckout() {
+		return nil
+	}
+	return runlog.Open(t.P.Root, command, args)
 }
 
 func (t *Tool) requireSetUp() error {

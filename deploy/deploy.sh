@@ -25,7 +25,8 @@ fi
 # ===== The tmux Window =====
 # Closing the SSH connection ends whatever runs on its terminal, a deploy halfway included. So the menu runs in a tmux
 # window that outlives the connection. Quitting the menu closes the window: each action already waits for Enter, so its
-# output has been read. Only when the tool fails does a shell stay, with the error on screen, until `exit`. Running
+# output has been read. When the tool fails instead, quitting right after a failed action included, a shell stays,
+# with the error on screen, until `exit`. Running
 # this script again reattaches to it. A command (`deploy/deploy.sh status`) runs here as before, so
 # cron and scripts get its exit code and a second look while a deploy runs in the window is still possible; so does
 # the menu without a terminal, and inside tmux already (the window's own).
@@ -76,6 +77,13 @@ if (( $# == 0 )) && [[ -z ${TMUX:-} && -t 0 && -t 1 ]]; then
     # One window per checkout. tmux doesn't allow "." or ":" in a name.
     root_name=$(basename "$(dirname "$dir")")
     session="deploy-${root_name//[.:]/_}"
+    # The tool's own tmux server, set up by deploy/tmux.conf (scrollback, the mouse wheel, the status line). The file
+    # is read when the server starts, before its first window, which is the only time tmux applies history-limit.
+    deploy_tmux=(tmux -L deploy -f "$dir/tmux.conf")
+    if "${deploy_tmux[@]}" has-session -t "=$session" 2>/dev/null; then
+      exec "${deploy_tmux[@]}" attach-session -t "=$session"
+    fi
+    # A window opened before the tool had its own server is on the default one.
     if tmux has-session -t "=$session" 2>/dev/null; then
       exec tmux attach-session -t "=$session"
     fi
@@ -85,12 +93,11 @@ if (( $# == 0 )) && [[ -z ${TMUX:-} && -t 0 && -t 1 ]]; then
       if [[ -n ${!name:-} ]]; then pass+=(-e "$name=${!name}"); fi
     done
     printf -v command '%q' "$dir/deploy.sh"
-    exec tmux new-session -s "$session" -c "$(dirname "$dir")" ${pass[@]+"${pass[@]}"} \
-      "bash $command || exec \"\${SHELL:-bash}\"" \
-      \; set-option status-left-length 20 \
-      \; set-option status-left " Deploy " \
-      \; set-option status-right-length 80 \
-      \; set-option status-right " Ctrl-b d: leave it running · Quit: close "
+    stayed="The deploy tool stopped after a failure, so this window stays open: scroll back with the mouse wheel, \
+the whole output is in deploy/logs/. Type exit to close the window."
+    printf -v stayed '%q' "$stayed"
+    exec "${deploy_tmux[@]}" new-session -s "$session" -c "$(dirname "$dir")" ${pass[@]+"${pass[@]}"} \
+      "bash $command || { echo; echo $stayed; exec \"\${SHELL:-bash}\"; }"
   fi
 fi
 exec "$bin" "$@"

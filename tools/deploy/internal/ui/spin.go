@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"os"
 	"time"
 
 	"deploy/internal/interrupt"
@@ -11,7 +12,8 @@ import (
 
 // Spin runs fn with a spinner. fn gets the writer for its commands' stderr: with the spinner, their messages are held
 // back until it ends, so they don't tear through it; without one (plain prompts, no terminal) they go straight out,
-// after a dim `title…` line. stdout is never touched, so a command can stream a dump into a file through it.
+// after a dim `title…` line. stdout is never touched, so a command can stream a dump into a file through it. The
+// frames go to the terminal alone; a log file gets the held messages.
 func Spin(title string, fn func(stderr io.Writer) error) error {
 	if !TUI {
 		fmt.Fprintln(Err, Dim(title+"…"))
@@ -24,10 +26,10 @@ func Spin(title string, fn func(stderr io.Writer) error) error {
 	frames := []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
 	ticker := time.NewTicker(100 * time.Millisecond)
 	defer ticker.Stop()
-	fmt.Fprint(Err, "\x1b[?25l")
+	fmt.Fprint(os.Stderr, "\x1b[?25l")
 	var err error
 	for i := 0; ; i++ {
-		fmt.Fprintf(Err, "\r\x1b[K%s %s", paint("35", frames[i%len(frames)]), title)
+		fmt.Fprintf(os.Stderr, "\r\x1b[K%s %s", paint("35", frames[i%len(frames)]), title)
 		select {
 		case err = <-done:
 		case <-ticker.C:
@@ -35,7 +37,7 @@ func Spin(title string, fn func(stderr io.Writer) error) error {
 		}
 		break
 	}
-	fmt.Fprint(Err, "\r\x1b[K\x1b[?25h")
+	fmt.Fprint(os.Stderr, "\r\x1b[K\x1b[?25h")
 	_, _ = Err.Write(held.Bytes())
 	return interrupt.Check(err)
 }

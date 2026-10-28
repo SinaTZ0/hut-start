@@ -204,7 +204,7 @@ func Open(p *project.Project, s *stack.Stack, d time.Duration, dump bool) error 
 	ui.Step("Starting the database browser")
 	// `--no-deps`: the database runs already, and a pending .env edit mustn't recreate it here.
 	up := s.Command(env, "--profile", Profile, "up", "-d", "--no-deps", "--force-recreate", Service)
-	up.Stdout, up.Stderr = os.Stdout, os.Stderr
+	up.Stdout, up.Stderr = ui.Out, ui.Err
 	if err := interrupt.Check(up.Run()); err != nil {
 		if err == interrupt.ErrInterrupted {
 			return err
@@ -214,7 +214,7 @@ func Open(p *project.Project, s *stack.Stack, d time.Duration, dump bool) error 
 	if err := ui.Spin("Waiting for it to answer", func(io.Writer) error { return waitAnswering(30 * time.Second) }); err != nil {
 		if b := Find(s); b != nil {
 			logs := stack.Docker(nil, "logs", "--tail", "20", b.ID)
-			logs.Stdout, logs.Stderr = os.Stderr, os.Stderr
+			logs.Stdout, logs.Stderr = ui.Err, ui.Err
 			_ = logs.Run()
 			_ = remove(b)
 		}
@@ -239,7 +239,7 @@ func Open(p *project.Project, s *stack.Stack, d time.Duration, dump bool) error 
 	ui.Info("       ssh -N -L %d:localhost:%d %s@%s", Port, Port, login, domain)
 	ui.Info("  2. Then open http://localhost:%d and sign in:", Port)
 	ui.Info("       username  %s", user)
-	ui.Info("       password  %s", pass)
+	ui.Private("       password  %s", pass)
 	ui.Info("")
 	ui.Info("  It closes at %s (in %s), or now with: deploy/deploy.sh pgweb close", closesAt.Format("2006-01-02 15:04"),
 		Left(closesAt))

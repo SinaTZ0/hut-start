@@ -2,7 +2,6 @@ package commands
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 	"slices"
 	"strings"
@@ -30,10 +29,10 @@ func (t *Tool) Status(args []string) error {
 	_ = t.S.Run("ps", "-a", "--format", "table {{.Service}}\t{{.State}}\t{{.Status}}")
 	ui.Step("Disk")
 	df := exec.Command("df", "-h", t.P.Root)
-	df.Stdout, df.Stderr = os.Stdout, os.Stderr
+	df.Stdout, df.Stderr = ui.Out, ui.Err
 	_ = df.Run()
 	system := stack.Docker(nil, "system", "df")
-	system.Stdout, system.Stderr = os.Stdout, os.Stderr
+	system.Stdout, system.Stderr = ui.Out, ui.Err
 	_ = system.Run()
 	ui.Step("Backups")
 	dir := backup.Dir(t.P)
@@ -99,7 +98,7 @@ func (t *Tool) Admin(args []string) error {
 	cmd := t.S.Command(nil, "exec", "-T", "db", "psql", "-U", "app", "-d", "app", "-v", "ON_ERROR_STOP=1",
 		"-v", "email="+email, "-qtA")
 	cmd.Stdin = strings.NewReader(`update "user" set role = 'admin' where email = :'email' returning email;`)
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = ui.Err
 	out, err := cmd.Output()
 	if err != nil {
 		return interrupt.Check(ui.Fail("psql failed (see above)."))

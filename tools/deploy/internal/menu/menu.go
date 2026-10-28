@@ -1,6 +1,6 @@
 // Package menu is what the tool shows with no command: a header with the domain, the status lines, and the actions
 // that fit the server (Set up before setup, everything else after). An action that fails or is stopped with Ctrl-C
-// comes back to the menu instead of ending the tool.
+// comes back to the menu instead of ending the tool. Each action keeps a log file (runlog).
 package menu
 
 import (
@@ -48,15 +48,24 @@ func available(t *commands.Tool, it item) bool {
 	return t.P.IsSetUp()
 }
 
-// Run shows the menu until Quit.
+// Run shows the menu until Quit. Quitting right after an action failed is a failure too, so deploy/deploy.sh's tmux
+// window, which closes after a clean exit, stays open with the error and its log's name in it.
 func Run(t *commands.Tool) error {
 	if !ui.Interactive {
 		return ui.Fail("No terminal for the menu: pass a command (deploy/deploy.sh help).")
 	}
+	failed := ""
 	for {
 		interrupt.Reset()
-		it, quit := pick(t)
+		// After a failure the menu is drawn under it rather than over it, so the error stays on screen.
+		it, quit, err := pick(t, failed == "")
+		if err != nil {
+			return err
+		}
 		if quit {
+			if failed != "" {
+				return ui.Fail("%s", failed)
+			}
 			return nil
 		}
 		if it == nil {
@@ -76,13 +85,20 @@ func Run(t *commands.Tool) error {
 			return it.run(t)
 		}
 
-		err := it.run(t)
+		log := t.OpenLog(it.key, nil)
+		err = it.run(t)
+		failed = ""
 		switch {
 		case errors.Is(err, interrupt.ErrInterrupted):
 			fmt.Fprintln(ui.Err)
 		case err != nil:
 			ui.PrintError(err)
+			failed = it.label + " failed (see above)."
+			if log != nil {
+				failed = it.label + " failed. The whole output: " + log.Rel
+			}
 		}
+		log.Close(err)
 		ui.Pause()
 		if it.key == "update" && err == nil {
 			return t.Restart()
@@ -90,9 +106,15 @@ func Run(t *commands.Tool) error {
 	}
 }
 
-// pick draws the menu and returns the chosen action, or quit. A nil item with quit unset means draw it again.
-func pick(t *commands.Tool) (*item, bool) {
-	ui.Clear()
+// pick draws the menu, on a cleared screen or under what's there, and returns the chosen action, or quit. A nil item
+// with quit unset means draw it again. Esc and Ctrl-C quit; any other error from the list is returned, not taken for
+// a Quit nobody chose.
+func pick(t *commands.Tool, clear bool) (*item, bool, error) {
+	if clear {
+		ui.Clear()
+	} else {
+		fmt.Fprintln(ui.Out)
+	}
 	fmt.Fprintf(ui.Out, "%s  %s\n\n", ui.Bold("Deploy"), envfile.Get(t.P.EnvFile(), "DOMAIN"))
 	lines := status.Lines(t.P, t.S, t.Env)
 
@@ -113,11 +135,16 @@ func pick(t *commands.Tool) (*item, bool) {
 		}
 		options = append(options, huh.NewOption("Quit", -1))
 		field := huh.NewSelect[int]().Options(options...).Value(&choice).Height(len(options) + 1)
-		// Esc and Ctrl-C quit too.
-		if err := ui.RunField(field); err != nil || choice < 0 {
-			return nil, true
+		if err := ui.RunField(field); err != nil {
+			if errors.Is(err, interrupt.ErrInterrupted) {
+				return nil, true, nil
+			}
+			return nil, false, err
 		}
-		return &items[choice], false
+		if choice < 0 {
+			return nil, true, nil
+		}
+		return &items[choice], false, nil
 	}
 
 	rule := ui.Dim("─────────────────────────────────────────────────────")
@@ -137,17 +164,18 @@ func pick(t *commands.Tool) (*item, bool) {
 	}
 	fmt.Fprintf(ui.Out, "  %s\n\n", rule)
 
+	// Ctrl-C and Ctrl-D quit.
 	choice, err := ui.ReadLine("Choose: ")
 	if err != nil {
-		return nil, true
+		return nil, true, nil
 	}
 	switch choice {
 	case "0", "q", "Q":
-		return nil, true
+		return nil, true, nil
 	}
 	var n int
 	if _, err := fmt.Sscan(choice, &n); err != nil || n < 1 || n > len(items) {
-		return nil, false
+		return nil, false, nil
 	}
-	return &items[n-1], false
+	return &items[n-1], false, nil
 }

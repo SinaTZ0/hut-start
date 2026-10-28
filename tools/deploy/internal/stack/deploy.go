@@ -43,8 +43,8 @@ func (s *Stack) Deploy(env *envfile.Settings) error {
 	ui.Step("Building")
 	var log bytes.Buffer
 	build := s.Command(nil, "build")
-	build.Stdout = io.MultiWriter(os.Stdout, &log)
-	build.Stderr = io.MultiWriter(os.Stderr, &log)
+	build.Stdout = io.MultiWriter(ui.Out, &log)
+	build.Stderr = io.MultiWriter(ui.Err, &log)
 	if err := interrupt.Check(build.Run()); err != nil {
 		if err == interrupt.ErrInterrupted {
 			return err
@@ -196,7 +196,7 @@ func (s *Stack) RolloutApp() error {
 		return WaitContainer(newID, 180*time.Second)
 	}); err != nil {
 		logs := Docker(nil, "logs", "--tail", "30", newID)
-		logs.Stdout, logs.Stderr = os.Stderr, os.Stderr
+		logs.Stdout, logs.Stderr = ui.Err, ui.Err
 		_ = logs.Run()
 		_ = Docker(nil, "rm", "-f", newID).Run()
 		ui.Warn("The new app didn't turn healthy (its last log lines are above), so it was removed: the old one still serves.")

@@ -5,9 +5,10 @@
 !.env.production.example
 /node_modules/
 
-# Production server state (deploy/deploy.sh): certificates, private keys and database dumps never belong in git.
+# Production server state (deploy/deploy.sh): certificates, private keys, database dumps and its logs never belong in git.
 /certs/
 /backups/
+/deploy/logs/
 *.key
 *.pfx
 # What the Bash deploy script downloaded for itself (gum), left on servers set up before the deploy tool.

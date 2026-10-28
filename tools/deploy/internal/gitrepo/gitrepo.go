@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"deploy/internal/interrupt"
+	"deploy/internal/ui"
 )
 
 func output(root string, args ...string) (string, error) {
@@ -17,10 +18,10 @@ func output(root string, args ...string) (string, error) {
 	return strings.TrimSpace(string(out)), err
 }
 
-// run runs git with its output on the terminal.
+// run runs git with its output on the terminal (and in the action's log).
 func run(root string, args ...string) error {
 	cmd := exec.CommandContext(interrupt.Context(), "git", append([]string{"-C", root}, args...)...)
-	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
+	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, ui.Out, ui.Err
 	return interrupt.Check(cmd.Run())
 }
 
@@ -79,9 +80,9 @@ func Behind(root string) (int, string) {
 	return n, upstream
 }
 
-// Clone clones url into target, with git's progress on the terminal.
+// Clone clones url into target, with git's output on the terminal.
 func Clone(url, target string) error {
 	cmd := exec.CommandContext(interrupt.Context(), "git", "clone", url, target)
-	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
+	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, ui.Out, ui.Err
 	return interrupt.Check(cmd.Run())
 }

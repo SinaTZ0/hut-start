@@ -20,6 +20,8 @@ var (
 	TUI   bool
 	color bool
 
+	// Out and Err are where the tool and the commands it runs print. While an action runs they also write to its log
+	// file (runlog), so a command given them gets a pipe rather than the terminal, and prints as it would to a file.
 	Out io.Writer = os.Stdout
 	Err io.Writer = os.Stderr
 )
@@ -77,6 +79,9 @@ func Step(format string, args ...any) {
 func OK(format string, args ...any) {
 	fmt.Fprintf(Out, "%s %s\n", Green("✓"), sprintf(format, args...))
 }
+
+// Private prints a line to the terminal only, never to a log file: a password that's shown once.
+func Private(format string, args ...any) { fmt.Fprintln(os.Stdout, sprintf(format, args...)) }
 
 // Warn reports something that needs attention, on stderr.
 func Warn(format string, args ...any) {

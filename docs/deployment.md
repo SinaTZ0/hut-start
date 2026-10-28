@@ -78,8 +78,12 @@ turns colours off.
 
 **Closing the SSH connection.** Whatever runs on the connection's terminal ends with it, a deploy halfway included.
 So the menu (`deploy/deploy.sh` without a command, on a terminal) opens in a tmux window, one per checkout, which
-outlives the connection. Quit closes the window; if the tool fails instead, a shell stays with the error on screen,
-until you type `exit`.
+outlives the connection. Quit closes the window; if the tool fails instead, or you quit right after an action failed,
+a shell stays with the error on screen, until you type `exit`. After a failed action the menu is drawn under the
+error rather than over it. The window runs on the tool's own tmux server (`tmux -L deploy`, set up by
+`deploy/tmux.conf`, so your own tmux settings don't apply to it or it to them): it keeps 100,000 lines, the mouse wheel
+scrolls back (`q` or scrolling to the bottom ends it), dragging copies to your computer's clipboard where the terminal
+allows it, and Shift-drag is the terminal's own selection.
 A deploy started from the menu goes on to the end after the connection drops, and running `deploy/deploy.sh` again
 reattaches to the window. `Ctrl-b d` leaves it on purpose. A command (`deploy/deploy.sh update`) runs directly, as
 cron and scripts need, so it stops with the connection; run a long one from the menu, or inside the window. A command
@@ -88,6 +92,15 @@ each time it opens: install it (with the server's package manager, through `sudo
 case it runs directly. When a deploy does stop halfway, a build or migration that's cut off
 changes nothing, but one cut off while swapping in the new app can leave the old and the new app both running, until
 Apply runs again.
+
+**Logs of each action.** Every action that changes something, from the menu or as a command, cron's backups
+included, writes all it prints, its commands' output included, to `deploy/logs/<date>-<time>-<action>.log`: plain
+text, each line with its time, readable only by the server account that ran it. An Update's build and swap, which the
+pulled tool runs, go in the Update's file. A failure names its file under the error; `less deploy/logs/<file>` shows
+it, and `scp` copies it off the server. The newest 100 are kept. Status and Logs only look, so they keep none, and the
+database browser's password is shown on screen but never written to a log. While an action logs, the commands it runs
+print to the log and the terminal through a pipe, so Docker and git show plain lines instead of their redrawn
+progress.
 
 **How it's built.** The tool is a Go program in `tools/deploy/` (one package per area: settings, `.env`, the stack,
 certificates, backups, the status lines, the menu). It's built into a static binary per architecture,
