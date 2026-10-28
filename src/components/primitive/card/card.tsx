@@ -122,10 +122,11 @@ export type CardMediaProps = ComponentProps<"div"> & VariantProps<typeof cardMed
 /**
  * The `overflow-hidden` frame for a card's image, flush with the card's top corners when it comes first.
  * Size the frame (`aspect-video`, a width in a row card); the image fills it. Use `fit="top"` or `fit="contain"` for
- * images that contain text, so the poster's own title survives.
+ * images that contain text, so the poster's own title survives. Outside a card, `frame="inset"` rounds the frame's own
+ * corners.
  */
-function CardMedia({ className, fit, ...props }: CardMediaProps) {
-  return <div data-slot="card-media" {...props} className={cn(cardMediaVariants({ fit }), className)} />;
+function CardMedia({ className, fit, frame, ...props }: CardMediaProps) {
+  return <div data-slot="card-media" {...props} className={cn(cardMediaVariants({ fit, frame }), className)} />;
 }
 
 /**

@@ -202,6 +202,15 @@ export const MediaFit: Story = {
   ),
 };
 
+/** A frame outside a card, as in the home page's story rows: `inset` rounds its own corners. */
+export const MediaInset: Story = {
+  render: () => (
+    <CardMedia frame="inset" className="aspect-photo w-54">
+      <img src={placeholderImage} alt="تصویر نمونه" />
+    </CardMedia>
+  ),
+};
+
 export const WithFooter: Story = {
   render: (args) => (
     <Card {...args} className="max-w-sm">

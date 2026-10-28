@@ -23,7 +23,17 @@ function fitFor(img: HTMLImageElement): "cover" | "contain" | undefined {
  * loaded, an image whose shape nearly matches the frame fills it instead. The frame's shape changes with the layout,
  * so the choice is made again whenever the frame resizes. Before hydration every image is whole.
  */
-export function FeedMedia({ src, className, children }: { src: string; className?: string; children?: ReactNode }) {
+export function FeedMedia({
+  src,
+  frame,
+  className,
+  children,
+}: {
+  src: string;
+  frame?: "bleed" | "inset";
+  className?: string;
+  children?: ReactNode;
+}) {
   const imgRef = useRef<HTMLImageElement>(null);
   const [fit, setFit] = useState<"cover" | "contain">("contain");
 
@@ -37,7 +47,7 @@ export function FeedMedia({ src, className, children }: { src: string; className
   }, []);
 
   return (
-    <CardMedia fit={fit} className={className}>
+    <CardMedia fit={fit} frame={frame} className={className}>
       {/* Hotlinked from the old site; no referrer, so its server never sees where it's shown. */}
       {fit === "contain" && <CardMediaBackdrop src={src} loading="lazy" referrerPolicy="no-referrer" />}
       <img

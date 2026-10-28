@@ -1,18 +1,6 @@
-import { ArrowLeftIcon, BellIcon, ClockIcon } from "lucide-react";
+import { ArrowLeftIcon, BellIcon } from "lucide-react";
 import { useState } from "react";
 
-import { Badge } from "#/components/primitive/badge/badge";
-import {
-  Card,
-  CardBody,
-  CardCall,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardKicker,
-  CardTitle,
-} from "#/components/primitive/card/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/primitive/tabs/tabs";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
@@ -22,7 +10,7 @@ import type { FeedItem, HomeFeed } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { ALL_NOTICES_HREF, NEWS_CATEGORIES } from "../content";
 import { daysFromToday, isoToDate, type JDate } from "../semester";
-import { FeedMedia } from "./feed-media";
+import { FeedList, FeedRow } from "./feed-row";
 
 /*===== Constants =====*/
 
@@ -47,82 +35,6 @@ const NOTICE_TABS: { value: NoticeTab; title: () => string; more: () => string; 
     href: NEWS_CATEGORIES[category].moreHref,
   })),
 ];
-
-/*===== Story =====*/
-
-/** A news card: photo, category, title, then the date and the call. The featured one sits beside its photo and adds
- * its summary. */
-function Story({ item, featured = false }: { item: FeedItem; featured?: boolean }) {
-  const text = (
-    <>
-      <CardHeader>
-        <CardKicker>{NEWS_CATEGORIES[item.category].title()}</CardKicker>
-        <CardTitle>
-          <h3>{item.title}</h3>
-        </CardTitle>
-      </CardHeader>
-      {featured && item.summary && (
-        <CardContent>
-          <CardDescription lines="3">{item.summary}</CardDescription>
-        </CardContent>
-      )}
-      <CardFooter>
-        {item.publishedOn && (
-          <time dateTime={item.publishedOn}>
-            <ClockIcon aria-hidden />
-            {formatDate(isoToDate(item.publishedOn), { day: "numeric", month: "long", year: "numeric" })}
-          </time>
-        )}
-        <CardCall>{m.home_news_continue()}</CardCall>
-      </CardFooter>
-    </>
-  );
-
-  return (
-    <Card
-      render={<SiteLink href={item.url} />}
-      size={featured ? "lg" : "default"}
-      orientation={featured ? "horizontal" : "vertical"}
-      className={featured ? "sm:col-span-2" : undefined}
-    >
-      {item.imageUrl && (
-        <FeedMedia
-          src={item.imageUrl}
-          className={featured ? "aspect-video sm:aspect-auto sm:min-h-70 sm:flex-1" : "aspect-wide"}
-        >
-          {featured && <Badge variant="media">{m.home_news_featured()}</Badge>}
-        </FeedMedia>
-      )}
-      {featured ? <CardBody className="justify-center sm:flex-1">{text}</CardBody> : text}
-    </Card>
-  );
-}
-
-/*===== Headline =====*/
-
-/** A story after the first three: its photo as a thumbnail beside the title and the date, without a call. */
-function Headline({ item }: { item: FeedItem }) {
-  return (
-    <Card render={<SiteLink href={item.url} />} size="sm" orientation="horizontal" className="h-full">
-      {item.imageUrl && <FeedMedia src={item.imageUrl} className="aspect-wide sm:aspect-square sm:w-28" />}
-      <CardBody className="justify-center">
-        <CardHeader>
-          <CardKicker>
-            <span>{NEWS_CATEGORIES[item.category].title()}</span>
-            {item.publishedOn && (
-              <time dateTime={item.publishedOn}>
-                {formatDate(isoToDate(item.publishedOn), { day: "numeric", month: "long", year: "numeric" })}
-              </time>
-            )}
-          </CardKicker>
-          <CardTitle>
-            <h3 className="line-clamp-3">{item.title}</h3>
-          </CardTitle>
-        </CardHeader>
-      </CardBody>
-    </Card>
-  );
-}
 
 /*===== Notices =====*/
 
@@ -242,7 +154,7 @@ function Notices({ today, notices }: { today: JDate; notices: HomeFeed["notices"
 
 /*===== News Section =====*/
 
-/** The featured story, two more as cards and the rest as headlines on the start side; the notices panel on the end
+/** The stories as a section front on the start side, the featured one first and larger; the notices panel on the end
  * side. */
 export function NewsSection({
   today,
@@ -253,10 +165,6 @@ export function NewsSection({
   news: FeedItem[];
   notices: HomeFeed["notices"];
 }) {
-  const [featured, ...rest] = news;
-  const stories = rest.slice(0, 2);
-  const headlines = rest.slice(2);
-
   return (
     <section aria-labelledby="home-news">
       <SectionHead
@@ -268,14 +176,21 @@ export function NewsSection({
         more={{ label: m.home_news_more(), href: NEWS_CATEGORIES.university.moreHref }}
       />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:col-span-2">
-          {featured && <Story item={featured} featured />}
-          {stories.map((item) => (
-            <Story key={item.id} item={item} />
-          ))}
-          {headlines.map((item) => (
-            <Headline key={item.id} item={item} />
-          ))}
+        <div className="lg:col-span-2">
+          <FeedList>
+            {news.map((item, index) =>
+              index === 0 ? (
+                <FeedRow key={item.id} item={item} label={m.home_news_featured()} lead media="aspect-2/1 sm:w-1/2" />
+              ) : (
+                <FeedRow
+                  key={item.id}
+                  item={item}
+                  label={NEWS_CATEGORIES[item.category].title()}
+                  media="aspect-photo w-26 sm:w-54"
+                />
+              ),
+            )}
+          </FeedList>
         </div>
         <Notices today={today} notices={notices} />
       </div>

@@ -168,6 +168,15 @@ const twMediaFit = defineStyles({
   },
 });
 
+// `bleed` is a frame inside a card, whose corners the card clips; `inset` is a frame standing on the page by itself (a
+// story row's photo), so it rounds its own corners.
+const twMediaFrame = defineStyles({
+  bleed: {},
+  inset: {
+    geometry: "rounded-sm",
+  },
+});
+
 /*===== Class Composition =====*/
 
 const cardVariants = cva(joinStyles(twCardStyles), {
@@ -181,8 +190,9 @@ const cardVariants = cva(joinStyles(twCardStyles), {
 const cardMediaVariants = cva(joinStyles(twMediaStyles), {
   variants: {
     fit: composeStyles(twMediaFit),
+    frame: composeStyles(twMediaFrame),
   },
-  defaultVariants: { fit: "cover" },
+  defaultVariants: { fit: "cover", frame: "bleed" },
 });
 
 const cardDescriptionVariants = cva(joinStyles(twDescriptionStyles), {
@@ -218,4 +228,5 @@ export {
   twSize,
   twOrientation,
   twMediaFit,
+  twMediaFrame,
 };
