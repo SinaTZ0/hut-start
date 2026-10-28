@@ -490,13 +490,15 @@
    name in Persian, across from it in English, where the name stands on the photo's flag. Wide screens only: on
    phones the name fills the width, so the hero stays the photograph.
    The drawing keeps to the sky and the peaks, and fades out by the line of the buttons: over the trees and the
-   buildings, lines on a busy photo read as haze. Below it the photo is whole, lifted a little in colour, so the hero
-   keeps the campus's daylight. */
+   buildings, lines on a busy photo read as haze. Below it the photo is whole.
+   On every screen the photo is toned down a little: at full colour the trees read neon green and drowned out the
+   gold of the name and the buttons. */
 @utility hero-photo-fade {
+  filter: saturate(0.85);
+
   @variant md {
     mask-image:
       linear-gradient(to left, rgb(0 0 0 / 15%) 10%, #000 55%), linear-gradient(to bottom, transparent 30%, #000 48%);
-    filter: saturate(1.12);
   }
 }
 
