@@ -63,6 +63,10 @@ export function formatDate(
 /**
  * Formats a span of dates for the current locale («۲۴ تا ۲۸ آذر» style in Persian, "December 15 – 19" in English),
  * leaving out what the two ends share. Day and month by default.
+ *
+ * The spaces around the dash are always plain spaces: newer locale data (CLDR 48, in Node 24) sets thin spaces there,
+ * older data (today's browsers) plain ones, so the server's text didn't match the browser's and React re-rendered it on
+ * hydration.
  */
 export function formatDateRange({
   start,
@@ -80,7 +84,7 @@ export function formatDateRange({
     format = new Intl.DateTimeFormat(locale, options);
     dateFormats.set(key, format);
   }
-  return format.formatRange(start, end);
+  return format.formatRange(start, end).replaceAll(" ", " ");
 }
 
 /**
