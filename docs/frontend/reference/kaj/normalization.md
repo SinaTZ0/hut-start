@@ -97,8 +97,8 @@ named styles: `text-<name>` sets size, line height and weight together.
 | Kaj                              | Becomes                                      |
 | -------------------------------- | -------------------------------------------- |
 | `space-2xs/xs/s/m/l` 4/8/16/24/40 | Tailwind `1 / 2 / 4 / 6 / 10`               |
-| `space-xl` clamp(56 → 96px)       | `--spacing-section` (`py-section`)          |
-| `roomy` = xl + m, achievements gap = xl + s **→** | one `--spacing-section-lg` (xl + 24px) |
+| `space-xl` clamp(56 → 96px) **→** | `--spacing-section` clamp(48 → 80px) (`py-section`): two meet at every band |
+| `roomy` = xl + m, achievements gap = xl + s **→** | dropped: every section takes `py-section` |
 | `gutter` clamp(16 → 40px)         | `--spacing-gutter` (`px-gutter`)            |
 | `edge` clamp(16 → 72px)           | `--spacing-edge` (full-bleed header, hero)  |
 | `--max` 1240px                    | `--container-site` 77.5rem (was 75rem)      |

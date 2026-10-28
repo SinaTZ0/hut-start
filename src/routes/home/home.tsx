@@ -41,7 +41,7 @@ export const Route = createFileRoute("/_site-layout/")({
 
 /*===== Styles =====*/
 
-// The centred content column every section uses. The card-heavy middle run gets more air (`py-section-lg`).
+// The centred content column every section uses.
 const columnClasses = "mx-auto max-w-site px-gutter";
 
 /*===== Home =====*/
@@ -75,15 +75,15 @@ function Home() {
       <Glance spotlight={feed.spotlight} />
       <Arc tone="band" />
 
-      <div className={`${columnClasses} pt-after-arc pb-section-lg`}>
+      <div className={`${columnClasses} pt-after-arc pb-section`}>
         <Achievements items={feed.achievements} />
       </div>
       <div className="border-y bg-background-alt">
-        <div className={`${columnClasses} py-section-lg`}>
+        <div className={`${columnClasses} py-section`}>
           <Learning items={feed.learning} />
         </div>
       </div>
-      <div className={`${columnClasses} py-section-lg`}>
+      <div className={`${columnClasses} py-section`}>
         <Welcome />
       </div>
     </>

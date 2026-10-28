@@ -83,12 +83,11 @@
 
   /*------ Layout ------*/
   /* `max-w-site` is the 1240px content width. `px-gutter` pads it; full-bleed bands (header, hero) keep only
-     `px-edge`. `py-section` separates sections, `py-section-lg` the roomy ones (achievements). */
+     `px-edge`. `py-section` separates sections: two of them meet at each band, so it stays below Kaj's 96px. */
   --container-site: 77.5rem;
   --spacing-gutter: clamp(1rem, 4vw, 2.5rem);
   --spacing-edge: clamp(1rem, 4vw, 4.5rem);
-  --spacing-section: clamp(3.5rem, 7vw, 6rem);
-  --spacing-section-lg: calc(var(--spacing-section) + 1.5rem);
+  --spacing-section: clamp(3rem, 6vw, 5rem);
   /* The phone tab bar fixed to the bottom; the page keeps this much room under the footer for it */
   --spacing-tab-bar: 4rem;
 
