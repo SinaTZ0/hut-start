@@ -65,6 +65,10 @@ Back below). **Settings** says whether `.env` is complete and whether the runnin
 or what else does. **pgweb** appears only while the database browser is open, with the time it has left (Database
 Browser below). Before setup, only Set up is available; after it, everything else.
 
+While the menu waits, its status is checked again and redrawn in place when you attach to its tmux window (Closing the
+SSH connection below), every 5 minutes, and when you press `r`; under the box is when it was last checked. In the
+plain menu (`NO_TUI=1`), Enter alone draws it again.
+
 Every action is also a command, for cron and scripts: `deploy/deploy.sh help` lists them. Without a terminal the tool
 never asks: it uses the flags or the defaults, or stops and names the flag it needs. It exits 0 when done, 1 when an
 action fails (or `env --check` finds a problem), 2 for a command line it doesn't understand and 130 when Ctrl-C stops

@@ -4,8 +4,10 @@
 package menu
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"charm.land/huh/v2"
 
@@ -116,12 +118,17 @@ func pick(t *commands.Tool, clear bool) (*item, bool, error) {
 		fmt.Fprintln(ui.Out)
 	}
 	fmt.Fprintf(ui.Out, "%s  %s\n\n", ui.Bold("Deploy"), envfile.Get(t.P.EnvFile(), "DOMAIN"))
+	// A signal from while an action ran is answered by the lines checked now.
+	select {
+	case <-interrupt.Attached():
+	default:
+	}
 	lines := status.Lines(t.P, t.S, t.Env)
 
 	if ui.TUI {
 		// The status first, boxed, and the actions in an arrow-key list under it. Only the available ones are listed.
-		fmt.Fprintln(ui.Out, ui.Box(lines))
-		fmt.Fprintln(ui.Out)
+		updates, refresh, stop := watchStatus(t, lines)
+		defer stop()
 		var options []huh.Option[int]
 		choice := -1
 		for i, it := range items {
@@ -135,7 +142,8 @@ func pick(t *commands.Tool, clear bool) (*item, bool, error) {
 		}
 		options = append(options, huh.NewOption("Quit", -1))
 		field := huh.NewSelect[int]().Options(options...).Value(&choice).Height(len(options) + 1)
-		if err := ui.RunField(field); err != nil {
+		above := ui.Above{Text: drawStatus(lines, time.Now(), false), Updates: updates, Keys: map[string]func(){"r": refresh}}
+		if err := ui.RunFieldUnder(field, above); err != nil {
 			if errors.Is(err, interrupt.ErrInterrupted) {
 				return nil, true, nil
 			}
@@ -164,8 +172,8 @@ func pick(t *commands.Tool, clear bool) (*item, bool, error) {
 	}
 	fmt.Fprintf(ui.Out, "  %s\n\n", rule)
 
-	// Ctrl-C and Ctrl-D quit.
-	choice, err := ui.ReadLine("Choose: ")
+	// Ctrl-C and Ctrl-D quit; Enter alone draws the menu again, with the status checked again.
+	choice, err := ui.ReadLine("Choose (Enter checks the status again): ")
 	if err != nil {
 		return nil, true, nil
 	}
@@ -178,4 +186,65 @@ func pick(t *commands.Tool, clear bool) (*item, bool, error) {
 		return nil, false, nil
 	}
 	return &items[n-1], false, nil
+}
+
+/*===== The Live Status =====*/
+
+// refreshEvery is how often the status is checked again while the menu waits.
+const refreshEvery = 5 * time.Minute
+
+// watchStatus checks the status lines again while the list waits, and sends the box drawn anew: on someone attaching
+// to the tmux window (deploy/tmux.conf), every few minutes, and when refresh is called (r). Otherwise a menu that
+// waited in its window since yesterday would still show yesterday: commits pushed since, a backup that ran. stop ends
+// it and closes updates. lines are the ones drawn first.
+func watchStatus(t *commands.Tool, lines []string) (updates <-chan string, refresh, stop func()) {
+	out := make(chan string)
+	asked := make(chan struct{}, 1)
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		defer close(out)
+		ticker := time.NewTicker(refreshEvery)
+		defer ticker.Stop()
+		send := func(text string) bool {
+			select {
+			case out <- text:
+				return true
+			case <-ctx.Done():
+				return false
+			}
+		}
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+			case <-asked:
+			case <-interrupt.Attached():
+			}
+			// The old box stays while the checks run (a few seconds: a git fetch, a request to each domain).
+			if !send(drawStatus(lines, time.Time{}, true)) {
+				return
+			}
+			lines = status.Lines(t.P, t.S, t.Env)
+			if !send(drawStatus(lines, time.Now(), false)) {
+				return
+			}
+		}
+	}()
+	refresh = func() {
+		select {
+		case asked <- struct{}{}:
+		default:
+		}
+	}
+	return out, refresh, cancel
+}
+
+// drawStatus is the box of status lines with when they were checked under it, or that they're being checked again.
+func drawStatus(lines []string, at time.Time, checking bool) string {
+	note := "Checked at " + at.Format("15:04") + " · r checks again"
+	if checking {
+		note = "Checking again…"
+	}
+	return ui.Box(lines) + "\n  " + ui.Dim(note) + "\n"
 }

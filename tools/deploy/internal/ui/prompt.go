@@ -160,21 +160,23 @@ func Pause() {
 
 /*===== huh =====*/
 
-// RunField shows a huh field as its own form, for the menu's list.
-func RunField(field huh.Field) error { return run(field) }
-
 // ReadLine is a plain line prompt, for the menu without huh.
 func ReadLine(prompt string) (string, error) { return readLine(prompt) }
 
 // run shows one field as its own form. Esc gives up on it, like Ctrl-C.
 func run(field huh.Field) error {
-	keys := huh.NewDefaultKeyMap()
-	keys.Quit = key.NewBinding(key.WithKeys("ctrl+c", "esc"))
-	err := huh.NewForm(huh.NewGroup(field)).WithKeyMap(keys).WithShowHelp(false).RunWithContext(interrupt.Context())
+	err := huh.NewForm(huh.NewGroup(field)).WithKeyMap(keyMap()).WithShowHelp(false).RunWithContext(interrupt.Context())
 	if errors.Is(err, huh.ErrUserAborted) || interrupt.Happened() {
 		return interrupt.ErrInterrupted
 	}
 	return err
+}
+
+// keyMap is huh's keys, with Esc giving up like Ctrl-C.
+func keyMap() *huh.KeyMap {
+	keys := huh.NewDefaultKeyMap()
+	keys.Quit = key.NewBinding(key.WithKeys("ctrl+c", "esc"))
+	return keys
 }
 
 // huh clears a prompt once it's answered; this leaves the question and its answer in the scrollback.
