@@ -2,6 +2,13 @@ import { z } from "zod";
 
 import { normalizePersianText, persianText } from "#/lib/persian-text";
 import { SOURCE_ORIGIN } from "#/orpc/home-feed/constants";
+import type {
+  ArticleBlock,
+  ArticleBody,
+  ArticleInline,
+  ArticleParagraph,
+  ArticleText,
+} from "#/orpc/home-feed/article-body";
 import type { RawArticle, RawItem } from "#/orpc/home-feed/parse.server";
 
 /*===== Old Site URLs =====*/
@@ -51,23 +58,15 @@ const imageUrlSchema = z
 
 /*===== Text =====*/
 const CUT_SHORT = /(\.{3}|…)$/;
-const SUMMARY_MAX_LENGTH = 300;
 
 /** Whether the old homepage cut the title short; the full one is on the article's page. */
 export function isCutShort(title: string): boolean {
   return CUT_SHORT.test(title);
 }
 
-/** A lead paragraph short enough for a card, cut at a word and marked with an ellipsis. */
-function shortSummary(value: string): string {
-  if (value.length <= SUMMARY_MAX_LENGTH) return value;
-  const cut = value.slice(0, SUMMARY_MAX_LENGTH);
-  return `${cut.slice(0, cut.lastIndexOf(" ")).trimEnd()}…`;
-}
-
 // The old site's editors type Latin digits into Persian text («سال 1405», «نیمسال 4051»), where the rest of the page has
 // Persian ones. Digits inside a Latin word or code (B2B, IMG_9535) are left as they are.
-const LATIN_NUMBER = /(?<![A-Za-z_])[0-9]+(?![A-Za-z_])/g;
+const LATIN_NUMBER = /(?<![A-Za-z_0-9])[0-9]+(?![A-Za-z_])/g;
 
 /** `value` with its standalone Latin numbers in Persian digits. */
 function persianDigits(value: string): string {
@@ -85,6 +84,7 @@ const titleSchema = persianText()
 // they're noise, and some draw as an empty box in the site's font.
 const PICTOGRAPHS = /[\p{Extended_Pictographic}\u{FE0F}\u{200D}]/gu;
 
+// Stored whole: the article page shows it as the lead, and cards cut it short (`mapper.ts`).
 const summarySchema = z
   .string()
   .nullable()
@@ -92,7 +92,7 @@ const summarySchema = z
     const text = value
       ? persianDigits(normalizePersianText(value.replace(PICTOGRAPHS, "").replace(/\s{2,}/g, " ")))
       : "";
-    return text ? shortSummary(text) : null;
+    return text || null;
   });
 
 /*===== Items =====*/
@@ -124,15 +124,110 @@ export function parseFeedItem(raw: RawItem): { ok: true; item: FeedItemInput } |
   return { ok: true, item: { ...rest, url: href, title, cutShort: isCutShort(title), imageUrl: image } };
 }
 
-const articleSchema = itemSchema.omit({ href: true });
+/*===== Article Body =====*/
+// The body keeps the editors' emoji: in running text they're the channel's tone, not noise. Photos and files must be
+// on the old site, like the cards' (they're hotlinked); links in the text may go anywhere on the web, but only there.
 
-export type FeedArticleInput = Omit<FeedItemInput, "url" | "cutShort">;
+const LINK_PROTOCOLS = new Set(["https:", "http:", "mailto:", "tel:"]);
+
+/** A text run normalized like the rest of the page, keeping the spaces at its ends that part it from its neighbours. */
+function cleanRun(node: ArticleText): ArticleText | null {
+  const marks = node.marks?.filter((mark) => {
+    if (mark.type !== "link") return true;
+    try {
+      return LINK_PROTOCOLS.has(new URL(mark.attrs.href).protocol);
+    } catch {
+      return false;
+    }
+  });
+  // A link's own text is often its address, whose digits stay as typed.
+  const linked = marks?.some((mark) => mark.type === "link") ?? false;
+  const inner = normalizePersianText(node.text);
+  const text = `${/^\s/.test(node.text) ? " " : ""}${linked ? inner : persianDigits(inner)}${/\s$/.test(node.text) && inner ? " " : ""}`;
+  if (!text) return null;
+  return { type: "text", text, ...(marks && marks.length > 0 ? { marks } : {}) };
+}
+
+function cleanInline(nodes: ArticleInline[] | undefined): ArticleInline[] {
+  return (nodes ?? []).flatMap((node): ArticleInline[] => {
+    if (node.type !== "text") return [node];
+    const run = cleanRun(node);
+    return run ? [run] : [];
+  });
+}
+
+function cleanParagraph(paragraph: ArticleParagraph): ArticleParagraph {
+  return { type: "paragraph", content: cleanInline(paragraph.content) };
+}
+
+/** A photo or file on the old site, as a full-size https URL; null for anything else. */
+function sourceFile(value: string): string | null {
+  const url = sourceUrl(value);
+  if (!url || PLACEHOLDER_IMAGE.test(url.pathname)) return null;
+  url.searchParams.delete("width");
+  return url.href;
+}
+
+function cleanBlock(block: ArticleBlock): ArticleBlock | null {
+  switch (block.type) {
+    case "paragraph":
+      return cleanParagraph(block);
+    case "heading":
+      return { ...block, content: cleanInline(block.content) };
+    case "bulletList":
+    case "orderedList":
+      return {
+        ...block,
+        content: block.content.map((item) => ({ ...item, content: item.content.map(cleanParagraph) })),
+      };
+    case "table":
+      return {
+        ...block,
+        content: block.content.map((row) => ({
+          ...row,
+          content: row.content.map((cell) => ({ ...cell, content: cell.content.map(cleanParagraph) })),
+        })),
+      };
+    case "image": {
+      const src = sourceFile(block.attrs.src);
+      return src ? { ...block, attrs: { ...block.attrs, src, alt: normalizePersianText(block.attrs.alt) } } : null;
+    }
+    case "gallery": {
+      const images = block.attrs.images.flatMap((image) => {
+        const src = sourceFile(image.src);
+        return src ? [{ src, alt: normalizePersianText(image.alt) }] : [];
+      });
+      return images.length > 0 ? { type: "gallery", attrs: { images } } : null;
+    }
+    case "attachment": {
+      const href = sourceUrl(block.attrs.href)?.href;
+      const label = persianDigits(normalizePersianText(block.attrs.label));
+      return href ? { ...block, attrs: { ...block.attrs, href, label } } : null;
+    }
+  }
+}
+
+/** The body with its text normalized and anything pointing off the old site (photos, files) or nowhere left out. */
+function cleanBody(blocks: ArticleBlock[]): ArticleBody {
+  return { type: "doc", content: blocks.map(cleanBlock).filter((block) => block !== null) };
+}
+
+/*===== Article Page =====*/
+const articleSchema = itemSchema.omit({ href: true }).extend({
+  source: z
+    .string()
+    .nullable()
+    .transform((value) => (value ? persianDigits(normalizePersianText(value)) || null : null)),
+});
+
+export type FeedArticleInput = Omit<FeedItemInput, "url" | "cutShort"> & { body: ArticleBody; source: string | null };
 
 /** An article page's fields, checked and normalized, or null when the page doesn't have them. */
 export function parseFeedArticle(raw: RawArticle): FeedArticleInput | null {
-  const result = articleSchema.safeParse(raw);
+  const { body, ...fields } = raw;
+  const result = articleSchema.safeParse(fields);
   if (!result.success) return null;
 
   const { image, ...rest } = result.data;
-  return { ...rest, imageUrl: image };
+  return { ...rest, imageUrl: image, body: cleanBody(body) };
 }

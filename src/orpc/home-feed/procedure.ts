@@ -3,7 +3,7 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { ORPCError, os } from "@orpc/server";
 
 import { env } from "#/env.server";
-import { getHomeFeed } from "#/orpc/home-feed/service";
+import { getArticle, getHomeFeed } from "#/orpc/home-feed/service";
 import { runHomeFeedSync } from "#/orpc/home-feed/sync.server";
 import { base } from "#/orpc/implementer.server";
 import { provideDbMiddleware } from "#/orpc/middleware/db/db.middleware";
@@ -14,6 +14,18 @@ import { rateLimitMiddleware } from "#/orpc/middleware/rate-limit/rate-limit.mid
 export const getHomeFeedProcedure = base.homeFeed.get
   .use(provideDbMiddleware)
   .handler(({ context }) => getHomeFeed({ db: context.db }));
+
+/*===== Article =====*/
+// Public, like the home page that links to it.
+export const getArticleProcedure = base.homeFeed.article
+  .use(provideDbMiddleware)
+  .handler(async ({ context, input, errors }) => {
+    const result = await getArticle({ db: context.db, id: input.id });
+
+    if (result.kind === "not-found") throw errors.NOT_FOUND({ data: { errors: [], fields: {} } });
+
+    return result.article;
+  });
 
 /*===== Sync =====*/
 // Each call reads the old site, so it's limited well below the general policy. The secret is long and random, so the

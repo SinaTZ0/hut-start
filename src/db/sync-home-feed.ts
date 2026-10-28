@@ -1,13 +1,20 @@
 import { db } from "#/db/client.server";
 import { syncHomeFeed } from "#/orpc/home-feed/service";
-import { fetchSourcePage } from "#/orpc/home-feed/source.server";
+import { fetchSourcePage, measureSource } from "#/orpc/home-feed/source.server";
 
 /*===== Sync Home Feed =====*/
 // Reads hut.ac.ir's homepage into the home feed now, the same run the server's timer does (docs/backend/home-feed.md).
-// Run with `pnpm crawl:home`; `-- --refresh` reads every listed article's page again.
+// Run with `pnpm crawl:home`; `-- --refresh` reads every listed article's page again. Unlike the timer's runs, it reads
+// every article page it needs in one go, however many.
 
 const refresh = process.argv.includes("--refresh");
-const result = await syncHomeFeed({ db, fetchPage: fetchSourcePage, refresh });
+const result = await syncHomeFeed({
+  db,
+  fetchPage: fetchSourcePage,
+  measure: measureSource,
+  refresh,
+  maxPages: Number.POSITIVE_INFINITY,
+});
 
 if (result.kind === "source-failed") {
   console.error("The old homepage couldn't be read; the feed is unchanged.", result.error);

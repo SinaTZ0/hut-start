@@ -3,7 +3,7 @@ import { env } from "#/env.server";
 import { createLogger } from "#/lib/logger.server";
 import type { SyncSummary } from "#/orpc/home-feed/contract";
 import { syncHomeFeed } from "#/orpc/home-feed/service";
-import { fetchSourcePage } from "#/orpc/home-feed/source.server";
+import { fetchSourcePage, measureSource } from "#/orpc/home-feed/source.server";
 
 const log = createLogger("home-feed");
 
@@ -19,7 +19,7 @@ let inFlight: Promise<SyncSummary | null> | null = null;
 export function runHomeFeedSync({ refresh = false }: { refresh?: boolean } = {}): Promise<SyncSummary | null> {
   inFlight ??= (async () => {
     try {
-      const result = await syncHomeFeed({ db, fetchPage: fetchSourcePage, refresh });
+      const result = await syncHomeFeed({ db, fetchPage: fetchSourcePage, measure: measureSource, refresh });
       if (result.kind === "source-failed") {
         log.error({ err: result.error }, "home feed sync failed; the last good feed stays");
         return null;

@@ -2,11 +2,16 @@
 
 The home page's news, notices, achievements and events come from `homeFeed.get` (`src/orpc/home-feed/`). Until the
 cutover, editors keep publishing on the old site, so the feed **mirrors hut.ac.ir's homepage**. A sync reads it, stores
-what it shows, and the home page reads the stored copy. Images are hotlinked: the feed stores their URL on the old site
-and never copies the file.
+what it shows, and the home page reads the stored copy. Images and files are hotlinked: the feed stores their URL on the
+old site and never copies them.
 
-Only the source is temporary. The tables (`feed_article`, `feed_placement`), `homeFeed.get` and the home page are what
-an editor will write to after the cutover (see [Removing It](#removing-it)).
+Each article also gets a page here, `/articles/<id>` (`homeFeed.article`), where `<id>` is the old site's own ID for it.
+The sync reads the article's page on the old site and stores its body as Tiptap JSON (`article-body.ts`), the format
+the CMS's editor will write, so imported articles need no migration then. Once that's stored, the home page's card links
+to the page here instead of the old one.
+
+Only the source is temporary. The tables (`feed_article`, `feed_placement`), `homeFeed.get`, `homeFeed.article` and the
+pages are what an editor will write to after the cutover (see [Removing It](#removing-it)).
 
 ## How a Sync Runs
 
@@ -14,27 +19,37 @@ an editor will write to after the cutover (see [Removing It](#removing-it)).
 timer / homeFeed.sync / pnpm crawl:home
   → read https://hut.ac.ir/ (parse.server.ts)
   → check and normalize each item (validation.ts)
-  → read the page of each article that's new and needs one (at most 40 per run, 300 ms apart)
-  → one transaction: store the articles, replace every placement, delete articles nothing shows
+  → read the page of each article not read yet (at most 40 per timed run, 300 ms apart), measure its photos and files
+  → one transaction: store the articles, replace every placement
 ```
 
-- **A mirror, not an archive.** After a run the feed shows exactly what the old homepage showed. An article it dropped
-  is deleted.
+- **The home page mirrors, the pages stay.** After a run the home page shows exactly what the old homepage showed. An
+  article it dropped loses its placements but keeps its row, so a shared link to its page here keeps working. The
+  run's `removed` counts those articles.
 - **A failed run changes nothing.** If the homepage doesn't load, or any block is missing or has no valid item (the
   old site changed its layout), the run stops before writing and logs an error, which goes to the error viewer. The
   home page keeps the last good feed. The one exception is the occasion slider, which is `optional`: the editors take it
   down between occasions, so a run without it just clears the hero's poster.
-- **Article pages are read once.** The homepage cuts the titles of news, achievements and events short (`...`), and
-  shows no summary. Each such article's own page is read on the run that first sees it, for the full title, the lead
-  paragraph and the date. Later runs reuse what was stored. A page that fails to load is tried again on the next run.
-  An edit made on the old site after that shows only after a refresh (`pnpm crawl:home -- --refresh`, or
-  `{"refresh": true}` on the endpoint).
-- **Only the old site.** Links and images must be on `hut.ac.ir`; anything else is dropped. Text goes through
+- **Article pages are read once.** Every article's own page is read on the run that first sees it: for its body, the
+  full title (the homepage cuts titles short with `...`), the lead paragraph and the date. Its photos are measured
+  (their size lets the page reserve their space and tell a poster from a photo) and its files' sizes asked for. Later
+  runs reuse what was stored. A page that fails to load is tried again on the next run; one that loads without an
+  article in it is stored with an empty body and not asked for again. An edit made on the old site after that shows
+  only after a refresh (`pnpm crawl:home -- --refresh`, or `{"refresh": true}` on the endpoint).
+- **The body is cleaned on the way in** (`parseArticlePage`, then `validation.ts`). Only what the page draws is kept:
+  paragraphs, headings, lists, bold, links, photos, the photo set, files and simple tables (a header row and plain
+  cells). Word's styling is dropped. Posts copied from the university's Telegram channel are given structure: a ✳️ line
+  becomes a heading, a run of short ◀️ lines a list, the 🖋 line the article's source, and the channel's footer is
+  dropped. A first paragraph that repeats the title, and the lead (shown above the body), are left out. `**bold**` and
+  bare `*.hut.ac.ir` addresses become marks. Photos and files must be on the old site; links may go anywhere on the
+  web.
+- **Only the old site.** Card links, images and files must be on `hut.ac.ir`; anything else is dropped. Text goes through
   `normalizePersianText`, and its standalone Latin numbers become Persian digits («سال 1405» → «سال ۱۴۰۵»), like the
   rest of the page; digits inside a Latin word or code (B2B) stay. Emoji are removed from summaries, and the old site's
   placeholder image counts as no image. A change to this cleaning reaches stored articles whose page was already read
   only after a refresh.
-- **Persian only.** The old site's text is stored as `{ fa }` `LocalizedText`, so `/en` shows it in Persian.
+- **Persian only.** The old site's text is stored as `{ fa }` `LocalizedText`, so `/en` shows it in Persian. The
+  article page says so on `/en` and keeps the body right to left.
 
 ## Old Homepage Blocks
 
@@ -65,11 +80,11 @@ in headless screenshots. Set a normal Chrome user agent there; real browsers are
 
 ## Running It
 
-| Way                | When                                                                                                                              |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| The server's timer | Every `HOME_FEED_SYNC_MINUTES` (default 30). The first run is 30 seconds after start. `0` turns it off.                           |
-| `pnpm crawl:home`  | By hand, in development or on the server. Needs no server running and no secret. `-- --refresh` reads every article's page again. |
-| `homeFeed.sync`    | On demand over HTTP, with the secret. A call during a timed run joins it.                                                         |
+| Way                | When                                                                                                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The server's timer | Every `HOME_FEED_SYNC_MINUTES` (default 30). The first run is 30 seconds after start. `0` turns it off.                                                                |
+| `pnpm crawl:home`  | By hand, in development or on the server. Needs no server running and no secret. Reads every page it needs in one go. `-- --refresh` reads every article's page again. |
+| `homeFeed.sync`    | On demand over HTTP, with the secret. A call during a timed run joins it.                                                                                              |
 
 ```sh
 curl -X POST -H "Authorization: Bearer $HOME_FEED_SYNC_SECRET" https://<domain>/rpc/homeFeed/sync
@@ -101,4 +116,6 @@ At the cutover, when the new site's editors take over:
    `startHomeFeedSync()` call in `src/server.ts`.
 3. Remove both variables from `src/env.server.ts`, `.env.example`, `.env.production.example`, `compose.prod.yaml`,
    the deploy tool's settings registry (`tools/deploy/internal/settings/settings.go`) and `playwright.config.ts`.
-4. Keep the tables and `homeFeed.get`. Editors' tools write the same rows; a placement says where an article shows.
+4. Keep the tables, `homeFeed.get`, `homeFeed.article` and `article-body.ts`. Editors' tools write the same rows; a
+   placement says where an article shows. Articles written here have no old-site ID, so the page's address needs an ID
+   of their own then.

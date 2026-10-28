@@ -10,6 +10,7 @@ import { BLOCKS, parseArticlePage, parseHomePage } from "#/orpc/home-feed/parse.
 
 const homePage = readFileSync(new URL("fixtures/home.html", import.meta.url), "utf8");
 const articlePage = readFileSync(new URL("fixtures/article.html", import.meta.url), "utf8");
+const articleBodyPage = readFileSync(new URL("fixtures/article-body.html", import.meta.url), "utf8");
 
 describe("parseHomePage", () => {
   it("reads every block's items with their link, title, date and image, each once", () => {
@@ -71,6 +72,41 @@ describe("parseArticlePage", () => {
       publishedOn: "2026-10-25",
       image: "/image/journal/article?img_id=19148975&t=1792741339978",
       sourceAssetId: "19148970",
+      body: [],
+      source: null,
+    });
+  });
+
+  it("turns the body into the article page's blocks, the channel's markers into structure", () => {
+    const article = parseArticlePage(articleBodyPage);
+
+    // A description that only repeats the title isn't a lead; the body's first long paragraph is, without its dateline.
+    expect(article?.summary).toMatch(/^کلیه دانشجویان کارشناسی/);
+    expect(article?.source).toBe("روابط‌عمومی دانشگاه صنعتی همدان");
+    // The repeated title, the lead and the channel's footer are left out; the photo set comes last.
+    expect(article?.body.map((block) => block.type)).toEqual([
+      "image",
+      "heading",
+      "bulletList",
+      "table",
+      "paragraph",
+      "attachment",
+      "gallery",
+    ]);
+    expect(article?.body[3]).toMatchObject({
+      content: [
+        { content: [{ type: "tableHeader" }, { type: "tableHeader" }] },
+        { content: [{ type: "tableCell" }, {}] },
+      ],
+    });
+    // Telegram's `**bold**` and a bare subdomain become marks.
+    expect(article?.body[4]).toMatchObject({
+      content: [
+        { text: "ورود به سامانه از " },
+        { text: "golestan.hut.ac.ir", marks: [{ type: "link", attrs: { href: "https://golestan.hut.ac.ir" } }] },
+        { text: " و " },
+        { text: "فقط به صورت غیرحضوری", marks: [{ type: "bold" }] },
+      ],
     });
   });
 });

@@ -1,4 +1,4 @@
-import { asc, eq, inArray, notExists, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, ne, sql } from "drizzle-orm";
 
 import type { Database } from "#/db/client.server";
 import { feedArticle, feedPlacement } from "#/db/schema";
@@ -9,7 +9,19 @@ export type FeedPlacementRecord = typeof feedPlacement.$inferSelect;
 
 export type NewFeedArticle = Pick<
   typeof feedArticle.$inferInsert,
-  "url" | "title" | "summary" | "publishedOn" | "imageUrl" | "sourceAssetId" | "enrichedAt"
+  | "url"
+  | "kind"
+  | "category"
+  | "title"
+  | "summary"
+  | "publishedOn"
+  | "imageUrl"
+  | "imageWidth"
+  | "imageHeight"
+  | "body"
+  | "source"
+  | "sourceAssetId"
+  | "enrichedAt"
 >;
 
 export type NewFeedPlacement = Omit<typeof feedPlacement.$inferInsert, "id">;
@@ -30,6 +42,54 @@ export function findPlacedArticles({ db }: { db: Database }): Promise<PlacedArti
     .from(feedPlacement)
     .innerJoin(feedArticle, eq(feedPlacement.articleId, feedArticle.id))
     .orderBy(asc(feedPlacement.kind), asc(feedPlacement.category), asc(feedPlacement.position));
+}
+
+/** The IDs of the articles some block shows. */
+export async function findPlacedArticleIds({ db }: { db: Database }): Promise<Set<string>> {
+  const rows = await db.selectDistinct({ id: feedPlacement.articleId }).from(feedPlacement);
+  return new Set(rows.map((row) => row.id));
+}
+
+/** The article with a page under the old site's ID: its body has been read. The newest, should two share it. */
+export async function findArticleWithPage({
+  db,
+  sourceAssetId,
+}: {
+  db: Database;
+  sourceAssetId: string;
+}): Promise<FeedArticleRecord | undefined> {
+  const [row] = await db
+    .select()
+    .from(feedArticle)
+    .where(and(eq(feedArticle.sourceAssetId, sourceAssetId), isNotNull(feedArticle.body)))
+    .orderBy(desc(feedArticle.updatedAt))
+    .limit(1);
+  return row;
+}
+
+/** The newest other articles of a kind and category, with a page or not. */
+export function findRelatedArticles({
+  db,
+  article,
+  limit,
+}: {
+  db: Database;
+  article: Pick<FeedArticleRecord, "id" | "kind" | "category">;
+  limit: number;
+}): Promise<FeedArticleRecord[]> {
+  if (!article.kind || !article.category) return Promise.resolve([]);
+  return db
+    .select()
+    .from(feedArticle)
+    .where(
+      and(
+        eq(feedArticle.kind, article.kind),
+        eq(feedArticle.category, article.category),
+        ne(feedArticle.id, article.id),
+      ),
+    )
+    .orderBy(sql`${feedArticle.publishedOn} desc nulls last`, desc(feedArticle.createdAt))
+    .limit(limit);
 }
 
 /*===== Writes =====*/
@@ -56,10 +116,16 @@ export async function upsertArticles({
     .onConflictDoUpdate({
       target: feedArticle.url,
       set: {
+        kind: sqlExcluded("kind"),
+        category: sqlExcluded("category"),
         title: sqlExcluded("title"),
         summary: sqlExcluded("summary"),
         publishedOn: sqlExcluded("published_on"),
         imageUrl: sqlExcluded("image_url"),
+        imageWidth: sqlExcluded("image_width"),
+        imageHeight: sqlExcluded("image_height"),
+        body: sqlExcluded("body"),
+        source: sqlExcluded("source"),
         sourceAssetId: sqlExcluded("source_asset_id"),
         enrichedAt: sqlExcluded("enriched_at"),
         updatedAt: sqlExcluded("updated_at"),
@@ -80,17 +146,4 @@ export async function replacePlacements({
 }): Promise<void> {
   await db.delete(feedPlacement);
   if (placements.length > 0) await db.insert(feedPlacement).values(placements);
-}
-
-/** Deletes the articles no block shows any more. Returns how many. */
-export async function deleteUnplacedArticles({ db }: { db: Database }): Promise<number> {
-  const rows = await db
-    .delete(feedArticle)
-    .where(
-      notExists(
-        db.select({ id: feedPlacement.id }).from(feedPlacement).where(eq(feedPlacement.articleId, feedArticle.id)),
-      ),
-    )
-    .returning({ id: feedArticle.id });
-  return rows.length;
 }

@@ -2,13 +2,16 @@ import { setTimeout as sleep } from "node:timers/promises";
 
 import type { Database } from "#/db/client.server";
 import { SOURCE_ORIGIN, type FeedCategory, type FeedKind } from "#/orpc/home-feed/constants";
-import type { FeedItem, HomeFeed, SyncSummary } from "#/orpc/home-feed/contract";
-import { toFeedItem } from "#/orpc/home-feed/mapper";
+import { EMPTY_BODY, type ArticleBlock } from "#/orpc/home-feed/article-body";
+import type { Article, FeedItem, HomeFeed, SyncSummary } from "#/orpc/home-feed/contract";
+import { toArticle, toFeedItem } from "#/orpc/home-feed/mapper";
 import { parseArticlePage, parseHomePage, type RawBlock } from "#/orpc/home-feed/parse.server";
 import {
-  deleteUnplacedArticles,
   findArticlesByUrl,
+  findArticleWithPage,
+  findPlacedArticleIds,
   findPlacedArticles,
+  findRelatedArticles,
   replacePlacements,
   upsertArticles,
   type FeedArticleRecord,
@@ -69,17 +72,44 @@ export async function getHomeFeed({ db }: { db: Database }): Promise<HomeFeed> {
   };
 }
 
+/*===== Article =====*/
+const RELATED_SHOWN = 3;
+
+/** One article's page by the old site's ID, with the newest others of its kind and category. */
+export async function getArticle({
+  db,
+  id,
+}: {
+  db: Database;
+  id: string;
+}): Promise<{ kind: "success"; article: Article } | { kind: "not-found" }> {
+  // The old site's IDs are numbers; anything else can't name an article.
+  if (!/^\d{1,20}$/.test(id)) return { kind: "not-found" };
+
+  const article = await findArticleWithPage({ db, sourceAssetId: id });
+  if (!article?.kind || !article.category) return { kind: "not-found" };
+
+  const related = await findRelatedArticles({ db, article, limit: RELATED_SHOWN });
+  return { kind: "success", article: toArticle({ article, related }) };
+}
+
 /*===== Sync =====*/
 /** Reads a page of the old site as text. Throws when it can't (`source.server.ts`). */
 export type FetchPage = (url: string) => Promise<string>;
 
+/** Measures the old site's files (`source.server.ts`); null when it can't. */
+export type Measure = {
+  image: (url: string) => Promise<{ width: number; height: number } | null>;
+  file: (url: string) => Promise<number | null>;
+};
+
+/** An article page's fields with its cover's size, measured when it was read. */
+type ReadArticle = FeedArticleInput & { imageWidth: number | null; imageHeight: number | null };
+
 type SyncResult = { kind: "success"; summary: SyncSummary } | { kind: "source-failed"; error: unknown };
 
-/** The most article pages one run reads; the rest wait for the next run. */
+/** The most article pages a timed run reads; the rest wait for the next run. */
 const MAX_PAGES_PER_RUN = 40;
-
-/** These blocks show a summary and a date, and the old homepage cuts their titles short. */
-const KINDS_NEEDING_PAGE: ReadonlySet<FeedKind> = new Set(["news", "achievement", "growth", "event"]);
 
 /** An article the homepage lists, with every block it's in. */
 type Listed = { item: FeedItemInput; placements: { kind: FeedKind; category: FeedCategory; position: number }[] };
@@ -119,10 +149,43 @@ function listArticles(blocks: RawBlock[]): Map<string, Listed> {
   return listed;
 }
 
-/** Whether to read the article's own page this run. */
-function needsPage({ listed, stored, refresh }: { listed: Listed; stored?: FeedArticleRecord; refresh: boolean }) {
-  if (stored?.enrichedAt && !refresh) return false;
-  return listed.item.cutShort || listed.placements.some((placement) => KINDS_NEEDING_PAGE.has(placement.kind));
+/**
+ * Whether to read the article's own page this run: once for every article, for its body, full title and lead. A page
+ * that loaded without them is stored with an empty body, so it isn't asked for again.
+ */
+function needsPage({ stored, refresh }: { stored?: FeedArticleRecord; refresh: boolean }) {
+  return refresh || !stored?.body;
+}
+
+/**
+ * The article with its photos and files measured: the cover, each body photo without a size in the page's markup,
+ * and each attachment. One at a time, like the pages.
+ */
+async function measured({
+  article,
+  cover,
+  measure,
+}: {
+  article: FeedArticleInput;
+  cover: string | null;
+  measure: Measure;
+}): Promise<ReadArticle> {
+  const content: ArticleBlock[] = [];
+  for (const block of article.body.content) {
+    if (block.type === "image" && (!block.attrs.width || !block.attrs.height)) {
+      const size = await measure.image(block.attrs.src);
+      content.push({ ...block, attrs: { ...block.attrs, width: size?.width ?? null, height: size?.height ?? null } });
+    } else if (block.type === "attachment") {
+      content.push({ ...block, attrs: { ...block.attrs, size: await measure.file(block.attrs.href) } });
+    } else content.push(block);
+  }
+  const size = cover ? await measure.image(cover) : null;
+  return {
+    ...article,
+    body: { type: "doc", content },
+    imageWidth: size?.width ?? null,
+    imageHeight: size?.height ?? null,
+  };
 }
 
 /**
@@ -137,10 +200,10 @@ function articleRow({
 }: {
   listed: Listed;
   stored?: FeedArticleRecord;
-  page: FeedArticleInput | null | undefined;
+  page: ReadArticle | null | undefined;
   now: Date;
 }): NewFeedArticle {
-  const { item } = listed;
+  const { item, placements } = listed;
   // What an earlier run read from the article's page outranks the homepage, so a title doesn't flip between the two
   // from run to run: the page's is the full one, and its summary the lead rather than the homepage's teaser. An edit
   // made on the old site later shows after a `refresh`.
@@ -148,12 +211,24 @@ function articleRow({
   const title = page?.title ?? earlier?.title.fa ?? item.title;
   const summary = page?.summary ?? earlier?.summary?.fa ?? item.summary;
 
+  const imageUrl = item.imageUrl ?? page?.imageUrl ?? stored?.imageUrl ?? null;
+  // A size belongs to the photo it was measured on: the one stored is kept only while the photo stays the same.
+  const keptSize = page === undefined && stored?.imageUrl === imageUrl;
+  // What it is: the first block listing it, in the old homepage's order (a story that is also an achievement is news).
+  const [first] = placements;
+
   return {
     url: item.url,
+    kind: first?.kind ?? stored?.kind ?? null,
+    category: first?.category ?? stored?.category ?? null,
     title: { fa: title },
     summary: summary ? { fa: summary } : null,
     publishedOn: item.publishedOn ?? page?.publishedOn ?? stored?.publishedOn ?? null,
-    imageUrl: item.imageUrl ?? page?.imageUrl ?? stored?.imageUrl ?? null,
+    imageUrl,
+    imageWidth: page ? page.imageWidth : keptSize ? (stored?.imageWidth ?? null) : null,
+    imageHeight: page ? page.imageHeight : keptSize ? (stored?.imageHeight ?? null) : null,
+    body: page === undefined ? (stored?.body ?? null) : (page?.body ?? EMPTY_BODY),
+    source: page === undefined ? (stored?.source ?? null) : (page?.source ?? null),
     sourceAssetId: page?.sourceAssetId ?? item.sourceAssetId ?? stored?.sourceAssetId ?? null,
     enrichedAt: page === undefined ? (stored?.enrichedAt ?? null) : now,
   };
@@ -165,31 +240,39 @@ function changes({ row, stored }: { row: NewFeedArticle; stored: FeedArticleReco
     row.title.fa !== stored.title.fa ||
     (row.summary?.fa ?? null) !== (stored.summary?.fa ?? null) ||
     row.publishedOn !== stored.publishedOn ||
-    row.imageUrl !== stored.imageUrl
+    row.imageUrl !== stored.imageUrl ||
+    row.source !== stored.source ||
+    JSON.stringify(row.body) !== JSON.stringify(stored.body)
   );
 }
 
 /*------ Run ------*/
 /**
  * Mirrors the old homepage's blocks into the feed: reads the homepage, reads the pages of articles it hasn't seen
- * (for the full title and summary), then in one transaction stores the articles, replaces every placement and drops
- * the articles nothing shows any more.
+ * (for the full title, lead and body), then in one transaction stores the articles and replaces every placement. An
+ * article the homepage drops keeps its row, so its page here keeps working; only its placements go.
  *
  * An article page that fails to load keeps the homepage's values and is tried again on the next run. A homepage that
  * fails to load or parse changes nothing: the home page keeps the last good feed.
  *
  * @param refresh Reads every listed article's page again, for edits made on the old site after it was first read.
+ * @param measure Measures the photos and files of each article page read.
+ * @param maxPages The most article pages to read this run (40); the rest wait for the next.
  * @param pauseMs The wait between article pages, to go easy on the old site.
  */
 export async function syncHomeFeed({
   db,
   fetchPage,
+  measure,
   refresh = false,
+  maxPages = MAX_PAGES_PER_RUN,
   pauseMs = 300,
 }: {
   db: Database;
   fetchPage: FetchPage;
+  measure: Measure;
   refresh?: boolean;
+  maxPages?: number;
   pauseMs?: number;
 }): Promise<SyncResult> {
   const started = performance.now();
@@ -206,16 +289,18 @@ export async function syncHomeFeed({
   const stored = new Map(
     (await findArticlesByUrl({ db, urls: [...listed.keys()] })).map((article) => [article.url, article]),
   );
-  const pages = new Map<string, FeedArticleInput | null>();
+  const pages = new Map<string, ReadArticle | null>();
   const toRead = [...listed.values()]
-    .filter((entry) => needsPage({ listed: entry, stored: stored.get(entry.item.url), refresh }))
-    .slice(0, MAX_PAGES_PER_RUN);
+    .filter((entry) => needsPage({ stored: stored.get(entry.item.url), refresh }))
+    .slice(0, maxPages);
 
   for (const [index, entry] of toRead.entries()) {
     if (index > 0 && pauseMs > 0) await sleep(pauseMs);
     try {
-      const page = parseArticlePage(await fetchPage(entry.item.url));
-      pages.set(entry.item.url, page ? parseFeedArticle(page) : null);
+      const raw = parseArticlePage(await fetchPage(entry.item.url));
+      const page = raw ? parseFeedArticle(raw) : null;
+      const cover = entry.item.imageUrl ?? page?.imageUrl ?? null;
+      pages.set(entry.item.url, page ? await measured({ article: page, cover, measure }) : null);
     } catch {
       // Left unread: the homepage's values are stored, and the next run tries again.
     }
@@ -233,13 +318,15 @@ export async function syncHomeFeed({
   }).length;
 
   const removed = await db.transaction(async (tx) => {
+    const placedBefore = await findPlacedArticleIds({ db: tx });
     const ids = await upsertArticles({ db: tx, articles: rows, now });
     const placements = [...listed.values()].flatMap((entry) => {
       const articleId = ids.get(entry.item.url);
       return articleId ? entry.placements.map((placement) => ({ ...placement, articleId })) : [];
     });
     await replacePlacements({ db: tx, placements });
-    return deleteUnplacedArticles({ db: tx });
+    const placedNow = new Set(placements.map((placement) => placement.articleId));
+    return [...placedBefore].filter((id) => !placedNow.has(id)).length;
   });
 
   return {

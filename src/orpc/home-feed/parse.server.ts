@@ -1,6 +1,14 @@
-import { load } from "cheerio";
+import { load, type Cheerio, type CheerioAPI } from "cheerio";
 
-import type { FeedCategory, FeedKind } from "#/orpc/home-feed/constants";
+import type {
+  ArticleAttachment,
+  ArticleBlock,
+  ArticleInline,
+  ArticleMark,
+  ArticleParagraph,
+  ArticleText,
+} from "#/orpc/home-feed/article-body";
+import { SOURCE_ORIGIN, type FeedCategory, type FeedKind } from "#/orpc/home-feed/constants";
 
 /*===== Old Homepage Blocks =====*/
 // hut.ac.ir is Liferay: each homepage block is an asset publisher, found by its instance ID. Its news and notices have
@@ -27,6 +35,10 @@ export const BLOCKS: readonly Block[] = [
 const PORTLET_ID_PREFIX = "p_p_id_com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet_INSTANCE_";
 
 /*===== Types =====*/
+// cheerio's node types, named without depending on `domhandler`, which defines them.
+type Element = ReturnType<Cheerio<never>["children"]> extends Cheerio<infer T> ? T : never;
+type AnyNode = Parameters<CheerioAPI["html"]>[0] extends infer T ? Exclude<T, string | undefined | null> : never;
+
 /** An item as the page has it: raw text and attribute values, checked and normalized by `validation.ts`. */
 export type RawItem = {
   href: string;
@@ -41,7 +53,11 @@ export type RawItem = {
 
 export type RawBlock = Block & { items: RawItem[] };
 
-export type RawArticle = Omit<RawItem, "href">;
+/**
+ * An article's own page. `body` is raw like the rest: its text is as typed and its links as written, made absolute;
+ * `validation.ts` cleans both.
+ */
+export type RawArticle = Omit<RawItem, "href"> & { body: ArticleBlock[]; source: string | null };
 
 /*===== Dates =====*/
 // The old site writes every date into a script that formats it in the browser:
@@ -155,44 +171,392 @@ export function parseHomePage(html: string): RawBlock[] {
 }
 
 /*===== Article Page =====*/
+// An article's page repeats its template twice (`.header` + `.body`, once more for print); the first is read. Its body
+// is CKEditor HTML, often pasted from Word or from the university's Telegram channel, and is turned into the article
+// page's Tiptap JSON (`article-body.ts`), keeping only what that page draws.
+
 // Shorter paragraphs in an article's body are a dateline or the channel's sign-off.
 const LEAD_MIN_LENGTH = 60;
 // Posts copied from the university's channel start paragraphs with an emoji or a bullet (✳️ 🎖 ◀️).
 const LEADING_SYMBOLS = /^[^\p{L}\p{N}«"(]+/u;
+// A news lead opens with who reports it: «به گزارش روابط‌عمومی دانشگاه صنعتی همدان:».
+const DATELINE = /^به گزارش [^:]{0,80}:\s*/;
 
+/** Whitespace collapsed; null when nothing is left. */
+function plainOf(nodes: ArticleInline[] | undefined): string {
+  return (nodes ?? [])
+    .map((node) => (node.type === "text" ? node.text : " "))
+    .join("")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Text reduced to its letters and digits' order, for telling whether two lines say the same thing. */
+function comparable(value: string): string {
+  return value.replace(/[\s‌«»:؛،.!?"'()\-–—]/g, "").replace(LEADING_SYMBOLS, "");
+}
+
+/** Whether one line opens with the other: a first paragraph repeating the title, or a description that only does. */
+function repeats({ line, title }: { line: string; title: string }): boolean {
+  const a = comparable(line);
+  const b = comparable(title);
+  if (!a || !b) return false;
+  return a.startsWith(b.slice(0, 30)) || b.startsWith(a.slice(0, 30));
+}
+
+/*------ Inline ------*/
+// Marks the page keeps: bold and links. The rest (spans, fonts, underline, Word's styling) is dropped, its text kept.
+
+function withMark(marks: ArticleMark[], mark: ArticleMark): ArticleMark[] {
+  return marks.some((known) => known.type === mark.type) ? marks : [...marks, mark];
+}
+
+/** An `href` as written in the page, made absolute; null for one that isn't a URL or that goes nowhere (`#`). */
+function absoluteHref(href: string | undefined): string | null {
+  if (!href || href.startsWith("#")) return null;
+  try {
+    return new URL(href, SOURCE_ORIGIN).href;
+  } catch {
+    return null;
+  }
+}
+
+function inlineOf({ $, element, marks = [] }: { $: CheerioAPI; element: AnyNode; marks?: ArticleMark[] }) {
+  const out: ArticleInline[] = [];
+  for (const child of $(element).contents().toArray()) {
+    if (child.type === "text") {
+      // A soft hyphen pasted from Word stands where a half-space belongs.
+      const text = child.data.replace(/­/g, "‌").replace(/[\s​]+/g, " ");
+      if (text) out.push({ type: "text", text, ...(marks.length > 0 ? { marks } : {}) });
+      continue;
+    }
+    if (child.type !== "tag") continue;
+
+    const tag = child.tagName.toLowerCase();
+    if (tag === "br") out.push({ type: "hardBreak" });
+    else if (tag === "img" || tag === "script" || tag === "style") continue;
+    else if (tag === "b" || tag === "strong") {
+      out.push(...inlineOf({ $, element: child, marks: withMark(marks, { type: "bold" }) }));
+    } else if (tag === "a") {
+      const href = absoluteHref($(child).attr("href"));
+      const linked = href ? withMark(marks, { type: "link", attrs: { href } }) : marks;
+      out.push(...inlineOf({ $, element: child, marks: linked }));
+    } else out.push(...inlineOf({ $, element: child, marks }));
+  }
+  return out;
+}
+
+const sameMarks = (a: ArticleText, b: ArticleText) => JSON.stringify(a.marks) === JSON.stringify(b.marks);
+const isBlank = (node: ArticleInline | undefined) =>
+  node?.type === "hardBreak" || (node?.type === "text" && !node.text.trim());
+
+// Editors type `**bold**` as in Telegram, and write the old site's subdomains as bare text.
+const INLINE_HINTS = /(\*\*[^*]+\*\*|\b(?:[a-z0-9-]+\.)*hut\.ac\.ir\b)/i;
+
+/** Splits a run on `**bold**` and bare `*.hut.ac.ir` addresses, which become marks. */
+function hinted(node: ArticleText): ArticleText[] {
+  const marks = node.marks ?? [];
+  return node.text
+    .split(INLINE_HINTS)
+    .filter(Boolean)
+    .map((part): ArticleText => {
+      if (/^\*\*[^*]+\*\*$/.test(part)) {
+        return { type: "text", text: part.slice(2, -2), marks: withMark(marks, { type: "bold" }) };
+      }
+      if (/hut\.ac\.ir$/i.test(part) && !marks.some((mark) => mark.type === "link")) {
+        return {
+          type: "text",
+          text: part,
+          marks: withMark(marks, { type: "link", attrs: { href: `https://${part.toLowerCase()}` } }),
+        };
+      }
+      return { ...node, text: part };
+    });
+}
+
+/** Neighbouring runs with the same marks merged, blank lines at either end dropped, the ends trimmed. */
+function tidy(nodes: ArticleInline[]): ArticleInline[] {
+  const merged: ArticleInline[] = [];
+  for (const node of nodes) {
+    const previous = merged.at(-1);
+    if (node.type === "text" && previous?.type === "text" && sameMarks(previous, node)) {
+      merged[merged.length - 1] = { ...previous, text: previous.text + node.text };
+    } else merged.push(node);
+  }
+  while (isBlank(merged[0])) merged.shift();
+  while (isBlank(merged.at(-1))) merged.pop();
+
+  const first = merged[0];
+  if (first?.type === "text") merged[0] = { ...first, text: first.text.trimStart() };
+  const last = merged.at(-1);
+  if (last?.type === "text") merged[merged.length - 1] = { ...last, text: last.text.trimEnd() };
+
+  return merged.flatMap((node): ArticleInline[] => (node.type === "text" ? hinted(node) : [node]));
+}
+
+function paragraphOf(content: ArticleInline[]): ArticleParagraph {
+  return { type: "paragraph", content };
+}
+
+/*------ Blocks ------*/
+// A link into the old site's document library, to a file rather than a photo, is an attachment wherever it sits.
+const FILE_PATH = /\/documents\/.+\.(pdf|docx?|xlsx?|pptx?|zip|rar)(\/|$)/i;
+
+function attachmentOf({ $, link }: { $: CheerioAPI; link: Element }): ArticleAttachment | null {
+  const href = absoluteHref($(link).attr("href"));
+  if (!href) return null;
+  const path = decodeURIComponent(new URL(href).pathname);
+  const match = FILE_PATH.exec(path);
+  if (!match) return null;
+
+  const fileName =
+    path
+      .split("/")
+      .find((part) => /\.\w{2,4}$/.test(part))
+      ?.replace(/\+/g, " ") ?? "";
+  const label = cleanText($(link).text().replace(/[​]/g, "")) ?? fileName;
+  return { type: "attachment", attrs: { href, label, ext: (match[1] ?? "").toLowerCase(), size: null } };
+}
+
+/** A size attribute as a whole number of pixels, or null. */
+function pixels(value: string | undefined): number | null {
+  const number = Number.parseInt(value ?? "", 10);
+  return Number.isFinite(number) && number > 0 ? number : null;
+}
+
+function tableOf({ $, table }: { $: CheerioAPI; table: Element }): ArticleBlock | null {
+  const rows = $(table)
+    .find("tr")
+    .toArray()
+    .map((row) =>
+      $(row)
+        .find("td, th")
+        .toArray()
+        .map((cell) => tidy(inlineOf({ $, element: cell }))),
+    )
+    .filter((cells) => cells.some((cell) => plainOf(cell)));
+  const [head, ...rest] = rows;
+  if (!head || rest.length === 0) return null;
+
+  return {
+    type: "table",
+    content: [
+      { type: "tableRow", content: head.map((cell) => ({ type: "tableHeader", content: [paragraphOf(cell)] })) },
+      ...rest.map((cells) => ({
+        type: "tableRow" as const,
+        content: cells.map((cell) => ({ type: "tableCell" as const, content: [paragraphOf(cell)] })),
+      })),
+    ],
+  };
+}
+
+/** The body's top-level elements as blocks, in order. */
+function blocksOf({ $, body }: { $: CheerioAPI; body: Element }): ArticleBlock[] {
+  const out: ArticleBlock[] = [];
+
+  for (const element of $(body).children().toArray()) {
+    const tag = element.tagName.toLowerCase();
+    const node = $(element);
+    if (["link", "script", "style"].includes(tag) || node.is("#inline-gallery-container")) continue;
+
+    if (tag === "table") {
+      const table = tableOf({ $, table: element });
+      if (table) out.push(table);
+      continue;
+    }
+
+    if (tag === "ul" || tag === "ol") {
+      const items = node
+        .children("li")
+        .toArray()
+        .map((item) => tidy(inlineOf({ $, element: item })))
+        .filter((content) => plainOf(content))
+        .map((content) => ({ type: "listItem" as const, content: [paragraphOf(content)] }));
+      if (items.length > 0) out.push({ type: tag === "ol" ? "orderedList" : "bulletList", content: items });
+      continue;
+    }
+
+    const images = node.find("img").toArray();
+    const files = node
+      .find("a[href]")
+      .toArray()
+      .map((link) => attachmentOf({ $, link }))
+      .filter((file) => file !== null);
+    if (files.length > 0 && images.length === 0) {
+      out.push(...files);
+      continue;
+    }
+
+    // A photo splits its paragraph: the photo, then the text around it.
+    for (const image of images) {
+      const src = absoluteHref($(image).attr("src"));
+      if (!src) continue;
+      out.push({
+        type: "image",
+        attrs: {
+          src,
+          alt: cleanText($(image).attr("alt")) ?? "",
+          width: pixels($(image).attr("width")),
+          height: pixels($(image).attr("height")),
+        },
+      });
+    }
+
+    const content = tidy(inlineOf({ $, element }));
+    if (!plainOf(content)) continue;
+    if (/^h[1-6]$/.test(tag)) {
+      out.push({ type: "heading", attrs: { level: tag === "h1" || tag === "h2" ? 2 : 3 }, content });
+    } else out.push(paragraphOf(content));
+  }
+  return out;
+}
+
+/*------ Channel Habits ------*/
+// Posts copied from the channel mark their structure with emoji: ✳️ before a heading, ◀️ before each point, 🖋 before
+// the sign-off, and a footer of ornaments and the channel's handle. They become a heading, a list, the article's
+// source, and nothing.
+
+const MARKER = /^[\s‌]*(✳️|✳|◀️|◀|🔹|🔸|▪️|🔻|🎖|📌|🖋️|🖋)\s*/u;
+const CHANNEL_FOOTER = /┅|🆔|hut_univ|@hut/u;
+const HEADING_MAX_LENGTH = 90;
+const POINT_MAX_LENGTH = 180;
+
+function markerOf(text: string): string | null {
+  return MARKER.exec(text)?.[1]?.replace("️", "") ?? null;
+}
+
+/** The paragraph without its leading marker. */
+function unmarked(paragraph: ArticleParagraph): ArticleInline[] {
+  const [first, ...rest] = paragraph.content ?? [];
+  if (first?.type !== "text") return paragraph.content ?? [];
+  const text = first.text.replace(MARKER, "");
+  return text ? [{ ...first, text }, ...rest] : rest;
+}
+
+/**
+ * The channel's markers turned into structure, and what the page shows elsewhere dropped: a first paragraph that
+ * repeats the title, and the lead (shown above the body), which may carry a dateline («به گزارش …:») before it.
+ */
+function structured({ blocks, title, lead }: { blocks: ArticleBlock[]; title: string; lead: string | null }) {
+  let source: string | null = null;
+  const out: ArticleBlock[] = [];
+  let openList: Extract<ArticleBlock, { type: "bulletList" }> | null = null;
+
+  for (const block of blocks) {
+    if (block.type !== "paragraph") {
+      out.push(block);
+      openList = null;
+      continue;
+    }
+
+    const text = plainOf(block.content);
+    if (CHANNEL_FOOTER.test(text)) continue;
+    const marker = markerOf(text);
+    if (marker === "🖋") {
+      source = text.replace(MARKER, "");
+      continue;
+    }
+
+    const content = marker ? unmarked(block) : (block.content ?? []);
+    const line = plainOf(content);
+    if (out.length === 0 && repeats({ line, title })) continue;
+    if (lead && comparable(line).includes(comparable(lead)) && line.length <= lead.length + 60) continue;
+
+    if (marker === "✳" && line.length <= HEADING_MAX_LENGTH) {
+      // A heading's weight is its own; bold inside it is the editor's emphasis on the whole line.
+      const unbolded = content.map((node) =>
+        node.type === "text" ? { type: "text" as const, text: node.text } : node,
+      );
+      out.push({ type: "heading", attrs: { level: 2 }, content: unbolded });
+      openList = null;
+      continue;
+    }
+    if (marker === "◀" && line.length <= POINT_MAX_LENGTH) {
+      const item = { type: "listItem" as const, content: [paragraphOf(content)] };
+      if (openList) openList.content.push(item);
+      else {
+        openList = { type: "bulletList", content: [item] };
+        out.push(openList);
+      }
+      continue;
+    }
+    out.push(paragraphOf(content));
+    openList = null;
+  }
+
+  // A list of one was a marked paragraph.
+  const blocksOut = out.map((block) =>
+    block.type === "bulletList" && block.content.length === 1 ? (block.content[0]?.content[0] ?? block) : block,
+  );
+  return { blocks: blocksOut, source };
+}
+
+/*------ Gallery ------*/
+// The page's photo set is a lightGallery whose slides are listed in a script: `dynamicEl: [{ src: '…', thumb: … }]`.
+const GALLERY_SLIDE = /src:\s*'([^']+)',\s*thumb/g;
+
+function galleryOf(scripts: string[]): ArticleBlock | null {
+  const sources = new Set<string>();
+  for (const script of scripts) {
+    for (const match of script.matchAll(GALLERY_SLIDE)) {
+      const src = absoluteHref(match[1]);
+      if (src) sources.add(src);
+    }
+  }
+  if (sources.size === 0) return null;
+  return { type: "gallery", attrs: { images: [...sources].map((src) => ({ src, alt: "" })) } };
+}
+
+/*------ Page ------*/
 /** The first paragraph of the article's body that is its lead: long enough, and not the title repeated. */
-function leadParagraph({ $, title }: { $: ReturnType<typeof load>; title: string }): string | null {
-  for (const paragraph of $(".main-new-content .body p").toArray()) {
-    const text = cleanText($(paragraph).text())?.replace(LEADING_SYMBOLS, "");
-    if (text && text.length >= LEAD_MIN_LENGTH && !text.startsWith(title)) return text;
+function leadParagraph({ blocks, title }: { blocks: ArticleBlock[]; title: string }): string | null {
+  for (const block of blocks) {
+    if (block.type !== "paragraph") continue;
+    const text = plainOf(block.content).replace(LEADING_SYMBOLS, "").replace(DATELINE, "");
+    if (text.length >= LEAD_MIN_LENGTH && !repeats({ line: text, title })) return text;
   }
   return null;
 }
 
-/** An article's own page: its full title, its lead paragraph as the summary, its date, photo and ID. */
+/**
+ * An article's own page: its full title, its lead as the summary, its date, photo and ID, and its body as blocks
+ * with the lead and a repeated title left out. Null when the page has no title (not an article).
+ */
 export function parseArticlePage(html: string): RawArticle | null {
   const $ = load(html);
   const title = cleanText($('meta[property="og:title"]').attr("content"));
   if (!title) return null;
 
+  const content = $(".main-new-content").first();
+  const body = content.find(".body").first();
+  const scripts = content
+    .find("script")
+    .toArray()
+    .map((script) => $(script).html() ?? "");
+
   // The article's own date is in its header; the page's other blocks have dates of their own.
-  const date = [
-    ...datesById(
-      $(".main-new-content script")
-        .toArray()
-        .map((script) => $(script).html() ?? ""),
-    ).values(),
-  ][0];
+  const date = [...datesById(scripts).values()][0];
+  const blocks = body.length > 0 ? blocksOf({ $, body: body.get(0) as Element }) : [];
+
+  // The editor's description when there is one, else the body's lead. A description that only repeats the title
+  // isn't a lead.
+  const description =
+    cleanText($('meta[property="og:description"]').attr("content")) ??
+    cleanText($('meta[name="description"]').attr("content"));
+  const summary =
+    description && !repeats({ line: description, title: title }) ? description : leadParagraph({ blocks, title });
+
+  const structuredBody = structured({ blocks, title, lead: summary });
+  const gallery = galleryOf(scripts);
+  if (gallery) structuredBody.blocks.push(gallery);
 
   return {
     title,
-    // The editor's description when there is one, else the body's lead.
-    summary:
-      cleanText($('meta[property="og:description"]').attr("content")) ??
-      cleanText($('meta[name="description"]').attr("content")) ??
-      leadParagraph({ $, title }),
+    summary,
     publishedOn: date ?? null,
-    image: cleanText($(".main-new-content .header img").first().attr("src")),
+    image: cleanText(content.find(".header img").first().attr("src")),
     sourceAssetId: cleanText($("[data-analytics-asset-id]").first().attr("data-analytics-asset-id")),
+    body: structuredBody.blocks,
+    source: structuredBody.source,
   };
 }

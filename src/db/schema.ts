@@ -2,6 +2,7 @@ import { boolean, date, index, integer, jsonb, pgTable, text, timestamp, uniqueI
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 
 import type { LocalizedText } from "#/lib/localized-text";
+import type { ArticleBody } from "#/orpc/home-feed/article-body";
 
 /*===== Database Schema =====*/
 // Single source of truth for tables, read by Drizzle Kit (`drizzle.config.ts`) and the
@@ -268,24 +269,42 @@ export const departmentDocument = pgTable(
 // What the home page's news, notices, achievements and events show (src/orpc/home-feed/). Until the cutover it mirrors
 // hut.ac.ir's homepage (docs/backend/home-feed.md): an article is a story or notice on the old site, a placement is
 // where the homepage shows it. One article can appear in several blocks (a notice under two tabs, a story that is also
-// an achievement). Kinds and categories take their allowed values from `src/orpc/home-feed/constants.ts`.
+// an achievement). Kinds and categories take their allowed values from `src/orpc/home-feed/constants.ts`. Articles
+// outlive their placements, so a shared link to an article page keeps working after the homepage drops it.
 
-export const feedArticle = pgTable("feed_article", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  /** The article's page, absolute and without a query string. Identifies it across runs. */
-  url: text("url").notNull().unique(),
-  /** The old site's own ID for it (`/article/<id>`), when the page names it. */
-  sourceAssetId: text("source_asset_id"),
-  title: jsonb("title").$type<LocalizedText>().notNull(),
-  summary: jsonb("summary").$type<LocalizedText>(),
-  publishedOn: date("published_on", { mode: "string" }),
-  /** Hotlinked from the old site, never copied. */
-  imageUrl: text("image_url"),
-  /** When the article's own page was last read. Null means not yet: the next run tries again. */
-  enrichedAt: timestamp("enriched_at"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-});
+export const feedArticle = pgTable(
+  "feed_article",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    /** The article's page, absolute and without a query string. Identifies it across runs. */
+    url: text("url").notNull().unique(),
+    /** The old site's own ID for it, when the page names it. The article page's address: `/articles/<id>`. */
+    sourceAssetId: text("source_asset_id"),
+    /** What it is: the first block that listed it. Null only on rows stored before the column existed. */
+    kind: text("kind"),
+    category: text("category"),
+    title: jsonb("title").$type<LocalizedText>().notNull(),
+    /** The lead paragraph, whole; cards cut it short. */
+    summary: jsonb("summary").$type<LocalizedText>(),
+    publishedOn: date("published_on", { mode: "string" }),
+    /** Hotlinked from the old site, never copied. */
+    imageUrl: text("image_url"),
+    imageWidth: integer("image_width"),
+    imageHeight: integer("image_height"),
+    /** Tiptap JSON (`src/orpc/home-feed/article-body.ts`). Null until the article's own page is read. */
+    body: jsonb("body").$type<ArticleBody>(),
+    /** Who wrote it, from the body's sign-off («روابط‌عمومی …»). */
+    source: text("source"),
+    /** When the article's own page was last read. Null means not yet: the next run tries again. */
+    enrichedAt: timestamp("enriched_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("feed_article_source_asset_id_idx").on(table.sourceAssetId),
+    index("feed_article_kind_category_published_on_idx").on(table.kind, table.category, table.publishedOn),
+  ],
+);
 
 export const feedPlacement = pgTable(
   "feed_placement",
