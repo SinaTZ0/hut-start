@@ -136,11 +136,14 @@ const twArrowStyles = defineStyles({
 /*===== Media Styles =====*/
 
 // The media frame clips its image so the media zoom stays inside it. `bg-accent` shows while the image loads and
-// around a contained poster.
+// around a contained poster without a backdrop. `isolate` keeps the backdrop's negative layers inside the frame.
 const twMediaStyles = defineStyles({
-  layout: "relative shrink-0 overflow-hidden",
+  layout: "relative isolate shrink-0 overflow-hidden",
   appearance: "bg-accent",
   geometry: "[&_img]:size-full",
+  // The backdrop: a copy of the image filling the frame behind it, blurred by the `contain` fit.
+  layoutBackdrop:
+    "*:data-[slot=card-media-backdrop]:absolute *:data-[slot=card-media-backdrop]:inset-0 *:data-[slot=card-media-backdrop]:-z-20 *:data-[slot=card-media-backdrop]:object-cover",
   // A badge in the frame is the photo's label («خبر ویژه»), pinned to its top-start corner.
   layoutBadge: "*:data-[slot=badge]:absolute *:data-[slot=badge]:start-4 *:data-[slot=badge]:top-4",
   // The media zoom: the photo scales to 1.03 inside a hovered or focused link card.
@@ -150,7 +153,7 @@ const twMediaStyles = defineStyles({
 });
 
 // Images that contain text (posters, flyers, certificates) must keep their own title readable: crop from the top,
-// or show the whole image on `muted`. Photos fill the frame.
+// or show the whole image, over a blurred copy of itself when it has a CardMediaBackdrop. Photos fill the frame.
 const twMediaFit = defineStyles({
   cover: {
     geometry: "[&_img]:object-cover",
@@ -160,6 +163,8 @@ const twMediaFit = defineStyles({
   },
   contain: {
     geometry: "[&_img]:object-contain",
+    // Blurs the backdrop from above rather than with `blur`, which would fade its edges into the frame's colour.
+    appearanceBackdrop: "before:absolute before:inset-0 before:-z-10 before:backdrop-blur-2xl",
   },
 });
 

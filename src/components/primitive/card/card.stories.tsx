@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardKicker,
   CardMedia,
+  CardMediaBackdrop,
   CardTitle,
 } from "./card";
 import { twMediaFit, twSize } from "./card.styles";
@@ -189,6 +190,7 @@ export const MediaFit: Story = {
       {fitOptions.map((fit) => (
         <Card key={fit} {...args}>
           <CardMedia fit={fit} className="aspect-4/3">
+            {fit === "contain" && <CardMediaBackdrop src={placeholderImage} />}
             <img src={placeholderImage} alt="تصویر نمونه" />
           </CardMedia>
           <CardContent dir="ltr" lang="en">

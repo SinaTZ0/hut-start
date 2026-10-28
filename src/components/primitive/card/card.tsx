@@ -128,9 +128,18 @@ function CardMedia({ className, fit, ...props }: CardMediaProps) {
   return <div data-slot="card-media" {...props} className={cn(cardMediaVariants({ fit }), className)} />;
 }
 
+/**
+ * A copy of the media's image, put before it, that fills the frame around a `fit="contain"` image with its own colours,
+ * blurred, instead of bare `accent`. Decorative, so it has no alt text and is hidden from assistive technology.
+ */
+function CardMediaBackdrop(props: Omit<ComponentProps<"img">, "alt">) {
+  return <img data-slot="card-media-backdrop" alt="" aria-hidden {...props} />;
+}
+
 export {
   Card,
   CardMedia,
+  CardMediaBackdrop,
   CardHeader,
   CardBody,
   CardFooter,
