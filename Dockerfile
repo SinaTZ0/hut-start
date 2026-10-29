@@ -38,8 +38,10 @@ COPY . .
 RUN pnpm build
 # The scripts `deploy/deploy.sh` runs in a one-off container, each as one plain-JavaScript file, since the runtime image
 # has no TypeScript loader or `#/` alias: the departments' pages (`departments`), the offices, forms and phone book
-# (`pages`), and the news archive (`archive`). Packages stay imports, read from the runtime's node_modules.
-RUN pnpm exec esbuild src/db/seed-departments.ts src/db/seed-pages.ts src/db/sync-feed-archive.ts --bundle \
+# (`pages`), the news archive (`archive`) and the home feed (`feed`). Packages stay imports, read from the runtime's
+# node_modules.
+RUN pnpm exec esbuild src/db/seed-departments.ts src/db/seed-pages.ts src/db/sync-feed-archive.ts \
+    src/db/sync-home-feed.ts --bundle \
     --platform=node --format=esm --target=node24 --packages=external --sourcemap --outdir=/app/deploy-dist \
     --out-extension:.js=.mjs
 

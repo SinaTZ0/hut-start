@@ -62,7 +62,7 @@ func (t *Tool) Update(args []string) error {
 
 /*===== Apply =====*/
 
-// Apply checks .env, then rebuilds and restarts the stack with it. `--after-update` is how Update hands over to the
+// Apply checks .env and the pending deploy steps, rebuilds and restarts the stack with it, then runs those steps. `--after-update` is how Update hands over to the
 // pulled tool; it only changes what a stop says.
 func (t *Tool) Apply(args []string) error {
 	if err := t.requireSetUp(); err != nil {
@@ -86,11 +86,14 @@ func (t *Tool) Apply(args []string) error {
 	if err := t.checkSources(note); err != nil {
 		return err
 	}
+	if err := t.checkPendingSteps(); err != nil {
+		return err
+	}
 	if err := t.S.Deploy(t.Env); err != nil {
 		return err
 	}
 	ui.OK("The stack runs with the current .env.")
-	return nil
+	return t.afterDeploy()
 }
 
 /*===== Settings =====*/

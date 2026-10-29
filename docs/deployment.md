@@ -44,12 +44,14 @@ gets the `admin` key.
   9) Logs              pick a service, follow
  10) Make admin        promote an account by email
  11) Seed              departments, pages, the news archive
- 12) Database browser  browse and edit the database, for a set time
+ 12) Deploy steps      list them, run the pending ones
+ 13) Database browser  browse and edit the database, for a set time
   0) Quit
 
   ● Project      up to date  (381286c)
   ● App          381286c  healthy
   ● Settings     applied 2026-10-15 14:02
+  ● Steps        all done
   ● Site         https://app.example.com        200 OK
   ● Errors       https://errors.example.com     200 OK
   ● Ports        80 ✓  443 ✓  (Caddy)
@@ -61,6 +63,8 @@ Green is fine, yellow needs attention (commits to pull, an edit to apply, a cert
 than a week, an open database browser), red is missing or broken. **Project** compares the checkout with its upstream
 branch. **App** is the version the app container runs and its health, yellow when it isn't the checkout's (Rolling
 Back below). **Settings** says whether `.env` is complete and whether the running stack uses it (Settings below).
+**Steps** says whether every deploy step ran: yellow when some wait for the next deploy, red when one stopped partway
+(Deploy Steps below).
 **Site** and **Errors** request `/healthz` from outside, through Caddy. **Ports** says whether Caddy holds 80 and 443,
 or what else does. **pgweb** appears only while the database browser is open, with the time it has left (Database
 Browser below). Before setup, only Set up is available; after it, everything else.
@@ -167,7 +171,8 @@ docker compose -f compose.prod.yaml exec db \
 
 **Seed.** A new server's database has none of the old site's content. Seed loads it in three parts: All from the menu
 (`deploy/deploy.sh seed all`) runs them in the order below, or choose one (`deploy/deploy.sh seed <part>`, each with
-its own options). Every part skips what's loaded, so running it again carries on where it stopped.
+its own options). Every part skips what's loaded, so running it again carries on where it stopped. A change to the
+seed data after that reaches the server through a deploy step (Deploy Steps below), not by seeding again.
 
 **The departments.** Migrations create the department tables empty, so `/departments/<slug>` is "not found" until
 they're loaded. The image carries `pnpm db:seed:departments` bundled as `deploy/seed-departments.mjs`; choose Seed →
@@ -185,6 +190,10 @@ homepage shows. Seed → News archive (`deploy/deploy.sh seed archive`, `pnpm cr
 `deploy/sync-feed-archive.mjs`) reads the old site's listings (about 2,400 posts) and then every article's page: an
 hour or more the first time. Stopping it is safe: the app's timer keeps the archive current and reads 20 more article
 pages each run (docs/backend/home-feed.md → Archive).
+
+**The home feed now.** Seed → Home feed (`deploy/deploy.sh seed feed`, `pnpm crawl:home` bundled as
+`deploy/sync-home-feed.mjs`) reads the old homepage at once instead of waiting for the timer; `--refresh` reads every
+listed article's page again, after a change to how articles are cleaned. It isn't part of All.
 
 ## HTTPS Certificates
 
@@ -292,6 +301,54 @@ isn't running (the first deploy, or after a crash), the tool starts the whole st
 reloads Caddy, which picks up an edited `deploy/Caddyfile` without dropping connections; Compose wouldn't, since the
 Caddyfile is a mounted file. The error viewer is restarted in place when its image changes, so it's down for a few
 seconds.
+
+## Deploy Steps
+
+Update brings code and migrations, never data the database already holds. A commit that needs a command on the server
+(an edited department in `src/db/departments/` loaded again, the home feed read again after a parsing fix) carries it
+as a step file in `deploy/steps/`, and every deploy runs the steps this server hasn't run yet. The format is in
+`deploy/steps/README.md`:
+
+```md
+---
+run:
+  - seed departments --replace ee
+---
+
+EE's faculty list was corrected in src/db/departments/ee.ts. Edits made to EE on the site are lost.
+```
+
+**The ledger.** The server records the steps it ran in the `deploy_step` table, one row per step with how many of its
+commands finished. It's in the database, not a file, so restoring a dump brings back the record that matches the data
+in it. The tool reads and writes it with psql; the app never does.
+
+**When they run.** Update and Apply check the pending steps before the build: a step that can't be read, or a command
+the tool doesn't accept, stops the deploy while the old app still serves. After the new app is healthy they run, in name
+order, all of them, however long they take (`seed archive` blocks the update for its hour). A step pending is one with
+no finished row: a step whose name sorts before one that ran still runs. Several commits pulled at once run their steps
+in one go, on the newest code; two steps that load the same thing both run, which only costs time.
+
+**When one fails.** The deploy stops at the failed command and exits 1, saying which step and command failed and how
+many steps and commands are left. The new app keeps serving. Fix the cause (a new commit, or the server's state), then
+run `deploy/deploy.sh steps` or the next Update: it carries on from the command that failed. A command stopped with
+Ctrl-C isn't recorded, so it runs again; every command a step may run is safe to repeat. `deploy/deploy.sh steps --list`
+shows each step's state, and `steps --rerun <name>` runs one again from its first command.
+
+**Only the tool's own commands.** A step may run `seed …` (Seed, under First Deploy above) and nothing else: no shell, so a step
+can't do what the tool can't report on. A new kind of step is a new entry in `stepCommands`
+(`tools/deploy/internal/commands/steps.go`), and it must be safe to run twice.
+
+**A new server.** Its first deploy starts the ledger: a `_baseline` row, and every step already in `deploy/steps/`
+marked done without running, since Seed loads the data they'd change. The same happens on a server's first deploy with
+a version that has the ledger, so a step should arrive in a later update than the ledger itself.
+
+**Writing one.** A commit that changes a path listed in `deploy/steps/needs-step.txt` must add a step, or say
+`Deploy-Step: none` on a line of its message when the server should keep its data (editors already changed it there);
+the `commit-msg` hook (`scripts/check-deploy-steps.sh`) checks. Steps are never edited once committed, since the ledger
+counts their commands: the hook refuses that too. Deleting one is fine. When a command a step uses is renamed, delete
+the steps that already ran on the server and update the ones that haven't.
+
+**Roll back** doesn't undo steps: the data they loaded stays.
 
 ## Rolling Back
 

@@ -24,6 +24,7 @@ import (
 	"deploy/internal/project"
 	"deploy/internal/settings"
 	"deploy/internal/stack"
+	"deploy/internal/steps"
 	"deploy/internal/ui"
 )
 
@@ -63,6 +64,12 @@ func Lines(p *project.Project, s *stack.Stack, env *envfile.Settings) []string {
 			return App(p, s)
 		},
 		func() *Line { return Settings(p, env) },
+		func() *Line {
+			if !p.IsSetUp() {
+				return nil
+			}
+			return Steps(p, s)
+		},
 		func() *Line { return URL("Site", envfile.Get(p.EnvFile(), "DOMAIN")) },
 		func() *Line { return URL("Errors", envfile.Get(p.EnvFile(), "ERRORS_DOMAIN")) },
 		func() *Line { return Ports(s) },
@@ -178,6 +185,34 @@ func Settings(p *project.Project, env *envfile.Settings) *Line {
 		text += fmt.Sprintf("  (edited %s)", edited.Format(stamp))
 	}
 	return &Line{Green, "Settings", text}
+}
+
+// Steps counts the deploy steps that haven't run: red when one stopped partway, yellow when some are waiting for the
+// next deploy.
+func Steps(p *project.Project, s *stack.Stack) *Line {
+	ledger, err := steps.Read(s)
+	if err != nil {
+		return &Line{Dim, "Steps", "unknown (the database isn't running, or no deploy has made the ledger yet)"}
+	}
+	if !ledger.Started() {
+		return &Line{Dim, "Steps", "the next deploy starts the ledger"}
+	}
+	all, err := steps.Load(p.Root)
+	if err != nil {
+		return &Line{Red, "Steps", "can't read " + steps.Dir}
+	}
+	pending := steps.Pending(all, ledger)
+	if len(pending) == 0 {
+		return &Line{Green, "Steps", "all done"}
+	}
+	for _, step := range pending {
+		if row, ok := ledger.Rows[step.Name]; ok {
+			return &Line{Red, "Steps", fmt.Sprintf("%s stopped at command %d of %d  (deploy/deploy.sh steps)",
+				step.Name, row.Done+1, row.Commands)}
+		}
+	}
+	return &Line{Yellow, "Steps", fmt.Sprintf("%d pending  (the next update runs them, or deploy/deploy.sh steps)",
+		len(pending))}
 }
 
 // URL requests the domain's /healthz from outside, through Caddy, the way a visitor would.

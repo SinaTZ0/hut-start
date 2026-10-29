@@ -1,0 +1,17 @@
+# Paths whose change doesn't reach the server's data by itself: a commit that changes one needs a deploy step
+# (README.md here), or a `Deploy-Step: none` line in its message. Read by tools/deploy/check-steps.sh (the commit-msg
+# hook) and the how-update-server skill. One pattern per line; `*` matches across folders.
+
+# The departments' seed: the data, and how it's loaded.
+src/db/departments/*
+src/db/seed-departments.ts
+src/db/seed-media.ts
+
+# The offices, forms library and phone book.
+src/db/pages/*
+src/db/seed-pages.ts
+
+# How the home feed reads and cleans an article before storing it: stored articles keep the old result.
+src/orpc/home-feed/parse.server.ts
+src/orpc/home-feed/validation.ts
+src/orpc/home-feed/article-body.ts

@@ -26,3 +26,7 @@ commit-msg:
   jobs:
     - name: commitlint
       run: pnpm exec commitlint --edit {1}
+    # A commit that changes the server's seed data needs a deploy step, or `Deploy-Step: none` in its message
+    # (deploy/steps/README.md). Here and not in pre-commit, because it reads the message.
+    - name: deploy-steps
+      run: bash scripts/check-deploy-steps.sh {1}

@@ -122,6 +122,10 @@ func (t *Tool) Setup(args []string) error {
 	if err := t.S.Deploy(t.Env); err != nil {
 		return err
 	}
+	// Starts the deploy steps' ledger: the steps there are now are marked done, since Seed loads their changes.
+	if err := t.afterDeploy(); err != nil {
+		return err
+	}
 
 	/*------ Done ------*/
 	env := t.P.EnvFile()

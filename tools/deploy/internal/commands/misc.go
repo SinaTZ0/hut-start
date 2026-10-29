@@ -114,16 +114,20 @@ func (t *Tool) Admin(args []string) error {
 
 // Seed loads a server's content: the departments, the offices' pages with the forms and the phone book, and the news
 // archive. Each part takes its own options after its name; `all` runs the three in that order, the long archive last.
-// Without a part, on a terminal, it asks which.
+// `feed` reads the old homepage now, the timer's run, and isn't part of `all`. Without a part, on a terminal, it asks
+// which.
 func (t *Tool) Seed(args []string) error {
 	if err := t.requireSetUp(); err != nil {
 		return err
 	}
 	if len(args) == 0 {
 		if !ui.Interactive {
-			return ui.Usage("seed needs a part: departments, pages, archive or all (see deploy/deploy.sh help)")
+			return ui.Usage("seed needs a part: departments, pages, archive, feed or all (see deploy/deploy.sh help)")
 		}
 		return t.seedMenu()
+	}
+	if err := checkSeed(args); err != nil {
+		return err
 	}
 	switch part, rest := args[0], args[1:]; part {
 	case "departments":
@@ -132,14 +136,57 @@ func (t *Tool) Seed(args []string) error {
 		return t.seedPages(rest)
 	case "archive":
 		return t.seedArchive(rest)
-	case "all":
-		if err := noArgs("seed all", rest); err != nil {
-			return err
-		}
-		return t.seedAll()
+	case "feed":
+		return t.seedFeed(rest)
 	default:
-		return ui.Usage("Unknown seed part: %s (departments, pages, archive or all)", part)
+		return t.seedAll()
 	}
+}
+
+// checkSeed checks a seed command line without running anything. Deploy steps are checked with it before the build,
+// so a step the new tool can't run stops the update while the old app still serves.
+func checkSeed(args []string) error {
+	if len(args) == 0 {
+		return ui.Usage("seed needs a part: departments, pages, archive, feed or all (see deploy/deploy.sh help)")
+	}
+	switch part, rest := args[0], args[1:]; part {
+	case "departments":
+		for _, arg := range rest {
+			if arg != "--replace" && strings.HasPrefix(arg, "-") {
+				return ui.Usage("seed departments doesn't know %s (see deploy/deploy.sh help)", arg)
+			}
+		}
+	case "pages":
+		for _, arg := range rest {
+			if arg != "--replace" && !pageParts[arg] {
+				return ui.Usage("seed pages doesn't know %s (see deploy/deploy.sh help)", arg)
+			}
+		}
+	case "archive":
+		for i := 0; i < len(rest); i++ {
+			switch rest[i] {
+			case "--listings-only":
+			case "--pages", "--articles":
+				if i+1 >= len(rest) || !isWholeNumber(rest[i+1]) {
+					return ui.Usage("%s needs a whole number (see deploy/deploy.sh help)", rest[i])
+				}
+				i++
+			default:
+				return ui.Usage("seed archive doesn't know %s (see deploy/deploy.sh help)", rest[i])
+			}
+		}
+	case "feed":
+		for _, arg := range rest {
+			if arg != "--refresh" {
+				return ui.Usage("seed feed doesn't know %s (see deploy/deploy.sh help)", arg)
+			}
+		}
+	case "all":
+		return noArgs("seed all", rest)
+	default:
+		return ui.Usage("Unknown seed part: %s (departments, pages, archive, feed or all)", part)
+	}
+	return nil
 }
 
 func (t *Tool) seedMenu() error {
@@ -148,6 +195,7 @@ func (t *Tool) seedMenu() error {
 		"Departments     add the departments' pages that are missing",
 		"Pages           add the offices, forms and phone book if missing",
 		"News archive    read the old site's news and notices (long the first time)",
+		"Home feed       read the old homepage now, instead of waiting for the timer",
 		"Back",
 	})
 	if err != nil {
@@ -162,6 +210,8 @@ func (t *Tool) seedMenu() error {
 		return t.seedPages(nil)
 	case 3:
 		return t.seedArchive(nil)
+	case 4:
+		return t.seedFeed(nil)
 	}
 	return nil
 }
@@ -182,11 +232,6 @@ func (t *Tool) seedAll() error {
 // (`src/db/seed-departments.ts`). A department that exists is skipped, so editors' changes stay; --replace loads it
 // again, and slugs limit the run.
 func (t *Tool) seedDepartments(args []string) error {
-	for _, arg := range args {
-		if arg != "--replace" && strings.HasPrefix(arg, "-") {
-			return ui.Usage("seed departments doesn't know %s (see deploy/deploy.sh help)", arg)
-		}
-	}
 	// A one-off container of the running app's service: its image, settings and networks (database, storage).
 	run := append([]string{"run", "--rm", "--no-deps", "-T", "app", "node", "deploy/seed-departments.mjs"}, args...)
 	if err := t.S.Run(run...); err != nil {
@@ -205,11 +250,6 @@ var pageParts = map[string]bool{"offices": true, "library": true, "phonebook": t
 // (`src/db/seed-pages.ts`). A part that has rows is skipped, so editors' changes stay; --replace loads it again, and
 // part names limit the run.
 func (t *Tool) seedPages(args []string) error {
-	for _, arg := range args {
-		if arg != "--replace" && !pageParts[arg] {
-			return ui.Usage("seed pages doesn't know %s (see deploy/deploy.sh help)", arg)
-		}
-	}
 	run := append([]string{"run", "--rm", "--no-deps", "-T", "app", "node", "deploy/seed-pages.mjs"}, args...)
 	if err := t.S.Run(run...); err != nil {
 		return interrupt.Check(ui.Fail("Loading the pages failed (see above)."))
@@ -225,23 +265,25 @@ func (t *Tool) seedPages(args []string) error {
 // safe; the app's timer reads the rest a few at a time. --listings-only skips the article pages, --pages <n> reads
 // only the first n pages of each listing, --articles <n> at most n article pages.
 func (t *Tool) seedArchive(args []string) error {
-	for i := 0; i < len(args); i++ {
-		switch args[i] {
-		case "--listings-only":
-		case "--pages", "--articles":
-			if i+1 >= len(args) || !isWholeNumber(args[i+1]) {
-				return ui.Usage("%s needs a whole number (see deploy/deploy.sh help)", args[i])
-			}
-			i++
-		default:
-			return ui.Usage("seed archive doesn't know %s (see deploy/deploy.sh help)", args[i])
-		}
-	}
 	run := append([]string{"run", "--rm", "--no-deps", "-T", "app", "node", "deploy/sync-feed-archive.mjs"}, args...)
 	if err := t.S.Run(run...); err != nil {
 		return interrupt.Check(ui.Fail("Filling the archive failed (see above). Run it again to carry on."))
 	}
 	ui.OK("Archive filled.")
+	return nil
+}
+
+/*------ Home Feed ------*/
+
+// seedFeed reads the old homepage into the home feed now, the run the app's timer makes every half hour
+// (`src/db/sync-home-feed.ts`). --refresh reads every listed article's page again, for a change to how articles are
+// cleaned (docs/backend/home-feed.md).
+func (t *Tool) seedFeed(args []string) error {
+	run := append([]string{"run", "--rm", "--no-deps", "-T", "app", "node", "deploy/sync-home-feed.mjs"}, args...)
+	if err := t.S.Run(run...); err != nil {
+		return interrupt.Check(ui.Fail("Reading the home feed failed (see above). Run it again to retry."))
+	}
+	ui.OK("Home feed read.")
 	return nil
 }
 

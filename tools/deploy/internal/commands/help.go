@@ -29,8 +29,8 @@ With no command, a menu with the stack's status under it.
   status                        containers, disk, backups and the status lines
   logs [<service>]              follow a service's logs: %s
   admin [<email>]               give an account the admin role
-  seed [all]                    all loads the three parts below, in this order; without a part, on a terminal,
-                                it asks which
+  seed [all]                    all loads departments, pages and archive, in this order; without a part, on a
+                                terminal, it asks which
   seed departments [--replace] [<slug>...]
                                 the departments' pages that are missing; --replace loads existing ones again
                                 (editors' changes are lost), slugs limit it to those departments
@@ -40,6 +40,11 @@ With no command, a menu with the stack's status under it.
   seed archive [--listings-only] [--pages <n>] [--articles <n>]
                                 the news archive from the old site's listings, then every article page not
                                 read yet (an hour or more the first time; safe to stop and rerun)
+  seed feed [--refresh]         read the old homepage now, the timer's run; --refresh reads every listed
+                                article's page again
+  steps [--list | --rerun <name>]
+                                the deploy steps in deploy/steps/ and whether they ran; runs the pending ones
+                                (update and apply run them too); --rerun runs one again from its first command
   pgweb open [--for <time>] [--no-backup]
                                 a database browser with full access, through an SSH tunnel, for 30m, 4h…
                                 (24h at most, the default); a database dump first, unless --no-backup

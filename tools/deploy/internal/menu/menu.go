@@ -35,6 +35,7 @@ var items = []item{
 	{"logs", "Logs", "pick a service, follow", func(t *commands.Tool) error { return t.Logs(nil) }},
 	{"admin", "Make admin", "promote an account by email", func(t *commands.Tool) error { return t.Admin(nil) }},
 	{"seed", "Seed", "departments, pages, the news archive", func(t *commands.Tool) error { return t.Seed(nil) }},
+	{"steps", "Deploy steps", "list them, run the pending ones", func(t *commands.Tool) error { return t.Steps(nil) }},
 	{"pgweb", "Database browser", "browse and edit the database, for a set time", func(t *commands.Tool) error {
 		return t.Pgweb(nil)
 	}},

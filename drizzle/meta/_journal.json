@@ -43,6 +43,13 @@
       "when": 1793262014481,
       "tag": "0005_pages",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793293534077,
+      "tag": "0006_deploy-steps",
+      "breakpoints": true
     }
   ]
 }

@@ -35,7 +35,9 @@ timer / homeFeed.sync / pnpm crawl:home
   (their size lets the page reserve their space and tell a poster from a photo) and its files' sizes asked for. Later
   runs reuse what was stored. A page that fails to load is tried again on the next run; one that loads without an
   article in it is stored with an empty body and not asked for again. An edit made on the old site after that shows
-  only after a refresh (`pnpm crawl:home -- --refresh`, or `{"refresh": true}` on the endpoint).
+  only after a refresh (`pnpm crawl:home -- --refresh`, or `{"refresh": true}` on the endpoint). On the server, a
+  commit that changes how articles are read or cleaned adds a deploy step running `seed feed --refresh`
+  (docs/deployment.md → Deploy Steps).
 - **The body is cleaned on the way in** (`parseArticlePage`, then `validation.ts`). Only what the page draws is kept:
   paragraphs, headings, lists, bold, links, photos, the photo set, files and simple tables (a header row and plain
   cells). Word's styling is dropped. Posts copied from the university's Telegram channel are given structure: a ✳️ line
@@ -108,7 +110,7 @@ in headless screenshots. Set a normal Chrome user agent there; real browsers are
 | Way                  | When                                                                                                                                                                                             |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | The server's timer   | Every `HOME_FEED_SYNC_MINUTES` (default 30). The first run is 30 seconds after start. `0` turns it off.                                                                                          |
-| `pnpm crawl:home`    | By hand, in development or on the server. Needs no server running and no secret. Reads every page it needs in one go. `-- --refresh` reads every article's page again.                           |
+| `pnpm crawl:home`    | By hand, in development; on the server `deploy/deploy.sh seed feed`. Needs no server running and no secret. Reads every page it needs in one go. `--refresh` reads every article's page again.   |
 | `pnpm crawl:archive` | The archive, by hand: every listing page, then every unread article page. `-- --listings-only`, `--pages <n>` and `--articles <n>` cut it short. On the server: `deploy/deploy.sh seed archive`. |
 | `homeFeed.sync`      | On demand over HTTP, with the secret. A call during a timed run joins it.                                                                                                                        |
 
@@ -138,7 +140,8 @@ At the cutover, when the new site's editors take over:
 
 1. Delete `parse.server.ts`, `listing.server.ts`, `source.server.ts`, `sync.server.ts`, `validation.ts`, the
    `fixtures/` folder, `parse.server.test.ts`, `src/db/sync-home-feed.ts` and `src/db/sync-feed-archive.ts` with their
-   `crawl:home` and `crawl:archive` scripts, and the `archive` command in `tools/deploy`.
+   `crawl:home` and `crawl:archive` scripts, the `seed archive` and `seed feed` parts in `tools/deploy` with their
+   bundles in the `Dockerfile`, and the home-feed lines in `deploy/steps/needs-step.txt`.
 2. Delete `syncHomeFeed`, `syncFeedArchive` and their helpers from `service.ts`, the `sync` procedure and contract, and the
    `startHomeFeedSync()` call in `src/server.ts`.
 3. Remove both variables from `src/env.server.ts`, `.env.example`, `.env.production.example`, `compose.prod.yaml`,
