@@ -19,12 +19,20 @@ import {
 /*===== Group =====*/
 
 /**
- * A list of rows joined into one surface. Unlike shadcn's `div role="list"`, it renders a `<ul>`: wrap each Item in
- * an `<li>`, so a row that is a link keeps its link role.
+ * A list of rows joined into one surface. Unlike shadcn's `div role="list"`, it renders a `<ul>`, or an `<ol>` when
+ * the order means something (`ordered`: steps): wrap each Item in an `<li>`, so a row that is a link keeps its link
+ * role.
  */
-function ItemGroup({ className, variant, ...props }: ComponentProps<"ul"> & VariantProps<typeof itemGroupVariants>) {
+function ItemGroup({
+  className,
+  variant,
+  ordered = false,
+  ...props
+}: ComponentProps<"ul"> & VariantProps<typeof itemGroupVariants> & { ordered?: boolean }) {
+  // An `<ol>` takes every prop a `<ul>` does; only the ref's element type differs.
+  const List = (ordered ? "ol" : "ul") as "ul";
   return (
-    <ul
+    <List
       data-slot="item-group"
       data-variant={variant ?? "stack"}
       {...props}

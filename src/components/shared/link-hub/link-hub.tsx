@@ -2,7 +2,8 @@ import type { LucideIcon } from "lucide-react";
 import { SearchXIcon } from "lucide-react";
 
 import { FilterChips } from "#/components/shared/filter-chips/filter-chips";
-import { LinkTile } from "#/components/shared/link-tile/link-tile";
+import { ItemGroup } from "#/components/primitive/item/item";
+import { LinkRow } from "#/components/shared/link-row/link-row";
 import { type Crumb, PageHero } from "#/components/shared/page-hero/page-hero";
 import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
 import { SearchField } from "#/components/shared/search-field/search-field";
@@ -33,7 +34,7 @@ export const ALL_GROUPS = "all";
 
 /**
  * A page of links grouped by what a person goes there to do (the systems, the payment gateways): a search field and a
- * chip per group over numbered sections of tiles. The page owns `group` and `query` (they live in its URL) and is told
+ * chip per group over numbered sections, each an index of ruled rows. The page owns `group` and `query` (they live in its URL) and is told
  * of changes.
  */
 export function LinkHub({
@@ -121,19 +122,18 @@ export function LinkHub({
                 title={candidate.title}
               />
               <p className="mt-2 text-body-sm text-muted-foreground">{candidate.summary}</p>
-              <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <ItemGroup variant="index" className="mt-6">
                 {candidate.items.map((item) => (
-                  <li key={item.id}>
-                    <LinkTile
-                      href={item.href}
-                      title={item.title}
-                      description={item.description}
-                      icon={item.icon}
-                      internalOnly={item.internalOnly}
-                    />
-                  </li>
+                  <LinkRow
+                    key={item.id}
+                    href={item.href}
+                    title={item.title}
+                    description={item.description}
+                    icon={item.icon}
+                    internalOnly={item.internalOnly}
+                  />
                 ))}
-              </ul>
+              </ItemGroup>
             </div>
           </section>
         ))}

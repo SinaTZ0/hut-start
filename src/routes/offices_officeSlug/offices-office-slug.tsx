@@ -7,7 +7,6 @@ import type { ReactNode } from "react";
 import { ItemGroup } from "#/components/primitive/item/item";
 import { Spinner } from "#/components/primitive/spinner/spinner";
 import { FileRow } from "#/components/shared/file-row/file-row";
-import { LinkTile } from "#/components/shared/link-tile/link-tile";
 import { NoticeList } from "#/components/shared/notice-list/notice-list";
 import { PageHero } from "#/components/shared/page-hero/page-hero";
 import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
@@ -25,9 +24,10 @@ import { m } from "#/paraglide/messages";
 import { localizeHref } from "#/paraglide/runtime";
 import { CardList } from "./components/card-list";
 import { FaqList } from "./components/faq-list";
-import { PersonCard } from "./components/person-card";
+import { PeopleRoster, PersonCard } from "./components/person-card";
 import { ScheduleTables } from "./components/schedule-tables";
-import { LINK_ICONS, SECTION_CRUMBS } from "./content";
+import { OfficeTools } from "./components/tools";
+import { SECTION_CRUMBS } from "./content";
 
 /*===== Query =====*/
 const officeQuery = (slug: string) => orpc.office.get.queryOptions({ input: { slug } });
@@ -89,20 +89,7 @@ function OfficePage() {
     sections.push({
       id: "tools",
       title: m.office_tools_title(),
-      body: (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {office.links.map((link) => (
-            <li key={link.id}>
-              <LinkTile
-                href={link.url}
-                title={link.title}
-                description={link.description ?? undefined}
-                icon={LINK_ICONS[link.icon]}
-              />
-            </li>
-          ))}
-        </ul>
-      ),
+      body: <OfficeTools links={office.links} />,
     });
   }
   if (hasAbout) {
@@ -171,30 +158,14 @@ function OfficePage() {
     sections.push({
       id: "people",
       title: people[0]?.role === "head" ? m.office_people_with_head_title() : m.office_people_title(),
-      body: (
-        <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {people.map((member) => (
-            <li key={member.id}>
-              <PersonCard member={member} />
-            </li>
-          ))}
-        </ul>
-      ),
+      body: <PeopleRoster members={people} />,
     });
   }
   if (former.length > 0) {
     sections.push({
       id: "former",
       title: m.office_former_title(),
-      body: (
-        <ol className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {former.map((member) => (
-            <li key={member.id}>
-              <PersonCard member={member} />
-            </li>
-          ))}
-        </ol>
-      ),
+      body: <PeopleRoster members={former} ordered />,
     });
   }
 

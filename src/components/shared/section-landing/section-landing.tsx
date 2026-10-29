@@ -2,6 +2,8 @@ import { ArrowLeftIcon, ExternalLinkIcon } from "lucide-react";
 import { useMemo } from "react";
 
 import { DepartmentGrid } from "#/components/shared/department-grid/department-grid";
+import { ItemGroup } from "#/components/primitive/item/item";
+import { LinkRow } from "#/components/shared/link-row/link-row";
 import { LinkTile } from "#/components/shared/link-tile/link-tile";
 import { NoticeList } from "#/components/shared/notice-list/notice-list";
 import { PageHero } from "#/components/shared/page-hero/page-hero";
@@ -83,7 +85,7 @@ export function SectionLanding({ sectionId, feed }: { sectionId: SectionId; feed
           title={page.lead === "labs" ? m.nav_research_labs() : firstGroup.title()}
         />
         <div className="mt-8">
-          {page.lead === "first-group" && <GroupTiles group={firstGroup} />}
+          {page.lead === "first-group" && <GroupIndex group={firstGroup} />}
           {page.lead === "departments" && <DepartmentGrid />}
           {page.lead === "labs" && (
             <div className="grid gap-4">
@@ -139,16 +141,14 @@ export function SectionLanding({ sectionId, feed }: { sectionId: SectionId; feed
 
 /*===== Link Groups =====*/
 
-/** A group's links as tiles: where a visitor most often goes from this section. */
-function GroupTiles({ group }: { group: NavGroup }) {
+/** A group's links as a numbered index: where a visitor most often goes from this section. */
+function GroupIndex({ group }: { group: NavGroup }) {
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {group.links.map((link) => (
-        <li key={link.href}>
-          <LinkTile href={link.href} title={link.label()} />
-        </li>
+    <ItemGroup variant="index-wide">
+      {group.links.map((link, index) => (
+        <LinkRow key={link.href} href={link.href} title={link.label()} number={index + 1} />
       ))}
-    </ul>
+    </ItemGroup>
   );
 }
 

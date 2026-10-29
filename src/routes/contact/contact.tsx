@@ -14,7 +14,8 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
-import { LinkTile } from "#/components/shared/link-tile/link-tile";
+import { ItemGroup } from "#/components/primitive/item/item";
+import { LinkRow } from "#/components/shared/link-row/link-row";
 import { PageHero } from "#/components/shared/page-hero/page-hero";
 import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
 import { SiteLink } from "#/components/shared/site-link/site-link";
@@ -98,13 +99,17 @@ function ContactPage() {
       <section aria-labelledby="contact-write-title" className="border-t bg-background">
         <div className="mx-auto max-w-site px-gutter py-12 md:py-section">
           <RuledHeading id="contact-write-title" number={1} title={m.contact_write_title()} />
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
+          <ItemGroup variant="index" className="mt-8">
             {WRITE_TO.map((item) => (
-              <li key={item.href}>
-                <LinkTile href={item.href} title={item.title()} description={item.description()} icon={item.icon} />
-              </li>
+              <LinkRow
+                key={item.href}
+                href={item.href}
+                title={item.title()}
+                description={item.description()}
+                icon={item.icon}
+              />
             ))}
-          </ul>
+          </ItemGroup>
         </div>
       </section>
 

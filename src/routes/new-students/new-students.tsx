@@ -1,7 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { LinkTile } from "#/components/shared/link-tile/link-tile";
+import { ItemGroup } from "#/components/primitive/item/item";
+import { LinkRow } from "#/components/shared/link-row/link-row";
 import { NoticeList } from "#/components/shared/notice-list/notice-list";
 import { PageHero } from "#/components/shared/page-hero/page-hero";
 import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
@@ -44,13 +45,17 @@ function NewStudentsPage() {
       {/*===== First Steps =====*/}
       <section aria-labelledby="new-students-steps" className="mx-auto max-w-site px-gutter pb-section">
         <RuledHeading id="new-students-steps" number={1} title={m.new_students_steps_title()} />
-        <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {FIRST_STEPS.map((step) => (
-            <li key={step.href}>
-              <LinkTile href={step.href} title={step.title()} description={step.description()} icon={step.icon} />
-            </li>
+        <ItemGroup variant="index" ordered className="mt-8">
+          {FIRST_STEPS.map((step, index) => (
+            <LinkRow
+              key={step.href}
+              href={step.href}
+              title={step.title()}
+              description={step.description()}
+              number={index + 1}
+            />
           ))}
-        </ol>
+        </ItemGroup>
       </section>
 
       {/*===== Notices =====*/}

@@ -5,7 +5,8 @@ import { composeStyles, defineStyles, joinStyles } from "../styles";
 
 // Rows are joined into one surface rather than standing apart like cards. `stack` keeps them apart by a hairline gap
 // (search results), `divided` rules a line between them (the welcome help list), `ruled` also rules the top and the
-// bottom, for a list that stands on the page without a panel (a department's files), and `tiled` lays them in a grid
+// bottom, for a list that stands on the page without a panel (a department's files), `index` lays ruled rows in
+// columns, and `tiled` lays them in a grid
 // whose cells share their edges (research units); set the columns on the group.
 const twGroupStyles = defineStyles({
   layout: "group/item-group",
@@ -23,6 +24,17 @@ const twGroupVariant = defineStyles({
     layout: "flex flex-col",
     geometry: "border-y",
     appearance: "*:not-first:border-t",
+  },
+  // `ruled` laid in two columns from `md` up, for a list long enough to read as an index (the systems hub, an
+  // office's guides). Each row rules its own bottom and the first row of each column its top.
+  index: {
+    layout: "grid md:grid-cols-2 md:gap-x-12",
+    geometry: "*:border-b *:first:border-t md:*:nth-2:border-t",
+  },
+  // `index` with a third column from `lg` up, for short entries (names alone, a roster of people).
+  "index-wide": {
+    layout: "grid md:grid-cols-2 md:gap-x-12 lg:grid-cols-3",
+    geometry: "*:border-b *:first:border-t md:*:nth-2:border-t lg:*:nth-3:border-t",
   },
   tiled: {
     // Each cell draws its start and top edge and is pulled one pixel back, so neighbours share one line and the
@@ -81,7 +93,8 @@ const twMediaStyles = defineStyles({
     "flex shrink-0 items-center justify-center group-has-data-[slot=item-description]/item:self-start [&_svg]:pointer-events-none",
 });
 
-// `default` is a bare icon; `icon` sets it on a bordered tile; `image` is a square thumbnail.
+// `default` is a bare icon; `icon` sets it on a bordered tile; `image` is a square thumbnail; `number` is an entry's
+// number in an index, in the gold of the section numbers.
 const twMediaVariant = defineStyles({
   default: {
     geometry: "group-has-data-[slot=item-description]/item:translate-y-0.5 [&_svg:not([class*='size-'])]:size-5",
@@ -93,6 +106,11 @@ const twMediaVariant = defineStyles({
   },
   image: {
     geometry: "size-10 overflow-hidden rounded-sm [&_img]:size-full [&_img]:object-cover",
+  },
+  number: {
+    geometry: "w-6 justify-start",
+    typography: "text-body-sm font-bold",
+    appearance: "text-highlight-text",
   },
 });
 

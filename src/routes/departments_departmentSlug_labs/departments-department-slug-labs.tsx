@@ -6,7 +6,6 @@ import type { CSSProperties } from "react";
 
 import { Badge } from "#/components/primitive/badge/badge";
 import { buttonVariants } from "#/components/primitive/button/button.styles";
-import { Card, CardContent } from "#/components/primitive/card/card";
 import { ItemGroup } from "#/components/primitive/item/item";
 import { FileRow } from "#/components/shared/file-row/file-row";
 import { PageHero } from "#/components/shared/page-hero/page-hero";
@@ -16,6 +15,7 @@ import { TextLink } from "#/components/shared/text-link/text-link";
 import { absoluteUrl, jsonLd, pageMeta } from "#/lib/seo";
 import { departmentDrawings } from "#/lib/university/drawings";
 import { DEPARTMENTS, DEPARTMENTS_HREF } from "#/lib/university/navigation";
+import { cn } from "#/lib/utils";
 import { orpc } from "#/orpc/client";
 import type { Department } from "#/orpc/department/contract";
 import { m } from "#/paraglide/messages";
@@ -134,10 +134,10 @@ function LabsPage() {
         <section id="labs-list" aria-labelledby="labs-list-title" className="scroll-mt-24 border-t bg-background-alt">
           <div className="mx-auto max-w-site px-gutter py-section">
             <RuledHeading id="labs-list-title" number={++number} title={m.labs_list_title()} />
-            <ol className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <ol className="mt-8 border-t">
               {department.labs.map((lab, index) => (
-                <li key={lab.id}>
-                  <LabCard lab={lab} index={index} />
+                <li key={lab.id} className="border-b">
+                  <LabEntry lab={lab} index={index} />
                 </li>
               ))}
             </ol>
@@ -181,37 +181,51 @@ function LabsPage() {
   );
 }
 
-/*===== Lab Card =====*/
+/*===== Lab Entry =====*/
 
-/** One lab: its number, name, what students do there, and its equipment as chips. Lab text is Persian on `/en` too. */
-function LabCard({ lab, index }: { lab: Department["labs"][number]; index: number }) {
+/**
+ * One lab as a line of the labs ledger: its number and name, what students do there, and its equipment as chips, in
+ * columns from `lg` up so labs can be compared down the page; a lab without equipment gives its description the room. Lab text is Persian on `/en` too.
+ */
+function LabEntry({ lab, index }: { lab: Department["labs"][number]; index: number }) {
   return (
-    <Card size="sm" className="h-full">
-      <CardContent>
-        <div className="grid gap-3">
-          <span aria-hidden className="text-kicker font-bold text-highlight-text">
-            {sectionNumber(index + 1)}
-          </span>
-          <h3 className="text-h4">{lab.name}</h3>
-          {lab.description && (
-            <p dir="auto" className="text-body-sm text-muted-foreground">
-              {lab.description}
-            </p>
+    <div className="grid gap-3 py-6 lg:grid-cols-12 lg:gap-10 lg:py-8">
+      <div className="flex items-baseline gap-4 lg:col-span-4">
+        <span aria-hidden className="w-7 shrink-0 text-kicker font-bold text-highlight-text">
+          {sectionNumber(index + 1)}
+        </span>
+        <h3 className="text-h4">{lab.name}</h3>
+      </div>
+      {lab.description && (
+        <p
+          dir="auto"
+          className={cn(
+            "max-w-prose ps-11 text-body-sm text-muted-foreground lg:ps-0",
+            lab.equipment.length > 0 ? "lg:col-span-4" : "lg:col-span-8",
           )}
-          {lab.equipment.length > 0 && (
-            <ul aria-label={m.labs_equipment()} className="flex flex-wrap gap-1.5" dir="auto">
-              {lab.equipment.map((item) => (
-                <li key={item}>
-                  <Badge variant="outline" size="wrap">
-                    {item}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
+        >
+          {lab.description}
+        </p>
+      )}
+      {lab.equipment.length > 0 && (
+        <ul
+          aria-label={m.labs_equipment()}
+          className={cn(
+            "flex flex-wrap content-start gap-1.5 ps-11 lg:col-span-4 lg:ps-0",
+            !lab.description && "lg:col-start-9",
           )}
-        </div>
-      </CardContent>
-    </Card>
+          dir="auto"
+        >
+          {lab.equipment.map((item) => (
+            <li key={item}>
+              <Badge variant="outline" size="wrap">
+                {item}
+              </Badge>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 

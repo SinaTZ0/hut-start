@@ -12,7 +12,8 @@ import {
 } from "lucide-react";
 
 import { ArchivePosts } from "#/components/shared/archive-posts/archive-posts";
-import { LinkTile } from "#/components/shared/link-tile/link-tile";
+import { ItemGroup } from "#/components/primitive/item/item";
+import { LinkRow } from "#/components/shared/link-row/link-row";
 import { PageHero } from "#/components/shared/page-hero/page-hero";
 import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
 import { pageMeta } from "#/lib/seo";
@@ -105,13 +106,17 @@ function AlumniPage() {
         <section key={section.id} aria-labelledby={`alumni-${section.id}-title`} className="border-t bg-background">
           <div className="mx-auto max-w-site px-gutter py-12 md:py-section">
             <RuledHeading id={`alumni-${section.id}-title`} number={index + 1} title={section.title} />
-            <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ItemGroup variant="index" className="mt-8">
               {section.tiles.map((tile) => (
-                <li key={tile.href}>
-                  <LinkTile href={tile.href} title={tile.title()} description={tile.description()} icon={tile.icon} />
-                </li>
+                <LinkRow
+                  key={tile.href}
+                  href={tile.href}
+                  title={tile.title()}
+                  description={tile.description()}
+                  icon={tile.icon}
+                />
               ))}
-            </ul>
+            </ItemGroup>
           </div>
         </section>
       ))}

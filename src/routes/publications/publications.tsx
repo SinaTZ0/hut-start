@@ -2,8 +2,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { BookOpenTextIcon, NewspaperIcon } from "lucide-react";
 
+import { ItemGroup } from "#/components/primitive/item/item";
 import { ArchivePosts } from "#/components/shared/archive-posts/archive-posts";
-import { LinkTile } from "#/components/shared/link-tile/link-tile";
+import { LinkRow } from "#/components/shared/link-row/link-row";
 import { PageHero } from "#/components/shared/page-hero/page-hero";
 import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
 import { TextLink } from "#/components/shared/text-link/text-link";
@@ -56,13 +57,11 @@ function PublicationsPage() {
             title={m.publications_student_title()}
             action={<TextLink href={ASSOCIATIONS_HREF}>{m.nav_campus_life_associations()}</TextLink>}
           />
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
+          <ItemGroup variant="index" className="mt-8">
             {STUDENT_PUBLICATIONS.map((publication) => (
-              <li key={publication.id}>
-                <PublicationTile publication={publication} icon="magazine" />
-              </li>
+              <PublicationRow key={publication.id} publication={publication} icon="magazine" />
             ))}
-          </ul>
+          </ItemGroup>
         </div>
       </section>
 
@@ -70,9 +69,9 @@ function PublicationsPage() {
       <section aria-labelledby="publications-journal-title" className="border-t bg-background">
         <div className="mx-auto max-w-site px-gutter py-12 md:py-section">
           <RuledHeading id="publications-journal-title" number={2} title={m.publications_journal_title()} />
-          <div className="mt-8 sm:max-w-1/2">
-            <PublicationTile publication={UNIVERSITY_JOURNAL} icon="journal" />
-          </div>
+          <ItemGroup variant="ruled" className="mt-8 md:max-w-1/2">
+            <PublicationRow publication={UNIVERSITY_JOURNAL} icon="journal" />
+          </ItemGroup>
         </div>
       </section>
 
@@ -97,13 +96,13 @@ function PublicationsPage() {
 
 /*===== Publication =====*/
 
-/** A publication as a tile: its name, who publishes it, and its latest issue, linking to its posts in the archive. */
-function PublicationTile({ publication, icon }: { publication: Publication; icon: "magazine" | "journal" }) {
+/** A publication as a row: its name, who publishes it, and its latest issue, linking to its posts in the archive. */
+function PublicationRow({ publication, icon }: { publication: Publication; icon: "magazine" | "journal" }) {
   // «آبان ۱۴۰۴», from the parts: Persian's own month-and-year format puts the year first.
   const { month, year } = formatDateParts(isoToDate(publication.issuedOn));
   const issue = m.publications_issue({ issue: publication.issue, date: `${month} ${year}` });
   return (
-    <LinkTile
+    <LinkRow
       href={archiveHref({ q: publication.search })}
       title={publication.name()}
       description={publication.publisher ? `${publication.publisher()} · ${issue}` : issue}
