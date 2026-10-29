@@ -61,13 +61,13 @@ const twItemStyles = defineStyles({
   appearance: "text-foreground",
   interaction: "transition-[color,background-color,border-color,box-shadow,translate] duration-200 ease-out",
   hover: "[a&]:hover:bg-accent",
-  // In a `strips` group, from `md` up: a card that lifts on hover instead of the wash.
+  // In a `strips` group, from `md` up: a card that lifts and takes the wash on hover.
   geometryStrip:
     "md:group-data-[variant=strips]/item-group:rounded-md md:group-data-[variant=strips]/item-group:border md:group-data-[variant=strips]/item-group:px-5.5 md:group-data-[variant=strips]/item-group:py-4.5",
   appearanceStrip:
     "md:group-data-[variant=strips]/item-group:bg-card md:group-data-[variant=strips]/item-group:shadow-sm",
   hoverStrip:
-    "md:group-data-[variant=strips]/item-group:[a&]:hover:border-border-strong md:group-data-[variant=strips]/item-group:[a&]:hover:bg-card md:group-data-[variant=strips]/item-group:[a&]:hover:shadow-md motion-safe:md:group-data-[variant=strips]/item-group:[a&]:hover:-translate-y-0.5",
+    "md:group-data-[variant=strips]/item-group:[a&]:hover:border-border-strong md:group-data-[variant=strips]/item-group:[a&]:hover:bg-accent md:group-data-[variant=strips]/item-group:[a&]:hover:shadow-md motion-safe:md:group-data-[variant=strips]/item-group:[a&]:hover:-translate-y-0.5",
   // Rows sit in clipped groups, so the focus ring is drawn inside the row.
   focus: "focus-visible:-outline-offset-2",
   motion: "motion-reduce:transition-none",

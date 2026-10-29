@@ -39,7 +39,8 @@ export function OfficeTools({ links }: { links: OfficeLink[] }) {
   return (
     <div className="grid gap-10 lg:grid-cols-11 lg:gap-12">
       <Part title={m.office_tools_systems()} className="lg:col-span-6">
-        <div className="relative overflow-hidden rounded-lg border bg-card px-5 py-1 sm:px-8 sm:py-2">
+        {/* From `md` up the entries carry the desk's padding, so an entry's hover wash fills the desk edge to edge. */}
+        <div className="relative overflow-hidden rounded-lg border bg-card px-5 py-1 sm:px-8 sm:py-2 md:p-0">
           {/* With links beside it the drawing sits in the desk's far corner, under the entries' end. */}
           {others.length > 0 && (
             <span
@@ -94,7 +95,8 @@ function Part({ title, className, children }: { title: string; className?: strin
 
 /**
  * One system on the desk, the whole entry a link: its icon chip, name, what a person does there, and «ورود به سامانه»
- * with the address it opens. The text keeps clear of the drawing in the desk's corner.
+ * with the address it opens. The text keeps clear of the drawing in the desk's corner. From `md` up, like the site's
+ * link lists, the entry takes a wash on hover and «ورود به سامانه» is a pill that fills; a phone keeps the plain line.
  */
 function SystemEntry({ link }: { link: OfficeLink }) {
   const Icon = LINK_ICONS[link.icon];
@@ -104,7 +106,8 @@ function SystemEntry({ link }: { link: OfficeLink }) {
   return (
     <SiteLink
       href={link.url}
-      className="group/system flex items-start gap-4 py-6 focus-visible:outline-offset-4 sm:gap-5"
+      // The wash is translucent so the desk's drawing still shows through it.
+      className="group/system flex items-start gap-4 py-6 transition-colors duration-200 ease-out focus-visible:outline-offset-4 motion-reduce:transition-none sm:gap-5 md:px-8 md:py-7 md:hover:bg-accent/70 md:focus-visible:-outline-offset-2"
     >
       <span
         aria-hidden
@@ -120,7 +123,7 @@ function SystemEntry({ link }: { link: OfficeLink }) {
           {link.description}
         </span>
         <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-caption">
-          <span className="flex items-center gap-1.5 font-bold text-brand-text">
+          <span className="flex items-center gap-1.5 font-bold text-brand-text transition-colors duration-200 ease-out motion-reduce:transition-none md:rounded-full md:border md:border-border-strong md:bg-card md:px-3.5 md:py-1 md:group-hover/system:border-primary md:group-hover/system:bg-primary md:group-hover/system:text-primary-foreground md:group-focus-visible/system:border-primary md:group-focus-visible/system:bg-primary md:group-focus-visible/system:text-primary-foreground">
             {m.office_tools_open()}
             {/* An outside system's icon nudges up and out; a page of this site's arrow, forward. */}
             <Arrow

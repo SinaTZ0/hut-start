@@ -11,6 +11,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from "#/components/primitive/item/item";
+import { actionOf } from "#/components/shared/link-row/link-row";
 import { SectionHead } from "#/components/shared/section-head/section-head";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { HOME_DRAWINGS } from "#/lib/university/drawings";
@@ -98,7 +99,10 @@ export function Welcome() {
                 <ItemTitle>{help.title()}</ItemTitle>
                 <ItemDescription>{help.description()}</ItemDescription>
               </ItemContent>
-              <ItemActions>
+              {/* From `md` up the arrow becomes a pill saying what pressing the row does, as in the site's link
+                  lists; a phone keeps the bare arrow. */}
+              <ItemActions variant="pill">
+                <span data-slot="item-action-label">{actionOf(help.href)}</span>
                 <ArrowLeftIcon data-icon="forward" />
               </ItemActions>
             </Item>

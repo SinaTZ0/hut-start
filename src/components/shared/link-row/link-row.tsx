@@ -30,7 +30,7 @@ export function hostOf(href: string): string | null {
 const FORM_PATHS = new Set(["/feedback", "/consultation"]);
 
 /** What pressing a row does, by where it goes: write an email, fill in a form, visit another site, or view a page. */
-function actionOf(href: string): string {
+export function actionOf(href: string): string {
   if (href.startsWith("mailto:")) return m.link_row_email();
   if (FORM_PATHS.has(href)) return m.link_row_form();
   return hostOf(href) ? m.link_row_visit() : m.link_row_view();
