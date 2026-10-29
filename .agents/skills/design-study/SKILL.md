@@ -58,9 +58,11 @@ image sizes stored at crawl time).
 
 Copy `assets/viewer.html` to `.tmp-claude/<topic>-study/index.html` and fill in its marked parts. It already has:
 
-- the option buttons (keys 0–9), a row of version pills for an option's versions (keys a–d), the notes panel and the
-  toggles: device (desk 1440 / phone 390), language (fa rtl / en ltr), theme (light / dark), plus any toggles the
-  topic needs (section, state such as "scrolled" or "menu open");
+- the notes panel at the top, above the option buttons, so the reader knows what an option is (its lead, **Good**,
+  **Watch** and **Build**) before comparing it; keep it there;
+- the option buttons (keys 0–9), a row of version pills for an option's versions (keys a–d), and the toggles: device
+  (desk 1440 / phone 390), language (fa rtl / en ltr), theme (light / dark), plus any toggles the topic needs
+  (section, state such as "scrolled" or "menu open");
 - the state saved in `localStorage`, so a reload keeps the view;
 - a desktop frame that zooms to fit the window, and a phone frame at 390;
 - option 0 drawn from the baseline screenshots in `base/`.
@@ -75,6 +77,10 @@ Rules for the mock itself:
 - Use logical properties (`inset-inline-start`, `margin-inline`, `border-inline-start`) so both directions work, and
   `dir="auto"` on text that comes from the feed.
 - Labels that only help the comparison (a photo's measured ratio, say) are allowed but must be called study-only.
+- When colour tells kinds apart (dates in a calendar, series, statuses), pick the hues with the `dataviz` skill's
+  validator, not by eye (all pairs when every kind can be on screen at once, in both modes), check each ink's
+  contrast on its tint, and give every kind a second cue (a shape, a label), so colour is never the only one. The
+  calendar study (`.tmp-claude/calendar-study/`) is the worked example.
 
 ## 4. Check it before handing over
 
