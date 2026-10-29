@@ -37,6 +37,12 @@ var items = []item{
 	{"departments", "Load departments", "add the departments' pages that are missing", func(t *commands.Tool) error {
 		return t.Departments(nil)
 	}},
+	{"pages", "Load pages", "add the offices, forms and phone book if missing", func(t *commands.Tool) error {
+		return t.Pages(nil)
+	}},
+	{"archive", "Fill news archive", "read the old site's news and notices (long the first time)", func(t *commands.Tool) error {
+		return t.Archive(nil)
+	}},
 	{"pgweb", "Database browser", "browse and edit the database, for a set time", func(t *commands.Tool) error {
 		return t.Pgweb(nil)
 	}},

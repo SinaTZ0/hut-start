@@ -25,5 +25,15 @@ export const DOCUMENT_FORMATS = ["pdf", "doc", "docx"] as const;
 
 export type DocumentFormat = (typeof DOCUMENT_FORMATS)[number];
 
+/** On the labs page: a faculty member in charge of a lab, or staff who run them. */
+export const LAB_ROLES = ["supervisor", "expert"] as const;
+
+export type LabRole = (typeof LAB_ROLES)[number];
+
+/** A lab file's format; manuals sometimes come as an archive. */
+export const LAB_FILE_FORMATS = ["pdf", "doc", "docx", "zip", "rar"] as const;
+
+export type LabFileFormat = (typeof LAB_FILE_FORMATS)[number];
+
 /** Slugs are the URL segment (`/departments/ee`) and the folder of the department's drawings. */
 export const DEPARTMENT_SLUG_PATTERN = /^[a-z][a-z0-9-]{0,31}$/;

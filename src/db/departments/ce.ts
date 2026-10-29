@@ -37,7 +37,6 @@ export const ce: DepartmentSeed = {
     ].join("\n\n"),
   },
   milestones: [],
-  labsUrl: "https://hut.ac.ir/آزمایشگاه-مهندسی-کامپیوتر",
 
   /*------ People ------*/
   members: [

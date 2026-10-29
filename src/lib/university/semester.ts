@@ -7,7 +7,8 @@
 /** A Jalali date as [year, month, day]. */
 export type JDate = readonly [number, number, number];
 
-import { isoToDate } from "#/lib/locale";
+import { formatNumber, isoToDate } from "#/lib/locale";
+import { m } from "#/paraglide/messages";
 
 const DAY_MS = 86_400_000;
 
@@ -130,3 +131,62 @@ export function semesterState({ events, today }: { events: CalendarEvent[]; toda
 export function daysFromToday({ today, iso }: { today: JDate; iso: string }): number {
   return Math.round((isoToDate(iso).getTime() - fromJalali(today).getTime()) / DAY_MS);
 }
+
+/*===== This Semester =====*/
+// The first semester of 1405–1406 (term 4051), from the official calendar. Replaced by a `calendar.current` procedure.
+
+/** A Jalali year without a thousands separator: «۱۴۰۳», not «۱٬۴۰۳». */
+const year = (value: number) => formatNumber(value, { useGrouping: false });
+
+const COHORT_1402_AND_EARLIER = () => m.home_cohort_and_earlier({ year: year(1402) });
+const COHORT_1403_AND_1404 = () => m.home_cohort_pair({ first: year(1403), second: year(1404) });
+
+export const SEMESTER: { name: () => string; sourceHref: string; calendarHref: string; events: CalendarEvent[] } = {
+  name: () => m.home_term_name({ years: `${year(1405)}–${year(1406)}` }),
+  sourceHref: "https://hut.ac.ir/fa/w/-772",
+  calendarHref: "https://hut.ac.ir/web/edu/تقویم-آموزشی",
+  events: [
+    {
+      id: "reg-1402",
+      label: m.home_event_registration,
+      cohort: COHORT_1402_AND_EARLIER,
+      start: [1405, 6, 15],
+      milestone: true,
+    },
+    {
+      id: "reg-1403",
+      label: m.home_event_registration,
+      cohort: () => m.home_cohort({ year: year(1403) }),
+      start: [1405, 6, 16],
+    },
+    {
+      id: "reg-1404",
+      label: m.home_event_registration,
+      cohort: () => m.home_cohort({ year: year(1404) }),
+      start: [1405, 6, 17],
+    },
+    { id: "reg-late", label: m.home_event_late_registration, cohort: m.home_cohort_all, start: [1405, 6, 18] },
+    { id: "classes-start", label: m.home_event_classes_start, start: [1405, 6, 28], milestone: true },
+    {
+      id: "adddrop-1402",
+      label: m.home_event_add_drop,
+      cohort: COHORT_1402_AND_EARLIER,
+      start: [1405, 7, 5],
+      milestone: true,
+    },
+    { id: "adddrop-1403", label: m.home_event_add_drop, cohort: COHORT_1403_AND_1404, start: [1405, 7, 6] },
+    { id: "single-drop", label: m.home_event_single_drop, start: [1405, 9, 24], end: [1405, 9, 25], milestone: true },
+    { id: "evaluation", label: m.home_event_evaluation, start: [1405, 9, 28], end: [1405, 10, 11], milestone: true },
+    {
+      id: "prereg-1402",
+      label: m.home_event_preregistration,
+      cohort: COHORT_1402_AND_EARLIER,
+      start: [1405, 9, 29],
+    },
+    { id: "prereg-1403", label: m.home_event_preregistration, cohort: COHORT_1403_AND_1404, start: [1405, 9, 30] },
+    { id: "classes-end", label: m.home_event_classes_end, start: [1405, 10, 15], milestone: true },
+    { id: "practical-exams", label: m.home_event_practical_exams, start: [1405, 10, 19], end: [1405, 10, 23] },
+    { id: "exams", label: m.home_event_exams, start: [1405, 10, 26], end: [1405, 11, 13], milestone: true },
+    { id: "project-deadline", label: m.home_event_project_deadline, start: [1405, 11, 15] },
+  ],
+};

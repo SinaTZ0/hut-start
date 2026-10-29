@@ -13,6 +13,17 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   { path: "/feedback" },
   { path: "/consultation" },
   { path: "/privacy" },
+  { path: "/about" },
+  { path: "/education" },
+  { path: "/research" },
+  { path: "/campus-life" },
+  { path: "/departments" },
+  { path: "/services" },
+  { path: "/payments" },
+  { path: "/sitemap" },
+  { path: "/phonebook" },
+  { path: "/forms" },
+  { path: "/news" },
 ];
 
 /*===== sitemap.xml =====*/
@@ -24,13 +35,18 @@ const STATIC_ENTRIES: SitemapEntry[] = [
  * procedure that returns only published items, with `lastModified` from their update time (`docs/frontend/seo.md`).
  */
 async function handleGet() {
-  const departments = await client.department.list();
+  const [departments, offices] = await Promise.all([client.department.list(), client.office.list()]);
   const entries: SitemapEntry[] = [
     ...STATIC_ENTRIES,
     ...departments.map((department) => ({
       path: `/departments/${department.slug}`,
       lastModified: department.updatedAt,
     })),
+    ...departments.map((department) => ({
+      path: `/departments/${department.slug}/labs`,
+      lastModified: department.updatedAt,
+    })),
+    ...offices.map((office) => ({ path: `/offices/${office.slug}`, lastModified: office.updatedAt })),
   ];
 
   const urls = entries.flatMap(({ path, lastModified }) => {

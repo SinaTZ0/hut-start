@@ -10,8 +10,10 @@ import { formatDate } from "#/lib/locale";
 import { cn } from "#/lib/utils";
 import type { Department, DepartmentMember } from "#/orpc/department/contract";
 import { m } from "#/paraglide/messages";
-import { formatPhone, isoToDate, memberName, RANK_LABELS } from "../content";
-import { RuledHeading } from "./ruled-heading";
+import { isoToDate, memberName } from "../content";
+import { RANK_LABELS } from "#/lib/university/people";
+import { formatPhone } from "#/lib/university/phone";
+import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
 
 /*===== About =====*/
 

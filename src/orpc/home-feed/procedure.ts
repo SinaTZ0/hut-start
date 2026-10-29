@@ -3,7 +3,7 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { ORPCError, os } from "@orpc/server";
 
 import { env } from "#/env.server";
-import { getArticle, getHomeFeed } from "#/orpc/home-feed/service";
+import { getArticle, getHomeFeed, listArchive } from "#/orpc/home-feed/service";
 import { runHomeFeedSync } from "#/orpc/home-feed/sync.server";
 import { base } from "#/orpc/implementer.server";
 import { provideDbMiddleware } from "#/orpc/middleware/db/db.middleware";
@@ -26,6 +26,12 @@ export const getArticleProcedure = base.homeFeed.article
 
     return result.article;
   });
+
+/*===== Archive =====*/
+// Public, like the posts it lists.
+export const listArchiveProcedure = base.homeFeed.list
+  .use(provideDbMiddleware)
+  .handler(({ context, input }) => listArchive({ db: context.db, input }));
 
 /*===== Sync =====*/
 // Each call reads the old site, so it's limited well below the general policy. The secret is long and random, so the

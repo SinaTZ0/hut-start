@@ -8,8 +8,8 @@ import { textLinkArrowClasses } from "#/components/shared/text-link/text-link.st
 import { formatDate, formatDateParts, formatRelativeDays, isoToDate } from "#/lib/locale";
 import type { FeedItem, HomeFeed } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
-import { ALL_NOTICES_HREF, NEWS_CATEGORIES } from "../content";
-import { daysFromToday, type JDate } from "../semester";
+import { ALL_NOTICES_HREF, archiveHref, NEWS_CATEGORIES } from "#/lib/university/feed";
+import { daysFromToday, type JDate } from "#/lib/university/semester";
 import { FeedList, FeedRow } from "#/components/shared/feed-row/feed-row";
 
 /*===== Constants =====*/
@@ -32,7 +32,7 @@ const NOTICE_TABS: { value: NoticeTab; title: () => string; more: () => string; 
     value: category,
     title,
     more: () => m.home_notices_more({ category: NEWS_CATEGORIES[category].title() }),
-    href: NEWS_CATEGORIES[category].moreHref,
+    href: archiveHref({ kind: "notice", category }),
   })),
 ];
 

@@ -2,9 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CircleCheckIcon, StarIcon } from "lucide-react";
 
 import { Badge } from "./badge";
-import { twVariant } from "./badge.styles";
+import { twSize, twVariant } from "./badge.styles";
 
 const variantOptions = Object.keys(twVariant) as Array<keyof typeof twVariant>;
+const sizeOptions = Object.keys(twSize) as Array<keyof typeof twSize>;
 
 /*===== Meta =====*/
 const meta = {
@@ -12,6 +13,7 @@ const meta = {
   component: Badge,
   argTypes: {
     variant: { control: "select", options: variantOptions },
+    size: { control: "inline-radio", options: sizeOptions },
   },
   args: { children: "برچسب" },
 } satisfies Meta<typeof Badge>;
@@ -58,5 +60,23 @@ export const OnMedia: Story = {
         خبر ویژه
       </Badge>
     </div>
+  ),
+};
+
+// `wrap` lets a phrase run onto a second line inside a narrow column instead of pushing the column wider.
+export const Wrapping: Story = {
+  render: () => (
+    <ul className="flex w-64 flex-wrap gap-1.5">
+      <li>
+        <Badge variant="outline" size="wrap">
+          دستگاه اندازه‌گیری کشش سطحی (تنسیومتر)
+        </Badge>
+      </li>
+      <li>
+        <Badge variant="outline" size="wrap">
+          آزمایش کنترل دما: کنترل دمای فرآیند در محفظه عایق توسط المان پلتیر
+        </Badge>
+      </li>
+    </ul>
   ),
 };

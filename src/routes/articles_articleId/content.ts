@@ -1,18 +1,8 @@
 import type { ArticleBlock, ArticleBody, ArticleInline } from "#/orpc/home-feed/article-body";
-import type { FeedCategory, FeedKind } from "#/orpc/home-feed/constants";
+import type { FeedCategory } from "#/orpc/home-feed/constants";
 import { m } from "#/paraglide/messages";
 
 /*===== Labels =====*/
-// What an article is, as its kicker (singular) and its breadcrumb (plural) name it.
-
-export const KIND_LABELS: Record<FeedKind, { one: () => string; many: () => string }> = {
-  news: { one: m.article_kind_news, many: m.article_kinds_news },
-  notice: { one: m.article_kind_notice, many: m.article_kinds_notice },
-  achievement: { one: m.article_kind_achievement, many: m.article_kinds_achievement },
-  growth: { one: m.article_kind_growth, many: m.article_kinds_growth },
-  event: { one: m.article_kind_event, many: m.article_kinds_event },
-  occasion: { one: m.article_kind_occasion, many: m.article_kinds_occasion },
-};
 
 /** The same names the home page's kickers use. */
 export const CATEGORY_LABELS: Record<FeedCategory, () => string> = {

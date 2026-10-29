@@ -107,6 +107,8 @@
 
   /* A department page's drawing behind its hero: tall on phones, about 21:9 on wide screens */
   --spacing-art-hero: clamp(32.5rem, 62vw, 53.75rem);
+  /* A plain page's drawing beside its title (office, phone book, forms, systems): about as tall as the title block */
+  --spacing-art-page: clamp(20rem, 34vw, 27.5rem);
 }
 
 /*===== Theme Mapping =====*/
@@ -597,6 +599,22 @@
     linear-gradient(to left, rgb(0 0 0 / 20%) 30%, #000 62%);
   mask-size:
     cover,
+    100% 100%,
+    100% 100%;
+  mask-position: left top;
+  mask-repeat: no-repeat;
+  mask-composite: intersect;
+}
+
+/* A plain page's drawing (`PageHero`): its whole height in view at the end side, where the title leaves room, fading
+   out downward and toward the title. English mirrors the layer, as with `art-sheet`. */
+@utility art-page {
+  background-color: var(--art-ink);
+  mask-image:
+    var(--art), linear-gradient(to bottom, #000 40%, transparent 96%),
+    linear-gradient(to left, #000 25%, rgb(0 0 0 / 15%) 60%);
+  mask-size:
+    auto 100%,
     100% 100%,
     100% 100%;
   mask-position: left top;

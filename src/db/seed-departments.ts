@@ -7,6 +7,7 @@ import { bs } from "#/db/departments/bs";
 import { ce } from "#/db/departments/ce";
 import { chem } from "#/db/departments/chem";
 import { ee } from "#/db/departments/ee";
+import { departmentLabs, type LabsSeed } from "#/db/departments/labs";
 import { materials } from "#/db/departments/materials";
 import { mech } from "#/db/departments/mech";
 import { mining } from "#/db/departments/mining";
@@ -15,14 +16,16 @@ import {
   departmentDocument,
   departmentField,
   departmentLab,
+  departmentLabFile,
   departmentMember,
   departmentTrack,
-  user,
 } from "#/db/schema";
 import type { DepartmentMilestone } from "#/db/schema";
 import type { LocalizedText } from "#/lib/localized-text";
+import { normalizePersianText } from "#/lib/persian-text";
 import type { AcademicRank, Degree, DocumentFormat, Honorific, MemberKind } from "#/orpc/department/constants";
-import { attachMedia, deleteMedia, uploadMedia } from "#/orpc/media/service";
+import { uploadPhoto, systemUser } from "#/db/seed-media";
+import { attachMedia, deleteMedia } from "#/orpc/media/service";
 
 /*===== Seed Departments =====*/
 // Loads the departments' pages from `src/db/departments/`: `pnpm db:seed:departments`, or in production
@@ -43,7 +46,6 @@ export type DepartmentSeed = {
   milestones: DepartmentMilestone[];
   foundedOn?: string;
   studentCount?: number;
-  labsUrl?: string;
   members: {
     kind: MemberKind;
     /** The department's head; at most one. */
@@ -72,50 +74,40 @@ export type DepartmentSeed = {
 
 const DEPARTMENTS: DepartmentSeed[] = [ee, ce, mech, bme, materials, chem, mining, bs];
 
-/*===== Photos =====*/
-// The university's sites turn away clients that don't look like a browser.
-const BROWSER_HEADERS = {
-  "user-agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-  accept: "image/avif,image/webp,image/*,*/*;q=0.8",
-};
-
-/**
- * Downloads a photo and stores it as an unattached `portrait`. A photo that can't be fetched or read is skipped with
- * a warning: the member is still seeded, without a photo.
- */
-async function uploadPhoto({ url, uploader }: { url: string; uploader: string }): Promise<string | null> {
-  try {
-    const response = await fetch(url, { headers: BROWSER_HEADERS, signal: AbortSignal.timeout(30_000) });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const file = new File([await response.arrayBuffer()], "photo", {
-      type: response.headers.get("content-type") ?? "",
-    });
-
-    // The role only passes the upload's kind check (portraits are an admin's); the stored row records just the id.
-    const result = await uploadMedia({ db, user: { id: uploader, role: "admin" }, kind: "portrait", file });
-    if (result.kind !== "success") throw new Error(`upload refused: ${result.kind}`);
-    return result.media.id;
-  } catch (error) {
-    console.warn(`Skipped a photo (${error instanceof Error ? error.message : error}): ${url}`);
-    return null;
-  }
+/*===== Labs =====*/
+/** A name as the lab pages and the department pages both write it: no ZWNJs or spaces, Persian letters. */
+function nameKey(name: string): string {
+  return normalizePersianText(name).replace(/[\s‌]/g, "");
 }
 
-/*===== System User =====*/
-const SYSTEM_USER = { id: "system", name: "System", email: "system@system.invalid" };
-
 /**
- * Returns the user the seed's photos are credited to, creating it on the first run. It can't sign in: it has no
- * password (no `account` row), it's blocked, and `.invalid` mail is never delivered. Its email also keeps anyone from
- * signing up as it.
+ * The department's members followed by the lab pages' people who aren't among them, added as staff: everyone the
+ * department's page and its labs page show, in one list.
  */
-async function systemUser(): Promise<{ id: string }> {
-  await db
-    .insert(user)
-    .values({ ...SYSTEM_USER, role: "user", status: "blocked" })
-    .onConflictDoNothing({ target: user.id });
-  return { id: SYSTEM_USER.id };
+function allMembers(seed: DepartmentSeed): DepartmentSeed["members"] {
+  const labs = departmentLabs[seed.slug];
+  const known = new Set(seed.members.map((member) => nameKey(member.name.fa)));
+  const extras = (labs?.people ?? [])
+    .filter((person) => !known.has(nameKey(person.name.fa)))
+    .map((person) => ({
+      kind: "staff" as const,
+      honorific: person.honorific,
+      name: person.name,
+      jobTitle:
+        person.role === "expert"
+          ? { fa: "کارشناس آزمایشگاه", en: "Lab expert" }
+          : { fa: "سرپرست آزمایشگاه", en: "Lab supervisor" },
+      phone: person.phone,
+      email: person.email,
+      photoUrl: person.photoUrl,
+    }));
+  return [...seed.members, ...extras];
+}
+
+/** A member's part on the labs page, from the lab people with the same name. */
+function labPart({ labs, name }: { labs: LabsSeed | undefined; name: LocalizedText }) {
+  const person = labs?.people.find((candidate) => nameKey(candidate.name.fa) === nameKey(name.fa));
+  return { labRole: person?.role ?? null, labNote: person?.note ?? null };
 }
 
 /*===== Remove =====*/
@@ -149,6 +141,8 @@ async function insertDepartment({
   photos: (string | null)[];
   uploader: string;
 }): Promise<void> {
+  const labs = departmentLabs[seed.slug];
+
   /*------ Department ------*/
   const [record] = await tx
     .insert(department)
@@ -161,14 +155,14 @@ async function insertDepartment({
       milestones: seed.milestones,
       foundedOn: seed.foundedOn,
       studentCount: seed.studentCount,
-      labsUrl: seed.labsUrl,
+      labsIntro: labs?.intro,
     })
     .returning({ id: department.id });
   if (!record) throw new Error(`Inserting ${seed.slug} returned no row`);
   const departmentId = record.id;
 
   /*------ Members ------*/
-  for (const [position, member] of seed.members.entries()) {
+  for (const [position, member] of allMembers(seed).entries()) {
     const photoMediaId = photos[position] ?? null;
     if (photoMediaId) {
       const attached = await attachMedia({ db: tx, mediaId: photoMediaId, kind: "portrait", userId: uploader });
@@ -190,6 +184,7 @@ async function insertDepartment({
         homepageUrl: member.homepageUrl,
         scholarUrl: member.scholarUrl,
         photoMediaId,
+        ...labPart({ labs, name: member.name }),
         position,
       })
       .returning({ id: departmentMember.id });
@@ -212,8 +207,21 @@ async function insertDepartment({
   }
 
   /*------ Labs and Files ------*/
-  if (seed.labs.length > 0) {
-    await tx.insert(departmentLab).values(seed.labs.map((name, position) => ({ departmentId, name, position })));
+  // The labs page's list, when the department has one, is fuller than the department page's names.
+  const labRows = labs
+    ? labs.labs.map((lab, position) => ({
+        departmentId,
+        name: lab.name,
+        description: lab.description && { ...lab.description, fa: normalizePersianText(lab.description.fa) },
+        equipment: (lab.equipment ?? []).map((item) => ({ ...item, fa: normalizePersianText(item.fa) })),
+        position,
+      }))
+    : seed.labs.map((name, position) => ({ departmentId, name, position }));
+  if (labRows.length > 0) await tx.insert(departmentLab).values(labRows);
+  if (labs && labs.files.length > 0) {
+    await tx
+      .insert(departmentLabFile)
+      .values(labs.files.map((file, position) => ({ departmentId, ...file, position })));
   }
   if (seed.documents.length > 0) {
     await tx
@@ -241,7 +249,7 @@ for (const seed of DEPARTMENTS) {
 
   // Downloads and uploads happen before the transaction, so it doesn't hold a connection open over the network.
   const photos: (string | null)[] = [];
-  for (const member of seed.members) {
+  for (const member of allMembers(seed)) {
     photos.push(member.photoUrl ? await uploadPhoto({ url: member.photoUrl, uploader: system.id }) : null);
   }
 

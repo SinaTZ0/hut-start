@@ -36,10 +36,12 @@ FROM deps AS build
 ARG SENTRY_DSN=""
 COPY . .
 RUN pnpm build
-# The departments' seed (`src/db/seed-departments.ts`) as one plain-JavaScript file, since the runtime image has no
-# TypeScript loader or `#/` alias. Packages stay imports, read from the runtime's node_modules.
-RUN pnpm exec esbuild src/db/seed-departments.ts --bundle --platform=node --format=esm --target=node24 \
-    --packages=external --sourcemap --outfile=/app/deploy-dist/seed-departments.mjs
+# The scripts `deploy/deploy.sh` runs in a one-off container, each as one plain-JavaScript file, since the runtime image
+# has no TypeScript loader or `#/` alias: the departments' pages (`departments`), the offices, forms and phone book
+# (`pages`), and the news archive (`archive`). Packages stay imports, read from the runtime's node_modules.
+RUN pnpm exec esbuild src/db/seed-departments.ts src/db/seed-pages.ts src/db/sync-feed-archive.ts --bundle \
+    --platform=node --format=esm --target=node24 --packages=external --sourcemap --outdir=/app/deploy-dist \
+    --out-extension:.js=.mjs
 
 # ===== Runtime =====
 FROM node:24-slim AS runtime

@@ -4,10 +4,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/primitive
 import { formatNumber } from "#/lib/locale";
 import type { Department } from "#/orpc/department/contract";
 import { m } from "#/paraglide/messages";
-import { RANK_LABELS } from "../content";
+import { RANK_LABELS } from "#/lib/university/people";
 import { RANK_FILTERS, type RankFilter } from "../search-params";
 import { MemberCard } from "./member-card";
-import { RuledHeading } from "./ruled-heading";
+import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
 
 /*===== Faculty =====*/
 

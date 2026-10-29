@@ -9,13 +9,21 @@ export type SiteLinkProps = Omit<ComponentProps<"a">, "href"> & { href: string }
 
 /**
  * One link for content data that mixes this app's pages and outside destinations. Paths starting with `/` go through
- * the router; `http(s)` links open in a new tab without leaking the opener, and say so to screen readers; `mailto:` and
+ * the router, a query (`/news?category=student`) becoming the route's search params and a fragment its `hash`;
+ * `http(s)` links open in a new tab without leaking the opener, and say so to screen readers; `mailto:` and
  * `tel:` stay plain anchors.
  */
 export function SiteLink({ href, children, ...props }: SiteLinkProps) {
   if (href.startsWith("/")) {
+    const [rest, hash] = href.split("#", 2);
+    const [path, query] = rest.split("?", 2);
     return (
-      <Link to={href} {...props}>
+      <Link
+        to={path}
+        search={query ? Object.fromEntries(new URLSearchParams(query)) : undefined}
+        hash={hash}
+        {...props}
+      >
         {children}
       </Link>
     );

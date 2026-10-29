@@ -50,8 +50,6 @@ export const chem: DepartmentSeed = {
     },
   ],
   foundedOn: "2009-09-23",
-  labsUrl:
-    "https://hut.ac.ir/%D8%A2%D8%B2%D9%85%D8%A7%DB%8C%D8%B4%DA%AF%D8%A7%D9%87-%D9%85%D9%87%D9%86%D8%AF%D8%B3%DB%8C-%D8%B4%DB%8C%D9%85%DB%8C",
 
   /*------ People ------*/
   members: [

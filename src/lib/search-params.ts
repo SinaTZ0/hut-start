@@ -15,3 +15,14 @@ export const redirectToParam = z
   .transform((value) =>
     value?.startsWith("/") && !value.startsWith("//") && !value.includes("\\") ? value : undefined,
   );
+
+/*===== List Filters =====*/
+// A page's search text (`?q=`) and one-of filter (`?group=`), as the link hubs, the phone book and the forms use them.
+// `group` stays a string here; each page falls back to «all» for an id it doesn't have.
+
+export const listSearchDefaults = { q: "", group: "all" } as const;
+
+export const listSearchSchema = z.object({
+  q: z.string().trim().max(100).default(listSearchDefaults.q).catch(listSearchDefaults.q),
+  group: z.string().max(40).default(listSearchDefaults.group).catch(listSearchDefaults.group),
+});

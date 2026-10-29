@@ -18,7 +18,7 @@ import { HOME_DRAWINGS } from "#/lib/university/drawings";
 import { cn } from "#/lib/utils";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
-import { NEWS_CATEGORIES } from "../content";
+import { NEWS_CATEGORIES } from "#/lib/university/feed";
 import { FeedMedia } from "#/components/shared/feed-media/feed-media";
 
 /*===== Incubator =====*/

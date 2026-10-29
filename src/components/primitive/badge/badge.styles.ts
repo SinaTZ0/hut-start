@@ -5,10 +5,9 @@ import { composeStyles, defineStyles, joinStyles } from "../styles";
 
 const twSharedStyles = defineStyles({
   layout: "group/badge inline-flex w-fit shrink-0 items-center justify-center gap-1",
-  // A pill of three words at most, so it never wraps or grows.
-  geometry: "h-6 overflow-hidden rounded-full border border-transparent px-3 py-0.5",
+  geometry: "overflow-hidden border border-transparent px-3",
   geometryIcon: "has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2",
-  typography: "text-caption font-semibold whitespace-nowrap",
+  typography: "text-caption font-semibold",
   interaction: "transition-colors duration-200",
   focus:
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring focus-visible:outline-solid",
@@ -43,15 +42,26 @@ const twVariant = defineStyles({
   destructive: { appearance: "bg-destructive-surface text-destructive" },
 });
 
+/*===== Size =====*/
+
+// `default` is a pill of three words at most, so it never wraps or grows. `wrap` is for a label that can run longer
+// than its column (a lab's equipment, written as a phrase on the old site): it wraps inside a rounded box instead.
+const twSize = defineStyles({
+  default: { geometry: "h-6 rounded-full py-0.5", typography: "whitespace-nowrap" },
+  wrap: { geometry: "min-h-6 max-w-full rounded-md py-1", typography: "text-start" },
+});
+
 /*===== Class Composition =====*/
 
 const badgeVariants = cva(joinStyles(twSharedStyles), {
   variants: {
     variant: composeStyles(twVariant),
+    size: composeStyles(twSize),
   },
   defaultVariants: {
     variant: "default",
+    size: "default",
   },
 });
 
-export { badgeVariants, twVariant };
+export { badgeVariants, twVariant, twSize };

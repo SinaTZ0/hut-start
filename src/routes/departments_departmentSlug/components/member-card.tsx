@@ -15,7 +15,8 @@ import { MediaImage } from "#/components/shared/media-image/media-image";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import type { DepartmentMember } from "#/orpc/department/contract";
 import { m } from "#/paraglide/messages";
-import { memberName, RANK_LABELS } from "../content";
+import { memberName } from "../content";
+import { RANK_LABELS } from "#/lib/university/people";
 
 /*===== Member Card =====*/
 

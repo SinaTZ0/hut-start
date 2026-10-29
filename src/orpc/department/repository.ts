@@ -6,6 +6,7 @@ import {
   departmentDocument,
   departmentField,
   departmentLab,
+  departmentLabFile,
   departmentMember,
   departmentTrack,
   media,
@@ -19,6 +20,7 @@ export type DepartmentFieldRecord = typeof departmentField.$inferSelect;
 export type DepartmentTrackRecord = typeof departmentTrack.$inferSelect;
 export type DepartmentLabRecord = typeof departmentLab.$inferSelect;
 export type DepartmentDocumentRecord = typeof departmentDocument.$inferSelect;
+export type DepartmentLabFileRecord = typeof departmentLabFile.$inferSelect;
 
 /** A member with their photo row, if they have one. */
 export type MemberWithPhoto = { member: DepartmentMemberRecord; photo: MediaRecord | null };
@@ -105,4 +107,18 @@ export function findDocuments({
     .from(departmentDocument)
     .where(eq(departmentDocument.departmentId, departmentId))
     .orderBy(asc(departmentDocument.position));
+}
+
+export function findLabFiles({
+  db,
+  departmentId,
+}: {
+  db: Database;
+  departmentId: string;
+}): Promise<DepartmentLabFileRecord[]> {
+  return db
+    .select()
+    .from(departmentLabFile)
+    .where(eq(departmentLabFile.departmentId, departmentId))
+    .orderBy(asc(departmentLabFile.position));
 }

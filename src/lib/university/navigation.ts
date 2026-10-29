@@ -2,7 +2,8 @@ import { m } from "#/paraglide/messages";
 
 /*===== Navigation =====*/
 // The university's site map, as the header and footer show it. Labels are message functions, called in render
-// (docs/frontend/i18n.md). Links point at the university's current pages until this app serves them itself.
+// (docs/frontend/i18n.md). Pages this app serves are plain paths; the rest still point at the old site or a unit's own
+// subdomain.
 // Departments, services and contact details are shared with the home page.
 
 /** A link with its label as a message function. */
@@ -22,75 +23,77 @@ export type NavSection = {
 /*------ Departments ------*/
 
 /** The university's list of departments. */
-export const DEPARTMENTS_HREF = "https://hut.ac.ir/groups";
+export const DEPARTMENTS_HREF = "/departments";
 
 /** `name` is the department's subject («مهندسی برق»), `short` the word that tells it apart («برق»). */
 export type Department = { id: string; name: () => string; short: () => string; href: string; labHref: string };
+
+/** A department's labs page. */
+const labsHref = (slug: string) => `/departments/${slug}/labs`;
 
 export const DEPARTMENTS: Department[] = [
   {
     id: "ee",
     name: m.site_dept_ee,
     short: m.site_dept_ee_short,
-    // Served by this app (`/departments/$departmentSlug`); the others follow as their pages are seeded.
     href: "/departments/ee",
-    labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-برق",
+    labHref: labsHref("ee"),
   },
   {
     id: "ce",
     name: m.site_dept_ce,
     short: m.site_dept_ce_short,
     href: "/departments/ce",
-    labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-کامپیوتر",
+    labHref: labsHref("ce"),
   },
   {
     id: "mech",
     name: m.site_dept_mech,
     short: m.site_dept_mech_short,
     href: "/departments/mech",
-    labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-مکانیک",
+    labHref: labsHref("mech"),
   },
   {
     id: "bme",
     name: m.site_dept_bme,
     short: m.site_dept_bme_short,
     href: "/departments/bme",
-    labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-پزشکی",
+    labHref: labsHref("bme"),
   },
   {
     id: "materials",
     name: m.site_dept_materials,
     short: m.site_dept_materials_short,
     href: "/departments/materials",
-    labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-مواد",
+    labHref: labsHref("materials"),
   },
   {
     id: "chem",
     name: m.site_dept_chem,
     short: m.site_dept_chem_short,
     href: "/departments/chem",
-    labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-شیمی",
+    labHref: labsHref("chem"),
   },
   {
     id: "mining",
     name: m.site_dept_mining,
     short: m.site_dept_mining_short,
     href: "/departments/mining",
-    labHref: "https://hut.ac.ir/آزمایشگاه-مهندسی-معدن",
+    labHref: labsHref("mining"),
   },
   {
     id: "bs",
     name: m.site_dept_bs,
     short: m.site_dept_bs_short,
     href: "/departments/bs",
-    labHref: "https://hut.ac.ir/آزمایشگاه-علوم-پایه",
+    labHref: labsHref("bs"),
   },
 ];
 
 /*------ Shared Links ------*/
 
 export const CONTACT_LINK: NavLink = { label: m.nav_contact, href: "https://hut.ac.ir/ارتباط-با-ما" };
-const PHONEBOOK_LINK: NavLink = { label: m.nav_about_phonebook, href: "https://hut.ac.ir/تلفن-داخلی" };
+const PHONEBOOK_LINK: NavLink = { label: m.nav_about_phonebook, href: "/phonebook" };
 const RECRUITMENT_LINK: NavLink = { label: m.nav_about_recruitment, href: "http://jazb.hut.ac.ir/" };
 
 /** The university portal's sign-in, in the utility bar. */
@@ -103,21 +106,21 @@ export const NAV_SECTIONS: NavSection[] = [
     id: "about",
     title: m.nav_about,
     summary: m.nav_about_summary,
-    href: "https://hut.ac.ir/معرفی-دانشگاه",
+    href: "/about",
     groups: [
       {
         title: m.nav_about_intro,
         links: [
-          { label: m.nav_about_university, href: "https://hut.ac.ir/معرفی-دانشگاه" },
-          { label: m.nav_about_faculty, href: "https://hut.ac.ir/اعضای-هیات-علمی" },
-          { label: m.nav_about_presidents, href: "https://hut.ac.ir/روسای-پیشین-دانشگاه" },
-          { label: m.nav_about_international, href: "https://hut.ac.ir/اداره-همکاری-های-علمی-بین-المللی" },
+          { label: m.nav_about_university, href: "/about" },
+          { label: m.nav_about_faculty, href: DEPARTMENTS_HREF },
+          { label: m.nav_about_presidents, href: "/offices/president#office-former" },
+          { label: m.nav_about_international, href: "/offices/international" },
         ],
       },
       {
         title: m.nav_about_management,
         links: [
-          { label: m.nav_about_president, href: "https://hut.ac.ir/رئیس-دانشگاه1" },
+          { label: m.nav_about_president, href: "/offices/president" },
           { label: m.nav_about_vp_education, href: "https://edu.hut.ac.ir/" },
           { label: m.nav_about_vp_student, href: "https://student.hut.ac.ir/" },
           { label: m.nav_about_vp_admin, href: "https://daf.hut.ac.ir/" },
@@ -129,7 +132,8 @@ export const NAV_SECTIONS: NavSection[] = [
         links: [
           CONTACT_LINK,
           PHONEBOOK_LINK,
-          { label: m.nav_about_public_relations, href: "https://hut.ac.ir/روابط-عمومی" },
+          { label: m.nav_about_public_relations, href: "/offices/public-relations" },
+          { label: m.news_title, href: "/news" },
           RECRUITMENT_LINK,
         ],
       },
@@ -139,7 +143,7 @@ export const NAV_SECTIONS: NavSection[] = [
     id: "education",
     title: m.nav_education,
     summary: m.nav_education_summary,
-    href: "https://hut.ac.ir/اموزش",
+    href: "/education",
     groups: [
       {
         title: m.nav_education_departments,
@@ -149,17 +153,17 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         title: m.nav_education_affairs,
         links: [
-          { label: m.nav_education_services, href: "http://web.hut.ac.ir/web/edu/مدیریت-خدمات-آموزشی" },
-          { label: m.nav_education_graduate, href: "http://web.hut.ac.ir/web/edu/اداره-تحصیلات-تکمیلی2" },
-          { label: m.nav_education_admissions, href: "http://web.hut.ac.ir/web/edu/اداره-دانش-آموختگان" },
+          { label: m.nav_education_services, href: "/offices/academic-services" },
+          { label: m.nav_education_graduate, href: "/offices/graduate" },
+          { label: m.nav_education_admissions, href: "/offices/alumni-affairs" },
           { label: m.nav_education_calendar, href: "https://hut.ac.ir/web/edu/تقویم-آموزشی" },
         ],
       },
       {
         title: m.nav_education_open,
         links: [
-          { label: m.nav_education_online, href: "https://hut.ac.ir/آموزش-مجازی" },
-          { label: m.nav_education_continuing, href: "https://hut.ac.ir/fa/آموزش-آزاد" },
+          { label: m.nav_education_online, href: "/offices/online-learning" },
+          { label: m.nav_education_continuing, href: "/offices/continuing-education" },
         ],
       },
     ],
@@ -168,7 +172,7 @@ export const NAV_SECTIONS: NavSection[] = [
     id: "research",
     title: m.nav_research,
     summary: m.nav_research_summary,
-    href: "https://hut.ac.ir/پژوهش",
+    href: "/research",
     groups: [
       {
         title: m.nav_research_research,
@@ -182,10 +186,10 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         title: m.nav_research_technology,
         links: [
-          { label: m.nav_research_incubator, href: "https://hut.ac.ir/web/roshd" },
+          { label: m.nav_research_incubator, href: "/offices/incubator" },
           { label: m.nav_research_industry, href: "http://industry.hut.ac.ir/" },
           { label: m.nav_research_central_lab, href: "http://lab.hut.ac.ir/" },
-          { label: m.nav_research_labs, href: "https://hut.ac.ir/آزمایشگاه" },
+          { label: m.nav_research_labs, href: "/research" },
         ],
       },
     ],
@@ -194,7 +198,7 @@ export const NAV_SECTIONS: NavSection[] = [
     id: "campus-life",
     title: m.nav_campus_life,
     summary: m.nav_campus_life_summary,
-    href: "https://hut.ac.ir/دانشجویی-فرهنگی",
+    href: "/campus-life",
     groups: [
       {
         title: m.nav_campus_life_welfare,
@@ -202,7 +206,7 @@ export const NAV_SECTIONS: NavSection[] = [
           { label: m.nav_campus_life_welfare_services, href: "https://student.hut.ac.ir/خدمات-رفاهی-دانشجویی" },
           { label: m.nav_campus_life_dorms, href: "https://student.hut.ac.ir/اداره-خوابگاه-ها" },
           { label: m.nav_campus_life_dining, href: "https://student.hut.ac.ir/اداره-تغذیه" },
-          { label: m.nav_campus_life_sports, href: "http://web.hut.ac.ir/web/student/اداره-تربیت-بدنی" },
+          { label: m.nav_campus_life_sports, href: "/offices/sports" },
         ],
       },
       {
@@ -219,7 +223,7 @@ export const NAV_SECTIONS: NavSection[] = [
         links: [
           { label: m.nav_campus_life_counseling, href: "/consultation" },
           { label: m.nav_campus_life_discipline, href: "https://student.hut.ac.ir/شورای-انضباطی" },
-          { label: m.nav_campus_life_shahed, href: "https://hut.ac.ir/امور-دانشجویان-شاهد-و-ایثارگر" },
+          { label: m.nav_campus_life_shahed, href: "/offices/shahed" },
         ],
       },
     ],
@@ -228,7 +232,7 @@ export const NAV_SECTIONS: NavSection[] = [
     id: "systems",
     title: m.nav_systems,
     summary: m.nav_systems_summary,
-    href: "https://hut.ac.ir/سامانه-ها",
+    href: "/services",
     groups: [],
   },
 ];
@@ -239,7 +243,7 @@ export const NAV_SECTIONS: NavSection[] = [
 export const SUGGESTIONS_LINK: NavLink = { label: m.nav_suggestions, href: "/feedback" };
 
 export const FOOTER_LINKS: NavLink[] = [
-  { label: m.nav_sitemap, href: "https://hut.ac.ir/fa/نقشه-سایت" },
+  { label: m.nav_sitemap, href: "/sitemap" },
   CONTACT_LINK,
   PHONEBOOK_LINK,
   { label: m.nav_ethics, href: "https://hut.ac.ir/documents/38165/453653/نظامنامه+اخلاق+آموزش.pdf" },

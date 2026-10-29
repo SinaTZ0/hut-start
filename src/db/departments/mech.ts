@@ -32,7 +32,6 @@ export const mech: DepartmentSeed = {
     ].join("\n\n"),
   },
   milestones: [],
-  labsUrl: "https://hut.ac.ir/آزمایشگاه-مهندسی-مکانیک",
 
   /*------ People ------*/
   members: [

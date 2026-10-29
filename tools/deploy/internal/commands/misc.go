@@ -132,6 +132,74 @@ func (t *Tool) Departments(args []string) error {
 	return nil
 }
 
+/*===== Load Pages =====*/
+
+// pageParts are the parts of `src/db/seed-pages.ts`, which a run can be limited to.
+var pageParts = map[string]bool{"offices": true, "library": true, "phonebook": true}
+
+// Pages loads the offices' pages, the forms library and the phone book from the seed bundled into the app's image
+// (`src/db/seed-pages.ts`). A part that has rows is skipped, so editors' changes stay; --replace loads it again, and
+// part names limit the run.
+func (t *Tool) Pages(args []string) error {
+	if err := t.requireSetUp(); err != nil {
+		return err
+	}
+	for _, arg := range args {
+		if arg != "--replace" && !pageParts[arg] {
+			return ui.Usage("pages doesn't know %s (see deploy/deploy.sh help)", arg)
+		}
+	}
+	run := append([]string{"run", "--rm", "--no-deps", "-T", "app", "node", "deploy/seed-pages.mjs"}, args...)
+	if err := t.S.Run(run...); err != nil {
+		return interrupt.Check(ui.Fail("Loading the pages failed (see above)."))
+	}
+	ui.OK("Pages loaded.")
+	return nil
+}
+
+/*===== Fill the News Archive =====*/
+
+// Archive reads the old site's news, notices and courses listings into the news archive, then every article page not
+// read yet (`src/db/sync-feed-archive.ts`): about 2,400 on a new server, an hour or more. Stopping it midway is safe;
+// the app's timer reads the rest a few at a time. --listings-only skips the article pages, --pages <n> reads only
+// the first n pages of each listing, --articles <n> at most n article pages.
+func (t *Tool) Archive(args []string) error {
+	if err := t.requireSetUp(); err != nil {
+		return err
+	}
+	for i := 0; i < len(args); i++ {
+		switch args[i] {
+		case "--listings-only":
+		case "--pages", "--articles":
+			if i+1 >= len(args) || !isWholeNumber(args[i+1]) {
+				return ui.Usage("%s needs a whole number (see deploy/deploy.sh help)", args[i])
+			}
+			i++
+		default:
+			return ui.Usage("archive doesn't know %s (see deploy/deploy.sh help)", args[i])
+		}
+	}
+	run := append([]string{"run", "--rm", "--no-deps", "-T", "app", "node", "deploy/sync-feed-archive.mjs"}, args...)
+	if err := t.S.Run(run...); err != nil {
+		return interrupt.Check(ui.Fail("Filling the archive failed (see above). Run it again to carry on."))
+	}
+	ui.OK("Archive filled.")
+	return nil
+}
+
+// isWholeNumber reports whether value is digits only.
+func isWholeNumber(value string) bool {
+	if value == "" {
+		return false
+	}
+	for _, r := range value {
+		if r < '0' || r > '9' {
+			return false
+		}
+	}
+	return true
+}
+
 /*===== Database Browser =====*/
 
 // Pgweb opens, closes or reports on the database browser. Without a subcommand, on a terminal, it offers what fits:

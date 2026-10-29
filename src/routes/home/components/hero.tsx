@@ -11,8 +11,7 @@ import { SERVICES } from "#/lib/university/services";
 import { cn } from "#/lib/utils";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
-import { SEMESTER } from "../content";
-import { type EventWithStatus, fromJalali } from "../semester";
+import { fromJalali, SEMESTER, type EventWithStatus } from "#/lib/university/semester";
 
 /*===== Constants =====*/
 

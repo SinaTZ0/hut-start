@@ -6,7 +6,7 @@ import { SiteLink } from "#/components/shared/site-link/site-link";
 import { formatDate, isoToDate } from "#/lib/locale";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
-import { NEWS_CATEGORIES } from "../content";
+import { archiveHref } from "#/lib/university/feed";
 import { FeedMedia } from "#/components/shared/feed-media/feed-media";
 
 /*===== Courses =====*/
@@ -24,7 +24,7 @@ export function Courses({ items }: { items: FeedItem[] }) {
         kicker={m.home_courses_kicker()}
         title={m.home_courses_title()}
         lede={m.home_courses_lede()}
-        more={{ label: m.home_courses_more(), href: NEWS_CATEGORIES.openEducation.moreHref }}
+        more={{ label: m.home_courses_more(), href: archiveHref({ kind: "event" }) }}
       />
       <ul className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-3">
         {items.map((item) => (

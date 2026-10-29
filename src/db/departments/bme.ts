@@ -36,7 +36,6 @@ export const bme: DepartmentSeed = {
     ].join("\n\n"),
   },
   milestones: [],
-  labsUrl: "https://hut.ac.ir/آزمایشگاه-مهندسی-پزشکی",
 
   /*------ People ------*/
   members: [

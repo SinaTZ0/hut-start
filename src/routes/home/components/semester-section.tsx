@@ -8,8 +8,7 @@ import { SiteLink } from "#/components/shared/site-link/site-link";
 import { formatDate, formatDateParts, formatDateRange, formatRelativeDays } from "#/lib/locale";
 import { cn } from "#/lib/utils";
 import { m } from "#/paraglide/messages";
-import { SEMESTER } from "../content";
-import { daysBetween, type EventWithStatus, fromJalali, type SemesterState } from "../semester";
+import { daysBetween, type EventWithStatus, fromJalali, SEMESTER, type SemesterState } from "#/lib/university/semester";
 
 /*===== Helpers =====*/
 

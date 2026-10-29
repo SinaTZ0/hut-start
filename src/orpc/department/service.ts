@@ -7,6 +7,7 @@ import {
   findDepartments,
   findDocuments,
   findFields,
+  findLabFiles,
   findLabs,
   findMembers,
   findTracks,
@@ -28,17 +29,18 @@ export async function getDepartment({ db, slug }: { db: Database; slug: string }
 
   // Independent reads of the same department; the pool runs them side by side.
   const departmentId = record.id;
-  const [members, fields, tracks, labs, documents] = await Promise.all([
+  const [members, fields, tracks, labs, documents, labFiles] = await Promise.all([
     findMembers({ db, departmentId }),
     findFields({ db, departmentId }),
     findTracks({ db, departmentId }),
     findLabs({ db, departmentId }),
     findDocuments({ db, departmentId }),
+    findLabFiles({ db, departmentId }),
   ]);
 
   return {
     kind: "success",
-    department: toPublicDepartment({ department: record, members, fields, tracks, labs, documents }),
+    department: toPublicDepartment({ department: record, members, fields, tracks, labs, documents, labFiles }),
   };
 }
 

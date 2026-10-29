@@ -44,7 +44,9 @@ gets the `admin` key.
   9) Logs              pick a service, follow
  10) Make admin        promote an account by email
  11) Load departments  add the departments' pages that are missing
- 12) Database browser  browse and edit the database, for a set time
+ 12) Load pages        add the offices, forms and phone book if missing
+ 13) Fill news archive read the old site's news and notices (long the first time)
+ 14) Database browser  browse and edit the database, for a set time
   0) Quit
 
   ● Project      up to date  (381286c)
@@ -170,6 +172,17 @@ they're loaded. The image carries `pnpm db:seed:departments` bundled as `deploy/
 departments (`deploy/deploy.sh departments`). It needs no account: it downloads the staff photos from hut.ac.ir and
 credits them to a `system` user it creates, which can't sign in. A department that exists is skipped, so it's safe to
 run again; `--replace mech` loads one again from `src/db/departments/`, losing the edits made to it on the site.
+
+**The offices, forms and phone book.** `/offices/<slug>`, `/forms` and `/phonebook` are empty until loaded the same
+way: Load pages (`deploy/deploy.sh pages`, `pnpm db:seed:pages` bundled as `deploy/seed-pages.mjs`). A part with rows
+is skipped; `--replace phonebook` loads one part again from `src/db/pages/` (the parts are `offices`, `library` and
+`phonebook`).
+
+**The news archive.** `/news` lists what the home feed's sync has stored, which on a new server is only what the old
+homepage shows. Fill news archive (`deploy/deploy.sh archive`, `pnpm crawl:archive` bundled as
+`deploy/sync-feed-archive.mjs`) reads the old site's listings (about 2,400 posts) and then every article's page: an
+hour or more the first time. Stopping it is safe: the app's timer keeps the archive current and reads 20 more article
+pages each run (docs/backend/home-feed.md → Archive).
 
 ## HTTPS Certificates
 

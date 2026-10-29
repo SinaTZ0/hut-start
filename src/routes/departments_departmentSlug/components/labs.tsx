@@ -4,8 +4,9 @@ import { TextLink } from "#/components/shared/text-link/text-link";
 import type { Department } from "#/orpc/department/contract";
 import { m } from "#/paraglide/messages";
 import type { Drawings } from "#/lib/university/drawings";
-import { formatPhone, memberName, sectionNumber } from "../content";
-import { RuledHeading } from "./ruled-heading";
+import { memberName } from "../content";
+import { formatPhone } from "#/lib/university/phone";
+import { RuledHeading, sectionNumber } from "#/components/shared/ruled-heading/ruled-heading";
 
 /*===== Labs =====*/
 
@@ -59,19 +60,21 @@ export function Labs({ department, drawings }: { department: Department; drawing
                   {formatPhone(contact.phone)}
                 </a>
               )}
-              {department.labsUrl && (
-                <TextLink href={department.labsUrl} tone="highlight" className="mt-6">
+              {
+                <TextLink href={`/departments/${department.slug}/labs`} tone="highlight" className="mt-6">
                   {m.department_labs_page()}
                 </TextLink>
-              )}
+              }
             </div>
           ) : (
             // With no one to call, the card would hold only the link, so the link stands alone.
-            department.labsUrl && (
-              <TextLink href={department.labsUrl} tone="highlight" className="self-start lg:col-span-4 lg:mt-4">
-                {m.department_labs_page()}
-              </TextLink>
-            )
+            <TextLink
+              href={`/departments/${department.slug}/labs`}
+              tone="highlight"
+              className="self-start lg:col-span-4 lg:mt-4"
+            >
+              {m.department_labs_page()}
+            </TextLink>
           )}
         </div>
       </div>

@@ -51,6 +51,31 @@ timer / homeFeed.sync / pnpm crawl:home
 - **Persian only.** The old site's text is stored as `{ fa }` `LocalizedText`, so `/en` shows it in Persian. The
   article page says so on `/en` and keeps the body right to left.
 
+## Archive
+
+`/news` (`homeFeed.list`) lists every stored article except the occasion posters: the homepage's, and everything the
+old site's three listings hold (`listing.server.ts`): اخبار, اطلاعیه‌ها and کارگاه‌ها و دوره‌های آموزشی, about 2,400
+posts back to 2021. They're Liferay search pages, read newest first (`?sort=createDate-&delta=60&start=<n>`).
+
+```text
+timer (after the homepage) / pnpm crawl:archive
+  → read each listing's first page (every page with crawl:archive)
+  → store posts not stored yet; give stored ones the categories their labels add
+  → read the pages of up to 20 articles without a body, newest first (all of them with crawl:archive)
+```
+
+- **Only adds.** A listing never removes or replaces anything, and a stored article keeps the kind and category the
+  homepage gave it. A listing page that fails is logged and read again next run.
+- **Labels become categories.** Each post carries the old site's tags and categories (`آموزش`, `دانشجوئی و فرهنگی`,
+  `اخبار تحصلات تکمیلی`), mapped in `LABEL_CATEGORIES`. The narrowest is the article's `category`, its card's kicker;
+  the others go in `topics`, so the archive's topic filter finds a notice under each. `LABEL_KINDS` turns a post into
+  an achievement, a course or an incubator story. A label not in the maps is ignored; add it there when the editors
+  start a new one.
+- **Pages come later.** A listed post is stored with its title, date and thumbnail only, and links to the old site
+  until its own page is read like a homepage article's (body, lead, date, the old site's ID for `/articles/<id>`). A
+  page that fails to load waits behind the untried ones.
+- **Years follow the language.** The year filter is Jalali on `/news` and Gregorian on `/en/news`.
+
 ## Old Homepage Blocks
 
 Each block on the old homepage is a Liferay asset publisher, found by its instance ID (`BLOCKS` in `parse.server.ts`).
@@ -80,11 +105,12 @@ in headless screenshots. Set a normal Chrome user agent there; real browsers are
 
 ## Running It
 
-| Way                | When                                                                                                                                                                   |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The server's timer | Every `HOME_FEED_SYNC_MINUTES` (default 30). The first run is 30 seconds after start. `0` turns it off.                                                                |
-| `pnpm crawl:home`  | By hand, in development or on the server. Needs no server running and no secret. Reads every page it needs in one go. `-- --refresh` reads every article's page again. |
-| `homeFeed.sync`    | On demand over HTTP, with the secret. A call during a timed run joins it.                                                                                              |
+| Way                  | When                                                                                                                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The server's timer   | Every `HOME_FEED_SYNC_MINUTES` (default 30). The first run is 30 seconds after start. `0` turns it off.                                                                                     |
+| `pnpm crawl:home`    | By hand, in development or on the server. Needs no server running and no secret. Reads every page it needs in one go. `-- --refresh` reads every article's page again.                      |
+| `pnpm crawl:archive` | The archive, by hand: every listing page, then every unread article page. `-- --listings-only`, `--pages <n>` and `--articles <n>` cut it short. On the server: `deploy/deploy.sh archive`. |
+| `homeFeed.sync`      | On demand over HTTP, with the secret. A call during a timed run joins it.                                                                                                                   |
 
 ```sh
 curl -X POST -H "Authorization: Bearer $HOME_FEED_SYNC_SECRET" https://<domain>/rpc/homeFeed/sync
@@ -110,12 +136,13 @@ A fresh database has an empty feed: the home page hides the blocks it can't fill
 
 At the cutover, when the new site's editors take over:
 
-1. Delete `parse.server.ts`, `source.server.ts`, `sync.server.ts`, `validation.ts`, the `fixtures/` folder,
-   `parse.server.test.ts`, `src/db/sync-home-feed.ts` and its `crawl:home` script.
-2. Delete `syncHomeFeed` and its helpers from `service.ts`, the `sync` procedure and contract, and the
+1. Delete `parse.server.ts`, `listing.server.ts`, `source.server.ts`, `sync.server.ts`, `validation.ts`, the
+   `fixtures/` folder, `parse.server.test.ts`, `src/db/sync-home-feed.ts` and `src/db/sync-feed-archive.ts` with their
+   `crawl:home` and `crawl:archive` scripts, and the `archive` command in `tools/deploy`.
+2. Delete `syncHomeFeed`, `syncFeedArchive` and their helpers from `service.ts`, the `sync` procedure and contract, and the
    `startHomeFeedSync()` call in `src/server.ts`.
 3. Remove both variables from `src/env.server.ts`, `.env.example`, `.env.production.example`, `compose.prod.yaml`,
    the deploy tool's settings registry (`tools/deploy/internal/settings/settings.go`) and `playwright.config.ts`.
-4. Keep the tables, `homeFeed.get`, `homeFeed.article` and `article-body.ts`. Editors' tools write the same rows; a
-   placement says where an article shows. Articles written here have no old-site ID, so the page's address needs an ID
-   of their own then.
+4. Keep the tables, `homeFeed.get`, `homeFeed.article`, `homeFeed.list` and `article-body.ts`. Editors' tools write
+   the same rows; a placement says where an article shows. Articles written here have no old-site ID, so the page's
+   address needs an ID of their own then.

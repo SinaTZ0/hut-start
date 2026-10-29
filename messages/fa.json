@@ -846,5 +846,204 @@
   "article_related_title": "بیشتر بخوانید",
   "article_not_found_title": "این مطلب پیدا نشد",
   "article_not_found_details": "ممکن است نشانی اشتباه باشد، یا این مطلب هنوز از سایت قبلی دانشگاه به این‌جا نیامده باشد.",
-  "article_not_found_back": "بازگشت به صفحه اصلی"
+  "article_not_found_back": "بازگشت به صفحه اصلی",
+  "common_all": "همه",
+  "hub_filter_label": "گروه",
+  "hub_empty": "«{query}» در این فهرست پیدا نشد. واژه دیگری را امتحان کنید یا گروه «همه» را بزنید.",
+  "services_title": "سامانه‌های دانشگاه",
+  "services_description": "همه سامانه‌های برخط دانشگاه صنعتی همدان، از گلستان و تغذیه تا کتابخانه و اتوماسیون اداری.",
+  "services_lede": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} سامانه، دسته‌بندی‌شده بر اساس کاری که می‌خواهید انجام دهید. نام سامانه یا همان کار را جست‌وجو کنید."
+      }
+    }
+  ],
+  "payments_title": "پرداخت الکترونیکی",
+  "payments_description": "درگاه‌های پرداخت دانشگاه صنعتی همدان: شناسه پرداخت درست را پیدا کنید و به درگاه همان بخش بروید.",
+  "payments_lede": "هر پرداخت شناسه خودش را دارد. بخشی را که برایش پول واریز می‌کنید انتخاب کنید تا به درگاه پرداخت همان بخش بروید.",
+  "payments_search_label": "جست‌وجوی پرداخت",
+  "payments_search_placeholder": "مثلاً خوابگاه، کتابخانه یا اجاره",
+  "payment_group_students": "دانشجویان",
+  "payment_group_students_summary": "هزینه‌هایی که دانشجو می‌پردازد",
+  "payment_group_others": "سازمان‌ها و دیگران",
+  "payment_group_others_summary": "قراردادها، اجاره و درآمدهای دیگر دانشگاه",
+  "payment_dorm": "اقامت در خوابگاه",
+  "payment_dorm_description": "هزینه اقامت دانشجویان در خوابگاه‌ها",
+  "payment_library": "کتابخانه",
+  "payment_library_description": "جریمه دیرکرد کتاب",
+  "payment_books": "خرید کتاب",
+  "payment_books_description": "کتاب‌های انتشارات دانشگاه",
+  "payment_sports": "تربیت بدنی",
+  "payment_sports_description": "سالن‌ها و کلاس‌های ورزشی",
+  "payment_labs": "آزمایشگاه‌ها",
+  "payment_labs_description": "خدمات و آزمون‌های آزمایشگاهی",
+  "payment_research": "طرح‌های پژوهشی",
+  "payment_research_description": "پرداخت قراردادهای پژوهشی",
+  "payment_events": "برگزاری مراسم",
+  "payment_events_description": "اجاره سالن و برگزاری مراسم",
+  "payment_rent": "اجاره‌ها",
+  "payment_rent_description": "اجاره فضاها و غرفه‌ها",
+  "payment_talent": "کانون شکوفایی",
+  "payment_talent_description": "دوره‌های کانون شکوفایی",
+  "payment_surplus": "فروش اموال اسقاطی",
+  "payment_surplus_description": "خرید اموال اسقاطی دانشگاه",
+  "payment_other": "سایر درآمدها",
+  "payment_other_description": "پرداخت‌هایی که در این فهرست نیست",
+  "section_about_lede": "دانشگاه صنعتی همدان، در دامنه الوند، مهندسان آینده را تربیت می‌کند. از اینجا با مدیران دانشگاه، اداره‌ها و راه‌های ارتباط با ما آشنا شوید.",
+  "section_education_lede": "هشت گروه آموزشی، دوره‌های کارشناسی و کارشناسی ارشد و آموزش‌های آزاد؛ کارهای تحصیلی شما از اینجا شروع می‌شود.",
+  "section_research_lede": "آزمایشگاه‌های گروه‌ها، آزمایشگاه مرکزی، مرکز رشد و نشریه علمی دانشگاه؛ پژوهش و فناوری در دانشگاه صنعتی همدان.",
+  "section_campus_life_lede": "خوابگاه، تغذیه، ورزش، کانون‌ها و انجمن‌های علمی و مشاوره؛ هر آنچه برای زندگی دانشجویی در دانشگاه لازم دارید.",
+  "section_notices_title": "اطلاعیه‌ها",
+  "section_news_title": "اخبار دانشگاه",
+  "section_notices_empty": "اطلاعیه تازه‌ای نیست.",
+  "section_upcoming_title": "تاریخ‌های پیش رو",
+  "departments_lede": "هشت گروه آموزشی دانشگاه، هر کدام با گرایش‌ها، اعضای هیئت علمی و آزمایشگاه‌هایش.",
+  "sitemap_lede": "همه صفحه‌ها و سامانه‌هایی که از منوی سایت می‌توان به آن‌ها رسید، در یک صفحه.",
+  "sitemap_more": "سامانه‌ها و صفحه‌های دیگر",
+  "sitemap_open_section": "صفحه این بخش",
+  "phonebook_description": "دفترچه تلفن داخلی دانشگاه صنعتی همدان: شماره داخلی اعضای هیئت علمی و کارکنان، به تفکیک واحد.",
+  "phonebook_lede": "شماره داخلی هر نفر را با نام، سمت یا واحدش پیدا کنید. روی شماره بزنید تا مستقیم تماس بگیرید.",
+  "phonebook_main_label": "تلفن دانشگاه",
+  "phonebook_direct_hint": "از بیرون دانشگاه، هر داخلی را با ⁦۰۸۱-۳۸۴۱۱⁩ و سه رقم آن بگیرید.",
+  "phonebook_search_label": "جست‌وجو در دفترچه تلفن",
+  "phonebook_search_placeholder": "نام، سمت، واحد یا شماره داخلی",
+  "phonebook_filter_label": "واحد",
+  "phonebook_group_leadership": "ریاست و حوزه ریاست",
+  "phonebook_group_education": "معاونت آموزشی و پژوهشی",
+  "phonebook_group_student": "معاونت دانشجویی و فرهنگی",
+  "phonebook_group_admin": "معاونت اداری و مالی",
+  "phonebook_group_departments": "گروه‌های آموزشی",
+  "phonebook_group_labs": "آزمایشگاه‌ها",
+  "phonebook_group_other": "سایر",
+  "phonebook_role_faculty": "عضو هیئت علمی",
+  "phonebook_role_staff": "کارمند",
+  "phonebook_role_lab_expert": "کارشناس آزمایشگاه",
+  "phonebook_role_conscript": "سرباز وظیفه",
+  "phonebook_role_legal": "امور حقوقی",
+  "phonebook_people": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} نفر"
+      }
+    }
+  ],
+  "phonebook_show_all": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "همه {countText} نفر"
+      }
+    }
+  ],
+  "phonebook_fold": "بستن فهرست",
+  "phonebook_call": "تماس با {name}، داخلی {extension}",
+  "phonebook_updated": "آخرین به‌روزرسانی فهرست: {date}",
+  "forms_description": "فرم‌ها، آیین‌نامه‌ها و راهنماهای دانشگاه صنعتی همدان برای دانشجویان، پژوهشگران و اعضای هیئت علمی.",
+  "forms_lede": "فرم، آیین‌نامه یا راهنمای مورد نیازتان را پیدا کنید و همان‌جا دریافت کنید.",
+  "forms_search_label": "جست‌وجو در فرم‌ها و آیین‌نامه‌ها",
+  "forms_search_placeholder": "مثلاً پایان‌نامه، گرنت یا فرصت مطالعاتی",
+  "forms_sections_label": "بخش‌های این صفحه",
+  "forms_file_count": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} فایل"
+      }
+    }
+  ],
+  "office_tools_title": "سامانه‌ها و پیوندها",
+  "office_about_title": "معرفی و وظایف",
+  "office_duties_title": "وظایف اداره",
+  "office_notices_title": "اطلاعیه‌ها",
+  "office_notes_title": "به خاطر داشته باشید",
+  "office_people_title": "کارشناسان",
+  "office_former_title": "رؤسای پیشین دانشگاه",
+  "office_head": "مدیر",
+  "office_fax": "دورنگار",
+  "office_email_label": "پست الکترونیک",
+  "office_place": "نشانی",
+  "office_hours": "ساعت کاری",
+  "office_call": "تماس با {name}",
+  "office_email": "ایمیل به {name}",
+  "office_resume": "رزومه {name}",
+  "office_not_found_title": "این اداره پیدا نشد",
+  "office_not_found_details": "ممکن است نشانی اشتباه باشد، یا صفحه این اداره هنوز از سایت قبلی به این‌جا نیامده باشد.",
+  "office_not_found_back": "بازگشت به معرفی دانشگاه",
+  "office_people_with_head_title": "مدیر و کارشناسان",
+  "labs_title": "آزمایشگاه‌های {name}",
+  "labs_lede": "آزمایشگاه‌ها و کارگاه‌های گروه {name}: کاری که در هرکدام انجام می‌شود، تجهیزاتشان، و سرپرستان و کارشناسانی که پاسخگوی شما هستند.",
+  "labs_cta_list": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} آزمایشگاه و کارگاه"
+      }
+    }
+  ],
+  "labs_cta_people": "سرپرستان آزمایشگاه‌ها",
+  "labs_intro_title": "معرفی",
+  "labs_experts_title": "کارشناسان آزمایشگاه",
+  "labs_list_title": "آزمایشگاه‌ها و کارگاه‌ها",
+  "labs_supervisors_title": "سرپرستان",
+  "labs_files_title": "دستورکارها و فایل‌ها",
+  "labs_others": "آزمایشگاه‌های گروه‌های دیگر",
+  "labs_equipment": "تجهیزات و موضوع‌ها",
+  "labs_role_supervisor": "سرپرست آزمایشگاه",
+  "labs_role_expert": "کارشناس آزمایشگاه",
+  "labs_not_found_title": "این گروه صفحه آزمایشگاه ندارد",
+  "common_pagination": "صفحه‌ها",
+  "common_previous": "قبلی",
+  "common_next": "بعدی",
+  "common_more_pages": "صفحه‌های دیگر",
+  "news_title": "اخبار و اطلاعیه‌ها",
+  "news_description": "همه خبرها، اطلاعیه‌ها، دستاوردها و دوره‌های دانشگاه صنعتی همدان، از تازه‌ترین، با جست‌وجو و فیلتر بر پایه نوع، موضوع و سال.",
+  "news_lede": "همه خبرها، اطلاعیه‌ها، دستاوردها و دوره‌های دانشگاه، از تازه‌ترین. با نوع، موضوع و سال، مطلب مورد نظرتان را پیدا کنید.",
+  "news_persian_only": "مطالب این فهرست فقط به فارسی منتشر می‌شوند.",
+  "news_search_label": "جست‌وجو در اخبار و اطلاعیه‌ها",
+  "news_search_placeholder": "واژه‌ای از عنوان یا متن مطلب",
+  "news_kind_label": "نوع مطلب",
+  "news_category_label": "موضوع",
+  "news_all_topics": "همه موضوع‌ها",
+  "news_year_label": "سال",
+  "news_all_years": "همه سال‌ها",
+  "news_sort_label": "ترتیب",
+  "news_sort_newest": "تازه‌ترین",
+  "news_sort_oldest": "قدیمی‌ترین",
+  "news_results": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} مطلب"
+      }
+    }
+  ],
+  "news_page_of": [
+    {
+      "declarations": [
+        "input page",
+        "local pageText = page: number",
+        "input pageCount",
+        "local pageCountText = pageCount: number"
+      ],
+      "match": {
+        "": "صفحه {pageText} از {pageCountText}"
+      }
+    }
+  ],
+  "news_empty": "مطلبی با این جست‌وجو و فیلترها پیدا نشد.",
+  "news_clear": "پاک کردن همه فیلترها",
+  "news_newer": "جدیدتر",
+  "news_older": "قدیمی‌تر",
+  "news_pages_label": "صفحه‌های نتایج",
+  "news_page_label": [
+    {
+      "declarations": ["input page", "local pageText = page: number"],
+      "match": {
+        "": "صفحه {pageText}"
+      }
+    }
+  ]
 }

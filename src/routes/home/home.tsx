@@ -16,8 +16,7 @@ import { NewsSection } from "./components/news-section";
 import { SemesterSection } from "./components/semester-section";
 import { ServiceRail } from "./components/service-rail";
 import { Welcome } from "./components/welcome";
-import { SEMESTER } from "./content";
-import { semesterState, todayInTehran } from "./semester";
+import { SEMESTER, semesterState, todayInTehran } from "#/lib/university/semester";
 
 /*===== Query =====*/
 const homeFeedQuery = () => orpc.homeFeed.get.queryOptions();

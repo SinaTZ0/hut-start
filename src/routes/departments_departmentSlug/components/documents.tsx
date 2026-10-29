@@ -1,6 +1,5 @@
 import { ChevronDownIcon, DownloadIcon, FileTextIcon } from "lucide-react";
 
-import { Badge } from "#/components/primitive/badge/badge";
 import { Button } from "#/components/primitive/button/button";
 import { buttonVariants } from "#/components/primitive/button/button.styles";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "#/components/primitive/collapsible/collapsible";
@@ -10,13 +9,13 @@ import {
   ItemContent,
   ItemDescription,
   ItemGroup,
-  ItemMedia,
   ItemTitle,
 } from "#/components/primitive/item/item";
+import { FileRow } from "#/components/shared/file-row/file-row";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import type { Department, DepartmentDocument, DepartmentTrack } from "#/orpc/department/contract";
 import { m } from "#/paraglide/messages";
-import { RuledHeading } from "./ruled-heading";
+import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
 
 /*===== Documents =====*/
 
@@ -68,7 +67,7 @@ function DegreeFiles({
       <h3 className="text-h4">{title}</h3>
       <ItemGroup variant="ruled" className="mt-4">
         {current.map((document) => (
-          <DocumentRow key={document.id} document={document} />
+          <FileRow key={document.id} title={document.title} url={document.url} format={document.format} />
         ))}
         {tracks.map((track) => (
           <TrackRow key={track.id} track={track} />
@@ -87,37 +86,13 @@ function DegreeFiles({
           <CollapsibleContent>
             <ItemGroup variant="ruled" className="mt-3">
               {archived.map((document) => (
-                <DocumentRow key={document.id} document={document} />
+                <FileRow key={document.id} title={document.title} url={document.url} format={document.format} />
               ))}
             </ItemGroup>
           </CollapsibleContent>
         </Collapsible>
       )}
     </div>
-  );
-}
-
-/*===== Document Row =====*/
-
-function DocumentRow({ document }: { document: DepartmentDocument }) {
-  return (
-    <li>
-      <Item render={<SiteLink href={document.url} />}>
-        <ItemMedia>
-          <FileTextIcon />
-        </ItemMedia>
-        <ItemContent>
-          <ItemTitle>{document.title}</ItemTitle>
-        </ItemContent>
-        <ItemActions>
-          {/* The file's format is its own name, the same in every language. */}
-          <Badge variant="outline" dir="ltr">
-            {document.format.toUpperCase()}
-          </Badge>
-          <DownloadIcon />
-        </ItemActions>
-      </Item>
-    </li>
   );
 }
 

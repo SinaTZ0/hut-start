@@ -37,8 +37,6 @@ export const bs: DepartmentSeed = {
   },
   milestones: [{ on: "2009-06-22", label: { fa: "تشکیل گروه علوم پایه", en: "The department is formed" } }],
   foundedOn: "2009-06-22",
-  labsUrl:
-    "https://hut.ac.ir/%D8%A2%D8%B2%D9%85%D8%A7%DB%8C%D8%B4%DA%AF%D8%A7%D9%87-%D8%B9%D9%84%D9%88%D9%85-%D9%BE%D8%A7%DB%8C%D9%87",
 
   /*------ People ------*/
   members: [

@@ -10,10 +10,12 @@ import {
 } from "#/components/primitive/breadcrumb/breadcrumb";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { formatDate, formatRelativeDays, isoToDate } from "#/lib/locale";
+import { archiveHref, KIND_LABELS } from "#/lib/university/feed";
+import { ARCHIVE_KINDS, type ArchiveKind } from "#/orpc/home-feed/constants";
 import type { Article } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
 import { getLocale } from "#/paraglide/runtime";
-import { CATEGORY_LABELS, KIND_LABELS, readingMinutes } from "../content";
+import { CATEGORY_LABELS, readingMinutes } from "../content";
 import { ArticleActions } from "./article-actions";
 import { ArticleFigure } from "./article-figure";
 
@@ -40,6 +42,10 @@ export function ArticleHeader({ article }: { article: Article }) {
   const category = CATEGORY_LABELS[article.category]();
   // The incubator's stories are filed under the incubator twice over (kind and category); it's named once.
   const showCategory = category !== kind.many();
+  // The trail's steps open the archive at that kind and category; an occasion poster has no list to go back to.
+  const archiveKind = (ARCHIVE_KINDS as readonly string[]).includes(article.kind)
+    ? (article.kind as ArchiveKind)
+    : undefined;
   const days = article.publishedOn ? daysAgo(article.publishedOn) : null;
 
   return (
@@ -51,12 +57,28 @@ export function ArticleHeader({ article }: { article: Article }) {
             <BreadcrumbLink render={<SiteLink href="/" />}>{m.nav_tab_home()}</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem>{showCategory ? kind.many() : <BreadcrumbPage>{kind.many()}</BreadcrumbPage>}</BreadcrumbItem>
+          <BreadcrumbItem>
+            {archiveKind ? (
+              <BreadcrumbLink render={<SiteLink href={archiveHref({ kind: archiveKind })} />}>
+                {kind.many()}
+              </BreadcrumbLink>
+            ) : (
+              <BreadcrumbPage>{kind.many()}</BreadcrumbPage>
+            )}
+          </BreadcrumbItem>
           {showCategory && (
             <>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{category}</BreadcrumbPage>
+                {archiveKind ? (
+                  <BreadcrumbLink
+                    render={<SiteLink href={archiveHref({ kind: archiveKind, category: article.category })} />}
+                  >
+                    {category}
+                  </BreadcrumbLink>
+                ) : (
+                  <BreadcrumbPage>{category}</BreadcrumbPage>
+                )}
               </BreadcrumbItem>
             </>
           )}

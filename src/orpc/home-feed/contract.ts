@@ -4,7 +4,13 @@ import { z } from "zod";
 import { authErrors } from "#/orpc/middleware/auth/auth.errors";
 import { commonErrors, errorDataSchema } from "#/orpc/errors";
 import { articleBodySchema } from "#/orpc/home-feed/article-body";
-import { FEED_CATEGORIES, FEED_KINDS } from "#/orpc/home-feed/constants";
+import {
+  ARCHIVE_KINDS,
+  ARCHIVE_PAGE_SIZE,
+  ARCHIVE_SORTS,
+  FEED_CATEGORIES,
+  FEED_KINDS,
+} from "#/orpc/home-feed/constants";
 
 /*===== Schemas =====*/
 // Text arrives in the request's locale (`localize`), falling back to Persian, which is all the old site has.
@@ -74,6 +80,38 @@ export const articleSchema = z.object({
 
 export type Article = z.infer<typeof articleSchema>;
 
+// Every filter is optional: none lists everything. A page past the last is an empty one, not an error.
+export const archiveInputSchema = z.strictObject({
+  kind: z.enum(ARCHIVE_KINDS).optional(),
+  category: z.enum(FEED_CATEGORIES).optional(),
+  q: z.string().trim().max(100).optional(),
+  /** In the request locale's calendar: 1404 in Persian, 2025 in English. */
+  year: z.number().int().min(1300).max(2200).optional(),
+  sort: z.enum(ARCHIVE_SORTS).default("newest"),
+  page: z.number().int().min(1).max(10_000).default(1),
+});
+
+export type ArchiveInput = z.input<typeof archiveInputSchema>;
+
+const facetCountSchema = <T extends z.ZodType>(value: T) => z.object({ value, count: z.number().int() });
+
+export const archivePageSchema = z.object({
+  items: z.array(feedItemSchema),
+  total: z.number().int(),
+  page: z.number().int(),
+  pageCount: z.number().int(),
+  pageSize: z.literal(ARCHIVE_PAGE_SIZE),
+  /** What each option of a filter would show with the other filters as they are. Options with none are left out. */
+  facets: z.object({
+    kinds: z.array(facetCountSchema(z.enum(ARCHIVE_KINDS))),
+    categories: z.array(facetCountSchema(z.enum(FEED_CATEGORIES))),
+    /** Newest first, in the request locale's calendar. */
+    years: z.array(facetCountSchema(z.number().int())),
+  }),
+});
+
+export type ArchivePage = z.infer<typeof archivePageSchema>;
+
 // Structure only. An unknown ID is a `NOT_FOUND`, decided by the service.
 const getArticleInputSchema = z.strictObject({ id: z.string() });
 
@@ -107,6 +145,9 @@ export const getArticleContract = oc
   .input(getArticleInputSchema)
   .output(articleSchema);
 
+/** The archive (`/news`): every stored post of the archive's kinds, filtered, a page at a time. */
+export const listArchiveContract = oc.errors(commonErrors).input(archiveInputSchema).output(archivePageSchema);
+
 /**
  * Reads the old homepage now, instead of waiting for the timer. Needs the sync secret
  * (`Authorization: Bearer <HOME_FEED_SYNC_SECRET>`); without that variable set it always answers `UNAUTHORIZED`.
@@ -119,5 +160,6 @@ export const syncHomeFeedContract = oc
 export const homeFeedContract = {
   get: getHomeFeedContract,
   article: getArticleContract,
+  list: listArchiveContract,
   sync: syncHomeFeedContract,
 };

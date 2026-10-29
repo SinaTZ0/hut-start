@@ -49,6 +49,11 @@ function toItem({ article, kind, category }: { article: FeedArticleRecord; kind:
   } satisfies FeedItem;
 }
 
+/** A stored article under its own kind and category, as a list shows it (an office's notices, the archive). */
+export function toListedItem(article: FeedArticleRecord & { kind: string; category: string }): FeedItem {
+  return toItem({ article, kind: article.kind, category: article.category });
+}
+
 /** A placed article as its block's card shows it. */
 export function toFeedItem({ placement, article }: PlacedArticle): FeedItem {
   return toItem({ article, kind: placement.kind, category: placement.category });

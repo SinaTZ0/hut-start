@@ -34,7 +34,10 @@ function sourceUrl(value: string): URL | null {
   return url;
 }
 
-/** An article's address without `?redirect=`, which only says which page linked to it. Identifies it across runs. */
+/**
+ * An article's address without `?redirect=` or `?p_l_back_url=` (the archive listings' back link), which only say which
+ * page linked to it. Identifies it across runs and across the homepage and the listings.
+ */
 const articleUrlSchema = z.string().transform((value, context) => {
   const url = sourceUrl(value);
   if (!url) {
@@ -42,10 +45,14 @@ const articleUrlSchema = z.string().transform((value, context) => {
     return z.NEVER;
   }
   url.searchParams.delete("redirect");
+  url.searchParams.delete("p_l_back_url");
   return url.href;
 });
 
-/** A photo at full size (the old site asks for `width=350` thumbnails), or null for none or the placeholder. */
+/**
+ * A photo at full size (the homepage asks for `width=350` thumbnails, the archive listings for `imagePreview=1`), or
+ * null for none or the placeholder.
+ */
 const imageUrlSchema = z
   .string()
   .nullable()
@@ -53,6 +60,7 @@ const imageUrlSchema = z
     const url = value ? sourceUrl(value) : null;
     if (!url || PLACEHOLDER_IMAGE.test(url.pathname)) return null;
     url.searchParams.delete("width");
+    url.searchParams.delete("imagePreview");
     return url.href;
   });
 

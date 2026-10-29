@@ -864,5 +864,204 @@
   "article_related_title": "Read more",
   "article_not_found_title": "Article not found",
   "article_not_found_details": "The address may be wrong, or the article hasn't come over from the university's old site yet.",
-  "article_not_found_back": "Back to the home page"
+  "article_not_found_back": "Back to the home page",
+  "common_all": "All",
+  "hub_filter_label": "Group",
+  "hub_empty": "Nothing here matches “{query}”. Try another word, or pick “All”.",
+  "services_title": "University systems",
+  "services_description": "Every online system at Hamedan University of Technology, from Golestan and dining to the library and office automation.",
+  "services_lede": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} systems, grouped by what you want to get done. Search for a system's name or for the task itself."
+      }
+    }
+  ],
+  "payments_title": "Online payments",
+  "payments_description": "Hamedan University of Technology's payment gateways: find the right payment ID and go to that office's gateway.",
+  "payments_lede": "Each payment has its own ID. Pick what you're paying for and you'll go to that office's payment gateway.",
+  "payments_search_label": "Search payments",
+  "payments_search_placeholder": "e.g. housing, library or rent",
+  "payment_group_students": "Students",
+  "payment_group_students_summary": "Fees students pay",
+  "payment_group_others": "Organisations and others",
+  "payment_group_others_summary": "Contracts, rent and the university's other income",
+  "payment_dorm": "Housing",
+  "payment_dorm_description": "Student housing fees",
+  "payment_library": "Library",
+  "payment_library_description": "Late-return fines",
+  "payment_books": "Book purchase",
+  "payment_books_description": "Books from the university press",
+  "payment_sports": "Physical education",
+  "payment_sports_description": "Gyms and sports classes",
+  "payment_labs": "Laboratories",
+  "payment_labs_description": "Lab services and tests",
+  "payment_research": "Research projects",
+  "payment_research_description": "Research contract payments",
+  "payment_events": "Events",
+  "payment_events_description": "Hall hire and events",
+  "payment_rent": "Rent",
+  "payment_rent_description": "Rented spaces and stalls",
+  "payment_talent": "Talent centre",
+  "payment_talent_description": "The talent centre's courses",
+  "payment_surplus": "Surplus sales",
+  "payment_surplus_description": "Buying the university's surplus property",
+  "payment_other": "Other payments",
+  "payment_other_description": "Anything not listed here",
+  "section_about_lede": "Hamedan University of Technology trains tomorrow's engineers below Mount Alvand. Meet its leadership and offices, and find how to reach us.",
+  "section_education_lede": "Eight departments, bachelor's and master's programmes, and open courses: your studies start here.",
+  "section_research_lede": "The departments' labs, the central lab, the incubator and the university's journal: research and technology at Hamedan University of Technology.",
+  "section_campus_life_lede": "Housing, dining, sport, clubs and societies, and counselling: everything for student life on campus.",
+  "section_notices_title": "Notices",
+  "section_news_title": "University news",
+  "section_notices_empty": "No recent notices.",
+  "section_upcoming_title": "Coming up",
+  "departments_lede": "The university's eight departments, each with its programmes, faculty and labs.",
+  "sitemap_lede": "Every page and system the site's menus lead to, on one page.",
+  "sitemap_more": "Systems and other pages",
+  "sitemap_open_section": "This section's page",
+  "phonebook_description": "Hamedan University of Technology's internal phone book: faculty and staff extensions, by office.",
+  "phonebook_lede": "Find anyone's extension by name, role or office. Tap a number to call it directly.",
+  "phonebook_main_label": "University switchboard",
+  "phonebook_direct_hint": "From outside, dial 081-38411 and the three-digit extension.",
+  "phonebook_search_label": "Search the phone book",
+  "phonebook_search_placeholder": "Name, role, office or extension",
+  "phonebook_filter_label": "Division",
+  "phonebook_group_leadership": "President's office",
+  "phonebook_group_education": "Education and research",
+  "phonebook_group_student": "Student and cultural affairs",
+  "phonebook_group_admin": "Administration and finance",
+  "phonebook_group_departments": "Departments",
+  "phonebook_group_labs": "Laboratories",
+  "phonebook_group_other": "Other",
+  "phonebook_role_faculty": "Faculty",
+  "phonebook_role_staff": "Staff",
+  "phonebook_role_lab_expert": "Lab expert",
+  "phonebook_role_conscript": "Conscript",
+  "phonebook_role_legal": "Legal affairs",
+  "phonebook_people": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} people"
+      }
+    }
+  ],
+  "phonebook_show_all": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "All {countText} people"
+      }
+    }
+  ],
+  "phonebook_fold": "Show fewer",
+  "phonebook_call": "Call {name}, extension {extension}",
+  "phonebook_updated": "List last updated {date}",
+  "forms_description": "Hamedan University of Technology's forms, regulations and guides for students, researchers and faculty.",
+  "forms_lede": "Find the form, regulation or guide you need and download it here.",
+  "forms_search_label": "Search forms and regulations",
+  "forms_search_placeholder": "e.g. thesis, grant or sabbatical",
+  "forms_sections_label": "Sections on this page",
+  "forms_file_count": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} files"
+      }
+    }
+  ],
+  "office_tools_title": "Systems and links",
+  "office_about_title": "About the office",
+  "office_duties_title": "What the office does",
+  "office_notices_title": "Notices",
+  "office_notes_title": "Remember",
+  "office_people_title": "Staff",
+  "office_former_title": "Former presidents",
+  "office_head": "Head",
+  "office_fax": "Fax",
+  "office_email_label": "Email",
+  "office_place": "Where",
+  "office_hours": "Hours",
+  "office_call": "Call {name}",
+  "office_email": "Email {name}",
+  "office_resume": "{name}'s résumé",
+  "office_not_found_title": "Office not found",
+  "office_not_found_details": "The address may be wrong, or this office's page hasn't moved here from the old site yet.",
+  "office_not_found_back": "Back to the university",
+  "office_people_with_head_title": "Head and staff",
+  "labs_title": "{name} labs",
+  "labs_lede": "The {name} department's labs and workshops: what each is for, its equipment, and the supervisors and experts to ask.",
+  "labs_cta_list": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} labs and workshops"
+      }
+    }
+  ],
+  "labs_cta_people": "Lab supervisors",
+  "labs_intro_title": "About the labs",
+  "labs_experts_title": "Lab experts",
+  "labs_list_title": "Labs and workshops",
+  "labs_supervisors_title": "Supervisors",
+  "labs_files_title": "Manuals and files",
+  "labs_others": "Other departments' labs",
+  "labs_equipment": "Equipment and topics",
+  "labs_role_supervisor": "Lab supervisor",
+  "labs_role_expert": "Lab expert",
+  "labs_not_found_title": "This department has no labs page",
+  "common_pagination": "Pages",
+  "common_previous": "Previous",
+  "common_next": "Next",
+  "common_more_pages": "More pages",
+  "news_title": "News and notices",
+  "news_description": "Every news story, notice, achievement and course from Hamedan University of Technology, newest first, searchable and filtered by type, topic and year.",
+  "news_lede": "All the university's news, notices, achievements and courses, newest first. Narrow them by type, topic and year.",
+  "news_persian_only": "These posts are published in Persian only.",
+  "news_search_label": "Search news and notices",
+  "news_search_placeholder": "A word from a post's title or lead",
+  "news_kind_label": "Type",
+  "news_category_label": "Topic",
+  "news_all_topics": "All topics",
+  "news_year_label": "Year",
+  "news_all_years": "All years",
+  "news_sort_label": "Order",
+  "news_sort_newest": "Newest first",
+  "news_sort_oldest": "Oldest first",
+  "news_results": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "{countText} posts"
+      }
+    }
+  ],
+  "news_page_of": [
+    {
+      "declarations": [
+        "input page",
+        "local pageText = page: number",
+        "input pageCount",
+        "local pageCountText = pageCount: number"
+      ],
+      "match": {
+        "": "Page {pageText} of {pageCountText}"
+      }
+    }
+  ],
+  "news_empty": "No posts match this search and these filters.",
+  "news_clear": "Clear all filters",
+  "news_newer": "Newer",
+  "news_older": "Older",
+  "news_pages_label": "Result pages",
+  "news_page_label": [
+    {
+      "declarations": ["input page", "local pageText = page: number"],
+      "match": {
+        "": "Page {pageText}"
+      }
+    }
+  ]
 }

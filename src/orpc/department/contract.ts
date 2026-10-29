@@ -1,7 +1,15 @@
 import { oc } from "@orpc/contract";
 import { z } from "zod";
 
-import { ACADEMIC_RANKS, DEGREES, DOCUMENT_FORMATS, HONORIFICS, MEMBER_KINDS } from "#/orpc/department/constants";
+import {
+  ACADEMIC_RANKS,
+  DEGREES,
+  DOCUMENT_FORMATS,
+  HONORIFICS,
+  LAB_FILE_FORMATS,
+  LAB_ROLES,
+  MEMBER_KINDS,
+} from "#/orpc/department/constants";
 import { commonErrors, errorDataSchema } from "#/orpc/errors";
 import { mediaSchema } from "#/orpc/media/contract";
 
@@ -23,6 +31,9 @@ export const departmentMemberSchema = z.object({
   scholarUrl: z.string().nullable(),
   /** A `portrait` media. */
   photo: mediaSchema.nullable(),
+  /** Their part on the labs page, if any, and what they look after there. */
+  labRole: z.enum(LAB_ROLES).nullable(),
+  labNote: z.string().nullable(),
 });
 
 export type DepartmentMember = z.infer<typeof departmentMemberSchema>;
@@ -71,7 +82,6 @@ export const departmentSchema = z.object({
   /** Oldest first; `on` is an ISO date. */
   milestones: z.array(z.object({ on: z.iso.date(), label: z.string() })),
   studentCount: z.number().int().nullable(),
-  labsUrl: z.string().nullable(),
   /** The last change to the department or anything on its page. */
   updatedAt: z.date(),
   head: departmentMemberSchema.nullable(),
@@ -79,7 +89,12 @@ export const departmentSchema = z.object({
   faculty: z.array(departmentMemberSchema),
   staff: z.array(departmentMemberSchema),
   fields: z.array(departmentFieldSchema),
-  labs: z.array(z.object({ id: z.string(), name: z.string() })),
+  /** The labs page's introduction, in paragraphs; empty when the department has no labs page. */
+  labsIntro: z.array(z.string()),
+  labs: z.array(
+    z.object({ id: z.string(), name: z.string(), description: z.string().nullable(), equipment: z.array(z.string()) }),
+  ),
+  labFiles: z.array(z.object({ id: z.string(), title: z.string(), url: z.string(), format: z.enum(LAB_FILE_FORMATS) })),
   documents: z.array(departmentDocumentSchema),
 });
 

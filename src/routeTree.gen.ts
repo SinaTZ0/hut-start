@@ -15,15 +15,28 @@ import { Route as robotsRobotsRouteImport } from './routes/robots/robots'
 import { Route as sitemapSitemapRouteImport } from './routes/sitemap/sitemap'
 import { Route as homeHomeRouteImport } from './routes/home/home'
 import { Route as notes_layoutNotesLayoutRouteImport } from './routes/notes_layout/notes-layout'
+import { Route as aboutAboutRouteImport } from './routes/about/about'
 import { Route as authAuthRouteImport } from './routes/auth/auth'
+import { Route as campusLifeCampusLifeRouteImport } from './routes/campus-life/campus-life'
 import { Route as consultationConsultationRouteImport } from './routes/consultation/consultation'
+import { Route as departmentsDepartmentsRouteImport } from './routes/departments/departments'
+import { Route as educationEducationRouteImport } from './routes/education/education'
 import { Route as feedbackFeedbackRouteImport } from './routes/feedback/feedback'
+import { Route as formsFormsRouteImport } from './routes/forms/forms'
+import { Route as newsNewsRouteImport } from './routes/news/news'
+import { Route as paymentsPaymentsRouteImport } from './routes/payments/payments'
+import { Route as phonebookPhonebookRouteImport } from './routes/phonebook/phonebook'
 import { Route as privacyPrivacyRouteImport } from './routes/privacy/privacy'
+import { Route as researchResearchRouteImport } from './routes/research/research'
+import { Route as servicesServicesRouteImport } from './routes/services/services'
+import { Route as sitemap_pageSitemapPageRouteImport } from './routes/sitemap_page/sitemap-page'
 import { Route as rpcRpcRouteImport } from './routes/rpc/rpc'
 import { Route as notesNotesRouteImport } from './routes/notes/notes'
 import { Route as articles_articleIdArticlesArticleIdRouteImport } from './routes/articles_articleId/articles-article-id'
 import { Route as departments_departmentSlugDepartmentsDepartmentSlugRouteImport } from './routes/departments_departmentSlug/departments-department-slug'
+import { Route as offices_officeSlugOfficesOfficeSlugRouteImport } from './routes/offices_officeSlug/offices-office-slug'
 import { Route as api_authApiAuthRouteImport } from './routes/api_auth/api-auth'
+import { Route as departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRouteImport } from './routes/departments_departmentSlug_labs/departments-department-slug-labs'
 
 const site_layoutSiteLayoutRoute = site_layoutSiteLayoutRouteImport.update({
   id: '/_site-layout',
@@ -53,9 +66,19 @@ const notes_layoutNotesLayoutRoute = notes_layoutNotesLayoutRouteImport.update({
   id: '/_notes-layout',
   getParentRoute: () => site_layoutSiteLayoutRoute,
 } as any)
+const aboutAboutRoute = aboutAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
 const authAuthRoute = authAuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
+const campusLifeCampusLifeRoute = campusLifeCampusLifeRouteImport.update({
+  id: '/campus-life',
+  path: '/campus-life',
   getParentRoute: () => site_layoutSiteLayoutRoute,
 } as any)
 const consultationConsultationRoute =
@@ -64,14 +87,59 @@ const consultationConsultationRoute =
     path: '/consultation',
     getParentRoute: () => site_layoutSiteLayoutRoute,
   } as any)
+const departmentsDepartmentsRoute = departmentsDepartmentsRouteImport.update({
+  id: '/departments',
+  path: '/departments',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
+const educationEducationRoute = educationEducationRouteImport.update({
+  id: '/education',
+  path: '/education',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
 const feedbackFeedbackRoute = feedbackFeedbackRouteImport.update({
   id: '/feedback',
   path: '/feedback',
   getParentRoute: () => site_layoutSiteLayoutRoute,
 } as any)
+const formsFormsRoute = formsFormsRouteImport.update({
+  id: '/forms',
+  path: '/forms',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
+const newsNewsRoute = newsNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
+const paymentsPaymentsRoute = paymentsPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
+const phonebookPhonebookRoute = phonebookPhonebookRouteImport.update({
+  id: '/phonebook',
+  path: '/phonebook',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
 const privacyPrivacyRoute = privacyPrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
+const researchResearchRoute = researchResearchRouteImport.update({
+  id: '/research',
+  path: '/research',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
+const servicesServicesRoute = servicesServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
+const sitemap_pageSitemapPageRoute = sitemap_pageSitemapPageRouteImport.update({
+  id: '/sitemap',
+  path: '/sitemap',
   getParentRoute: () => site_layoutSiteLayoutRoute,
 } as any)
 const rpcRpcRoute = rpcRpcRouteImport.update({
@@ -96,41 +164,81 @@ const departments_departmentSlugDepartmentsDepartmentSlugRoute =
     path: '/departments/$departmentSlug',
     getParentRoute: () => site_layoutSiteLayoutRoute,
   } as any)
+const offices_officeSlugOfficesOfficeSlugRoute =
+  offices_officeSlugOfficesOfficeSlugRouteImport.update({
+    id: '/offices/$officeSlug',
+    path: '/offices/$officeSlug',
+    getParentRoute: () => site_layoutSiteLayoutRoute,
+  } as any)
 const api_authApiAuthRoute = api_authApiAuthRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRoute =
+  departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRouteImport.update(
+    {
+      id: '/departments/$departmentSlug/labs',
+      path: '/departments/$departmentSlug/labs',
+      getParentRoute: () => site_layoutSiteLayoutRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof homeHomeRoute
   '/healthz': typeof healthzHealthzRoute
   '/robots.txt': typeof robotsRobotsRoute
   '/sitemap.xml': typeof sitemapSitemapRoute
+  '/about': typeof aboutAboutRoute
   '/auth': typeof authAuthRoute
+  '/campus-life': typeof campusLifeCampusLifeRoute
   '/consultation': typeof consultationConsultationRoute
+  '/departments': typeof departmentsDepartmentsRoute
+  '/education': typeof educationEducationRoute
   '/feedback': typeof feedbackFeedbackRoute
+  '/forms': typeof formsFormsRoute
+  '/news': typeof newsNewsRoute
+  '/payments': typeof paymentsPaymentsRoute
+  '/phonebook': typeof phonebookPhonebookRoute
   '/privacy': typeof privacyPrivacyRoute
+  '/research': typeof researchResearchRoute
+  '/services': typeof servicesServicesRoute
+  '/sitemap': typeof sitemap_pageSitemapPageRoute
   '/rpc/$': typeof rpcRpcRoute
   '/notes': typeof notesNotesRoute
   '/articles/$articleId': typeof articles_articleIdArticlesArticleIdRoute
   '/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
+  '/offices/$officeSlug': typeof offices_officeSlugOfficesOfficeSlugRoute
   '/api/auth/$': typeof api_authApiAuthRoute
+  '/departments/$departmentSlug/labs': typeof departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRoute
 }
 export interface FileRoutesByTo {
   '/healthz': typeof healthzHealthzRoute
   '/robots.txt': typeof robotsRobotsRoute
   '/sitemap.xml': typeof sitemapSitemapRoute
   '/': typeof homeHomeRoute
+  '/about': typeof aboutAboutRoute
   '/auth': typeof authAuthRoute
+  '/campus-life': typeof campusLifeCampusLifeRoute
   '/consultation': typeof consultationConsultationRoute
+  '/departments': typeof departmentsDepartmentsRoute
+  '/education': typeof educationEducationRoute
   '/feedback': typeof feedbackFeedbackRoute
+  '/forms': typeof formsFormsRoute
+  '/news': typeof newsNewsRoute
+  '/payments': typeof paymentsPaymentsRoute
+  '/phonebook': typeof phonebookPhonebookRoute
   '/privacy': typeof privacyPrivacyRoute
+  '/research': typeof researchResearchRoute
+  '/services': typeof servicesServicesRoute
+  '/sitemap': typeof sitemap_pageSitemapPageRoute
   '/rpc/$': typeof rpcRpcRoute
   '/notes': typeof notesNotesRoute
   '/articles/$articleId': typeof articles_articleIdArticlesArticleIdRoute
   '/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
+  '/offices/$officeSlug': typeof offices_officeSlugOfficesOfficeSlugRoute
   '/api/auth/$': typeof api_authApiAuthRoute
+  '/departments/$departmentSlug/labs': typeof departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -140,15 +248,28 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof sitemapSitemapRoute
   '/_site-layout/': typeof homeHomeRoute
   '/_site-layout/_notes-layout': typeof notes_layoutNotesLayoutRouteWithChildren
+  '/_site-layout/about': typeof aboutAboutRoute
   '/_site-layout/auth': typeof authAuthRoute
+  '/_site-layout/campus-life': typeof campusLifeCampusLifeRoute
   '/_site-layout/consultation': typeof consultationConsultationRoute
+  '/_site-layout/departments': typeof departmentsDepartmentsRoute
+  '/_site-layout/education': typeof educationEducationRoute
   '/_site-layout/feedback': typeof feedbackFeedbackRoute
+  '/_site-layout/forms': typeof formsFormsRoute
+  '/_site-layout/news': typeof newsNewsRoute
+  '/_site-layout/payments': typeof paymentsPaymentsRoute
+  '/_site-layout/phonebook': typeof phonebookPhonebookRoute
   '/_site-layout/privacy': typeof privacyPrivacyRoute
+  '/_site-layout/research': typeof researchResearchRoute
+  '/_site-layout/services': typeof servicesServicesRoute
+  '/_site-layout/sitemap': typeof sitemap_pageSitemapPageRoute
   '/rpc/$': typeof rpcRpcRoute
   '/_site-layout/_notes-layout/notes': typeof notesNotesRoute
   '/_site-layout/articles/$articleId': typeof articles_articleIdArticlesArticleIdRoute
   '/_site-layout/departments/$departmentSlug': typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
+  '/_site-layout/offices/$officeSlug': typeof offices_officeSlugOfficesOfficeSlugRoute
   '/api/auth/$': typeof api_authApiAuthRoute
+  '/_site-layout/departments/$departmentSlug/labs': typeof departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -157,30 +278,56 @@ export interface FileRouteTypes {
     | '/healthz'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/about'
     | '/auth'
+    | '/campus-life'
     | '/consultation'
+    | '/departments'
+    | '/education'
     | '/feedback'
+    | '/forms'
+    | '/news'
+    | '/payments'
+    | '/phonebook'
     | '/privacy'
+    | '/research'
+    | '/services'
+    | '/sitemap'
     | '/rpc/$'
     | '/notes'
     | '/articles/$articleId'
     | '/departments/$departmentSlug'
+    | '/offices/$officeSlug'
     | '/api/auth/$'
+    | '/departments/$departmentSlug/labs'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/healthz'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/'
+    | '/about'
     | '/auth'
+    | '/campus-life'
     | '/consultation'
+    | '/departments'
+    | '/education'
     | '/feedback'
+    | '/forms'
+    | '/news'
+    | '/payments'
+    | '/phonebook'
     | '/privacy'
+    | '/research'
+    | '/services'
+    | '/sitemap'
     | '/rpc/$'
     | '/notes'
     | '/articles/$articleId'
     | '/departments/$departmentSlug'
+    | '/offices/$officeSlug'
     | '/api/auth/$'
+    | '/departments/$departmentSlug/labs'
   id:
     | '__root__'
     | '/_site-layout'
@@ -189,15 +336,28 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_site-layout/'
     | '/_site-layout/_notes-layout'
+    | '/_site-layout/about'
     | '/_site-layout/auth'
+    | '/_site-layout/campus-life'
     | '/_site-layout/consultation'
+    | '/_site-layout/departments'
+    | '/_site-layout/education'
     | '/_site-layout/feedback'
+    | '/_site-layout/forms'
+    | '/_site-layout/news'
+    | '/_site-layout/payments'
+    | '/_site-layout/phonebook'
     | '/_site-layout/privacy'
+    | '/_site-layout/research'
+    | '/_site-layout/services'
+    | '/_site-layout/sitemap'
     | '/rpc/$'
     | '/_site-layout/_notes-layout/notes'
     | '/_site-layout/articles/$articleId'
     | '/_site-layout/departments/$departmentSlug'
+    | '/_site-layout/offices/$officeSlug'
     | '/api/auth/$'
+    | '/_site-layout/departments/$departmentSlug/labs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -253,11 +413,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof notes_layoutNotesLayoutRouteImport
       parentRoute: typeof site_layoutSiteLayoutRoute
     }
+    '/_site-layout/about': {
+      id: '/_site-layout/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof aboutAboutRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
     '/_site-layout/auth': {
       id: '/_site-layout/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof authAuthRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
+    '/_site-layout/campus-life': {
+      id: '/_site-layout/campus-life'
+      path: '/campus-life'
+      fullPath: '/campus-life'
+      preLoaderRoute: typeof campusLifeCampusLifeRouteImport
       parentRoute: typeof site_layoutSiteLayoutRoute
     }
     '/_site-layout/consultation': {
@@ -267,6 +441,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof consultationConsultationRouteImport
       parentRoute: typeof site_layoutSiteLayoutRoute
     }
+    '/_site-layout/departments': {
+      id: '/_site-layout/departments'
+      path: '/departments'
+      fullPath: '/departments'
+      preLoaderRoute: typeof departmentsDepartmentsRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
+    '/_site-layout/education': {
+      id: '/_site-layout/education'
+      path: '/education'
+      fullPath: '/education'
+      preLoaderRoute: typeof educationEducationRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
     '/_site-layout/feedback': {
       id: '/_site-layout/feedback'
       path: '/feedback'
@@ -274,11 +462,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof feedbackFeedbackRouteImport
       parentRoute: typeof site_layoutSiteLayoutRoute
     }
+    '/_site-layout/forms': {
+      id: '/_site-layout/forms'
+      path: '/forms'
+      fullPath: '/forms'
+      preLoaderRoute: typeof formsFormsRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
+    '/_site-layout/news': {
+      id: '/_site-layout/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof newsNewsRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
+    '/_site-layout/payments': {
+      id: '/_site-layout/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof paymentsPaymentsRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
+    '/_site-layout/phonebook': {
+      id: '/_site-layout/phonebook'
+      path: '/phonebook'
+      fullPath: '/phonebook'
+      preLoaderRoute: typeof phonebookPhonebookRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
     '/_site-layout/privacy': {
       id: '/_site-layout/privacy'
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof privacyPrivacyRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
+    '/_site-layout/research': {
+      id: '/_site-layout/research'
+      path: '/research'
+      fullPath: '/research'
+      preLoaderRoute: typeof researchResearchRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
+    '/_site-layout/services': {
+      id: '/_site-layout/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof servicesServicesRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
+    '/_site-layout/sitemap': {
+      id: '/_site-layout/sitemap'
+      path: '/sitemap'
+      fullPath: '/sitemap'
+      preLoaderRoute: typeof sitemap_pageSitemapPageRouteImport
       parentRoute: typeof site_layoutSiteLayoutRoute
     }
     '/rpc/$': {
@@ -309,12 +546,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof departments_departmentSlugDepartmentsDepartmentSlugRouteImport
       parentRoute: typeof site_layoutSiteLayoutRoute
     }
+    '/_site-layout/offices/$officeSlug': {
+      id: '/_site-layout/offices/$officeSlug'
+      path: '/offices/$officeSlug'
+      fullPath: '/offices/$officeSlug'
+      preLoaderRoute: typeof offices_officeSlugOfficesOfficeSlugRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof api_authApiAuthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_site-layout/departments/$departmentSlug/labs': {
+      id: '/_site-layout/departments/$departmentSlug/labs'
+      path: '/departments/$departmentSlug/labs'
+      fullPath: '/departments/$departmentSlug/labs'
+      preLoaderRoute: typeof departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
     }
   }
 }
@@ -336,25 +587,53 @@ const notes_layoutNotesLayoutRouteWithChildren =
 interface site_layoutSiteLayoutRouteChildren {
   homeHomeRoute: typeof homeHomeRoute
   notes_layoutNotesLayoutRoute: typeof notes_layoutNotesLayoutRouteWithChildren
+  aboutAboutRoute: typeof aboutAboutRoute
   authAuthRoute: typeof authAuthRoute
+  campusLifeCampusLifeRoute: typeof campusLifeCampusLifeRoute
   consultationConsultationRoute: typeof consultationConsultationRoute
+  departmentsDepartmentsRoute: typeof departmentsDepartmentsRoute
+  educationEducationRoute: typeof educationEducationRoute
   feedbackFeedbackRoute: typeof feedbackFeedbackRoute
+  formsFormsRoute: typeof formsFormsRoute
+  newsNewsRoute: typeof newsNewsRoute
+  paymentsPaymentsRoute: typeof paymentsPaymentsRoute
+  phonebookPhonebookRoute: typeof phonebookPhonebookRoute
   privacyPrivacyRoute: typeof privacyPrivacyRoute
+  researchResearchRoute: typeof researchResearchRoute
+  servicesServicesRoute: typeof servicesServicesRoute
+  sitemap_pageSitemapPageRoute: typeof sitemap_pageSitemapPageRoute
   articles_articleIdArticlesArticleIdRoute: typeof articles_articleIdArticlesArticleIdRoute
   departments_departmentSlugDepartmentsDepartmentSlugRoute: typeof departments_departmentSlugDepartmentsDepartmentSlugRoute
+  offices_officeSlugOfficesOfficeSlugRoute: typeof offices_officeSlugOfficesOfficeSlugRoute
+  departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRoute: typeof departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRoute
 }
 
 const site_layoutSiteLayoutRouteChildren: site_layoutSiteLayoutRouteChildren = {
   homeHomeRoute: homeHomeRoute,
   notes_layoutNotesLayoutRoute: notes_layoutNotesLayoutRouteWithChildren,
+  aboutAboutRoute: aboutAboutRoute,
   authAuthRoute: authAuthRoute,
+  campusLifeCampusLifeRoute: campusLifeCampusLifeRoute,
   consultationConsultationRoute: consultationConsultationRoute,
+  departmentsDepartmentsRoute: departmentsDepartmentsRoute,
+  educationEducationRoute: educationEducationRoute,
   feedbackFeedbackRoute: feedbackFeedbackRoute,
+  formsFormsRoute: formsFormsRoute,
+  newsNewsRoute: newsNewsRoute,
+  paymentsPaymentsRoute: paymentsPaymentsRoute,
+  phonebookPhonebookRoute: phonebookPhonebookRoute,
   privacyPrivacyRoute: privacyPrivacyRoute,
+  researchResearchRoute: researchResearchRoute,
+  servicesServicesRoute: servicesServicesRoute,
+  sitemap_pageSitemapPageRoute: sitemap_pageSitemapPageRoute,
   articles_articleIdArticlesArticleIdRoute:
     articles_articleIdArticlesArticleIdRoute,
   departments_departmentSlugDepartmentsDepartmentSlugRoute:
     departments_departmentSlugDepartmentsDepartmentSlugRoute,
+  offices_officeSlugOfficesOfficeSlugRoute:
+    offices_officeSlugOfficesOfficeSlugRoute,
+  departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRoute:
+    departments_departmentSlug_labsDepartmentsDepartmentSlugLabsRoute,
 }
 
 const site_layoutSiteLayoutRouteWithChildren =

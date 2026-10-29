@@ -42,7 +42,6 @@ export const ee: DepartmentSeed = {
   ],
   foundedOn: "2006-09-23",
   studentCount: 500,
-  labsUrl: "https://hut.ac.ir/آزمایشگاه-مهندسی-برق",
 
   /*------ People ------*/
   members: [

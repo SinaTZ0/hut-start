@@ -18,7 +18,8 @@ import { HOME_DRAWINGS } from "#/lib/university/drawings";
 import { NAV_SECTIONS } from "#/lib/university/navigation";
 import type { FeedItem } from "#/orpc/home-feed/contract";
 import { m } from "#/paraglide/messages";
-import { NEWS_CATEGORIES, RESEARCH_UNITS } from "../content";
+import { archiveHref } from "#/lib/university/feed";
+import { RESEARCH_UNITS } from "../content";
 import { FeedList, FeedRow } from "#/components/shared/feed-row/feed-row";
 
 /*===== Constants =====*/
@@ -81,7 +82,7 @@ export function Achievements({ items }: { items: FeedItem[] }) {
         kicker={m.home_achievements_kicker()}
         title={m.home_achievements_title()}
         lede={m.home_achievements_lede()}
-        more={{ label: m.home_achievements_more(), href: NEWS_CATEGORIES.university.moreHref }}
+        more={{ label: m.home_achievements_more(), href: archiveHref({ kind: "achievement" }) }}
       />
       {items.length > 0 && (
         <FeedList>

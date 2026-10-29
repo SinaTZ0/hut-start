@@ -22,7 +22,7 @@ import {
   UtensilsIcon,
 } from "lucide-react";
 
-import { normalizePersianText } from "#/lib/persian-text";
+import { matchesSearch, searchWords } from "#/lib/persian-text";
 import { m } from "#/paraglide/messages";
 
 /*===== Services =====*/
@@ -214,7 +214,7 @@ export const SERVICES: Service[] = [
     title: m.service_forms,
     short: m.service_forms_short,
     description: m.service_forms_description,
-    href: "https://hut.ac.ir/university-forms",
+    href: "/forms",
     group: "support",
     icon: FileTextIcon,
     priority: 2,
@@ -225,7 +225,7 @@ export const SERVICES: Service[] = [
     title: m.service_payment,
     short: m.service_payment_short,
     description: m.service_payment_description,
-    href: "https://hut.ac.ir/انتخاب-منبع-درآمد",
+    href: "/payments",
     group: "support",
     icon: CreditCardIcon,
     priority: 3,
@@ -260,7 +260,8 @@ export const SERVICES: Service[] = [
     title: m.service_faculty_portal,
     short: m.service_faculty_portal_short,
     description: m.service_faculty_portal_description,
-    href: "https://hut.ac.ir/پورتال-اساتید",
+    // The old link only ever opened the list of departments; each department page lists its faculty.
+    href: "/departments",
     group: "staff",
     icon: PresentationIcon,
     priority: 2,
@@ -323,21 +324,13 @@ export const TOP_SERVICES = STUDENT_SERVICES.filter((service) => service.priorit
 
 /*===== Search =====*/
 
-// Search compares normalized, lower-cased text with ZWNJs read as spaces, so «انتخاب‌واحد», «انتخاب واحد» and an
-// Arabic-keyboard «انتخاب واحد» all match.
-function searchable(value: string): string {
-  return normalizePersianText(value).toLowerCase().replace(/‌/g, " ").replace(/\s+/g, " ");
-}
-
 /**
  * The services whose names, description or keywords contain every word of `query`, in list order. An empty query
  * returns the whole list. Call it in render: it reads the current locale's messages.
  */
 export function searchServices(query: string, services: Service[] = SERVICES): Service[] {
-  const words = searchable(query).split(" ").filter(Boolean);
-  if (words.length === 0) return services;
-  return services.filter((service) => {
-    const text = searchable([service.title(), service.short(), service.description(), ...service.keywords].join(" "));
-    return words.every((word) => text.includes(word));
-  });
+  const words = searchWords(query);
+  return services.filter((service) =>
+    matchesSearch(words, [service.title(), service.short(), service.description(), ...service.keywords]),
+  );
 }

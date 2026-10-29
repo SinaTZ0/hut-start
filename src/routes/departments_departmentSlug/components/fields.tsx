@@ -15,7 +15,7 @@ import type { Degree } from "#/orpc/department/constants";
 import { m } from "#/paraglide/messages";
 import type { Drawings } from "#/lib/university/drawings";
 import { admitsStudents } from "../content";
-import { RuledHeading } from "./ruled-heading";
+import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
 
 /*===== Fields =====*/
 

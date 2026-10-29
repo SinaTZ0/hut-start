@@ -54,6 +54,8 @@ func main() {
 		"logs":        t.Logs,
 		"admin":       t.Admin,
 		"departments": t.Departments,
+		"pages":       t.Pages,
+		"archive":     t.Archive,
 		"pgweb":       t.Pgweb,
 	}[command]
 	if run == nil {

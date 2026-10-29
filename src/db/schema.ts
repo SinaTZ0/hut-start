@@ -1,4 +1,5 @@
 import { boolean, date, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 
 import type { LocalizedText } from "#/lib/localized-text";
@@ -160,7 +161,8 @@ export const department = pgTable("department", {
   studentCount: integer("student_count"),
   /** Cleared if the member is removed. The FK points back at a child table, hence the lazy reference. */
   headMemberId: uuid("head_member_id").references((): AnyPgColumn => departmentMember.id, { onDelete: "set null" }),
-  labsUrl: text("labs_url"),
+  /** The labs page's introduction (`/departments/<slug>/labs`), paragraphs separated by a blank line. */
+  labsIntro: jsonb("labs_intro").$type<LocalizedText>(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   /** Shown as «last updated». Every write to the department or one of its children sets it, not only this row's. */
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -187,6 +189,10 @@ export const departmentMember = pgTable(
     scholarUrl: text("scholar_url"),
     /** A `portrait` media. Cleared if the media row is ever deleted. */
     photoMediaId: uuid("photo_media_id").references(() => media.id, { onDelete: "set null" }),
+    /** On the labs page: `supervisor` (a faculty member in charge of a lab) or `expert` (staff who run them). */
+    labRole: text("lab_role"),
+    /** What they look after there: «سرپرست آزمایشگاه قدرت», «مدار و الکترونیک، سیستم‌های دیجیتال». */
+    labNote: jsonb("lab_note").$type<LocalizedText>(),
     position: integer("position").notNull().default(0),
   },
   (table) => [index("department_member_department_id_position_idx").on(table.departmentId, table.position)],
@@ -242,9 +248,29 @@ export const departmentLab = pgTable(
       .notNull()
       .references(() => department.id, { onDelete: "cascade" }),
     name: jsonb("name").$type<LocalizedText>().notNull(),
+    /** What the lab is for, on the labs page. */
+    description: jsonb("description").$type<LocalizedText>(),
+    /** Its main equipment, one item each. */
+    equipment: jsonb("equipment").$type<LocalizedText[]>().notNull().default([]),
     position: integer("position").notNull().default(0),
   },
   (table) => [index("department_lab_department_id_position_idx").on(table.departmentId, table.position)],
+);
+
+/** A file for the labs as a whole: a weekly schedule, a lab manual, safety rules. */
+export const departmentLabFile = pgTable(
+  "department_lab_file",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    departmentId: uuid("department_id")
+      .notNull()
+      .references(() => department.id, { onDelete: "cascade" }),
+    title: jsonb("title").$type<LocalizedText>().notNull(),
+    url: text("url").notNull(),
+    format: text("format").notNull(),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("department_lab_file_department_id_position_idx").on(table.departmentId, table.position)],
 );
 
 /** A curriculum file. `archived` ones are older editions, kept for students admitted under them. */
@@ -265,6 +291,162 @@ export const departmentDocument = pgTable(
   (table) => [index("department_document_department_id_position_idx").on(table.departmentId, table.position)],
 );
 
+/*===== Offices =====*/
+// A university office's page (`/offices/$officeSlug`, src/orpc/office/): who runs it, what it does, how to reach it,
+// its tools and its files. Text is `LocalizedText`, as on the department pages; plain-text values take their allowed set
+// from `src/orpc/office/constants.ts`.
+
+export const office = pgTable("office", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  slug: text("slug").notNull().unique(),
+  /** The menu section it sits under (`about`, `education`, …), for its breadcrumb. */
+  section: text("section").notNull(),
+  name: jsonb("name").$type<LocalizedText>().notNull(),
+  lede: jsonb("lede").$type<LocalizedText>().notNull(),
+  /** Paragraphs separated by a blank line. */
+  intro: jsonb("intro").$type<LocalizedText>(),
+  /** The office's duties, one sentence each. */
+  duties: jsonb("duties").$type<LocalizedText[]>().notNull().default([]),
+  /** Rules a visitor must not miss («آخرین فرصت دفاع …»), set beside the notices. */
+  notes: jsonb("notes").$type<LocalizedText[]>().notNull().default([]),
+  place: jsonb("place").$type<LocalizedText>(),
+  hours: jsonb("hours").$type<LocalizedText>(),
+  phone: text("phone"),
+  fax: text("fax"),
+  email: text("email"),
+  /** The home feed's category whose notices the page lists. */
+  feedCategory: text("feed_category"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+/** Someone on the office's page: its head, its staff, or (the president's office) a former president. */
+export const officeMember = pgTable(
+  "office_member",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    officeId: uuid("office_id")
+      .notNull()
+      .references(() => office.id, { onDelete: "cascade" }),
+    role: text("role").notNull(),
+    honorific: text("honorific"),
+    name: jsonb("name").$type<LocalizedText>().notNull(),
+    jobTitle: jsonb("job_title").$type<LocalizedText>(),
+    /** An academic rank (`src/orpc/department/constants.ts`), for faculty. */
+    rank: text("rank"),
+    /** Degree and field: «دکتری ریاضی کاربردی». */
+    degree: jsonb("degree").$type<LocalizedText>(),
+    /** A former head's years, Jalali: «۱۳۹۸–۱۴۰۰». */
+    term: text("term"),
+    phone: text("phone"),
+    email: text("email"),
+    resumeUrl: text("resume_url"),
+    photoMediaId: uuid("photo_media_id").references(() => media.id, { onDelete: "set null" }),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("office_member_office_id_position_idx").on(table.officeId, table.position)],
+);
+
+/** One of the office's tools: a system, a form, a page elsewhere. */
+export const officeLink = pgTable(
+  "office_link",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    officeId: uuid("office_id")
+      .notNull()
+      .references(() => office.id, { onDelete: "cascade" }),
+    title: jsonb("title").$type<LocalizedText>().notNull(),
+    description: jsonb("description").$type<LocalizedText>(),
+    url: text("url").notNull(),
+    /** Names its icon (`LINK_ICONS` in `src/orpc/office/constants.ts`). */
+    icon: text("icon").notNull(),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("office_link_office_id_position_idx").on(table.officeId, table.position)],
+);
+
+/*===== Document Library =====*/
+// The university's forms and regulations (`/forms`, src/orpc/library/): numbered sections, each with headed groups of
+// files. A section that belongs to an office shows on that office's page instead.
+
+export const librarySection = pgTable(
+  "library_section",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    key: text("key").notNull().unique(),
+    officeId: uuid("office_id").references(() => office.id, { onDelete: "cascade" }),
+    title: jsonb("title").$type<LocalizedText>().notNull(),
+    /** Names its icon (`SECTION_ICONS` in `src/orpc/library/constants.ts`). */
+    icon: text("icon").notNull(),
+    position: integer("position").notNull().default(0),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("library_section_office_id_position_idx").on(table.officeId, table.position)],
+);
+
+export const libraryGroup = pgTable(
+  "library_group",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    sectionId: uuid("section_id")
+      .notNull()
+      .references(() => librarySection.id, { onDelete: "cascade" }),
+    title: jsonb("title").$type<LocalizedText>().notNull(),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("library_group_section_id_position_idx").on(table.sectionId, table.position)],
+);
+
+export const libraryDocument = pgTable(
+  "library_document",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    groupId: uuid("group_id")
+      .notNull()
+      .references(() => libraryGroup.id, { onDelete: "cascade" }),
+    title: jsonb("title").$type<LocalizedText>().notNull(),
+    url: text("url").notNull(),
+    format: text("format").notNull(),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("library_document_group_id_position_idx").on(table.groupId, table.position)],
+);
+
+/*===== Phone Directory =====*/
+// The university's internal phone book (`/phonebook`, src/orpc/directory/): units, each with its people and their
+// extensions. A unit belongs to one of the university's divisions (`group`), which the page filters by.
+
+export const directoryUnit = pgTable(
+  "directory_unit",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    key: text("key").notNull().unique(),
+    /** A division (`DIRECTORY_GROUPS` in `src/orpc/directory/constants.ts`). */
+    group: text("group").notNull(),
+    name: jsonb("name").$type<LocalizedText>().notNull(),
+    position: integer("position").notNull().default(0),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("directory_unit_position_idx").on(table.position)],
+);
+
+export const directoryEntry = pgTable(
+  "directory_entry",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    unitId: uuid("unit_id")
+      .notNull()
+      .references(() => directoryUnit.id, { onDelete: "cascade" }),
+    name: jsonb("name").$type<LocalizedText>().notNull(),
+    /** `DIRECTORY_ROLES`; none for a shared line. */
+    role: text("role"),
+    /** Internal extensions, the first the main one; from outside, an extension's three digits follow 081-38411. */
+    extensions: jsonb("extensions").$type<string[]>().notNull(),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("directory_entry_unit_id_position_idx").on(table.unitId, table.position)],
+);
+
 /*===== Home Feed =====*/
 // What the home page's news, notices, achievements and events show (src/orpc/home-feed/). Until the cutover it mirrors
 // hut.ac.ir's homepage (docs/backend/home-feed.md): an article is a story or notice on the old site, a placement is
@@ -282,7 +464,16 @@ export const feedArticle = pgTable(
     sourceAssetId: text("source_asset_id"),
     /** What it is: the first block that listed it. Null only on rows stored before the column existed. */
     kind: text("kind"),
+    /** The one it's filed under, its card's kicker. */
     category: text("category"),
+    /**
+     * Every other category the old site's tags give it (a notice tagged both «آموزش» and «تحصیلات تکمیلی»), so the
+     * archive finds it under each. Filled from the old site's listings; `category` isn't repeated here.
+     */
+    topics: text("topics")
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
     title: jsonb("title").$type<LocalizedText>().notNull(),
     /** The lead paragraph, whole; cards cut it short. */
     summary: jsonb("summary").$type<LocalizedText>(),

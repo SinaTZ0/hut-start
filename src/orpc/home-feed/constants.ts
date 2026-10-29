@@ -21,3 +21,22 @@ export type FeedCategory = (typeof FEED_CATEGORIES)[number];
 
 /** Where the mirrored content comes from, until the cutover. */
 export const SOURCE_ORIGIN = "https://hut.ac.ir";
+
+/*===== Archive =====*/
+
+/** The kinds the archive (`/news`) lists: everything but the occasion posters, which are pictures rather than posts. */
+export const ARCHIVE_KINDS = [
+  "news",
+  "notice",
+  "achievement",
+  "event",
+  "growth",
+] as const satisfies readonly FeedKind[];
+
+export type ArchiveKind = (typeof ARCHIVE_KINDS)[number];
+
+export const ARCHIVE_SORTS = ["newest", "oldest"] as const;
+
+export type ArchiveSort = (typeof ARCHIVE_SORTS)[number];
+
+export const ARCHIVE_PAGE_SIZE = 20;
