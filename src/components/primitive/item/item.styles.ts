@@ -173,6 +173,18 @@ const twActionsVariant = defineStyles({
       "md:[a:focus-visible_&]:border-primary md:[a:focus-visible_&]:bg-primary md:[a:focus-visible_&]:text-primary-foreground",
     icon: "md:[&>svg:not([class*='size-'])]:size-3.5",
   },
+  // `button` is the same idea as an outline button from `md` up («⤓ دریافت»), the icon ahead of the label, for a
+  // file row that sits beside rows of real buttons (a department's tracks). It fills with the primary while its row
+  // is hovered or focused; a phone keeps the bare icon.
+  button: {
+    layout: "md:h-10 md:gap-1.5 max-md:[&>[data-slot=item-action-label]]:hidden",
+    geometry: "md:rounded-sm md:border md:border-input md:ps-3 md:pe-4",
+    typography: "md:text-button",
+    appearance: "md:text-heading",
+    hover: "md:[a:hover_&]:border-primary md:[a:hover_&]:bg-primary md:[a:hover_&]:text-primary-foreground",
+    focus:
+      "md:[a:focus-visible_&]:border-primary md:[a:focus-visible_&]:bg-primary md:[a:focus-visible_&]:text-primary-foreground",
+  },
 });
 
 const twHeaderStyles = defineStyles({
