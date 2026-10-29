@@ -106,7 +106,7 @@ function AlumniPage() {
         <section key={section.id} aria-labelledby={`alumni-${section.id}-title`} className="border-t bg-background">
           <div className="mx-auto max-w-site px-gutter py-12 md:py-section">
             <RuledHeading id={`alumni-${section.id}-title`} number={index + 1} title={section.title} />
-            <ItemGroup variant="index" className="mt-8">
+            <ItemGroup variant="strips" className="mt-8">
               {section.tiles.map((tile) => (
                 <LinkRow
                   key={tile.href}

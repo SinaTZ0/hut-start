@@ -19,7 +19,7 @@ const HUB_ART = { "--art": `url("${PAGE_DRAWINGS.hub}")` } as CSSProperties;
 /**
  * An office's systems and links. The links with a description are the systems a person signs in to (Golestan, the
  * online classes); they get the desk, a paper panel with the hub drawing in its corner. The rest are documents and
- * guides, listed as ruled rows beside it. Every office's data splits this way; an office with only one kind shows
+ * guides, listed as link rows beside it, in one column there. Every office's data splits this way; an office with only one kind shows
  * only that part, and the drawing takes the empty column.
  */
 export function OfficeTools({ links }: { links: OfficeLink[] }) {
@@ -28,7 +28,7 @@ export function OfficeTools({ links }: { links: OfficeLink[] }) {
 
   if (systems.length === 0) {
     return (
-      <ItemGroup variant="index">
+      <ItemGroup variant="strips">
         {others.map((link) => (
           <LinkRow key={link.id} href={link.url} title={link.title} icon={LINK_ICONS[link.icon]} />
         ))}
@@ -64,7 +64,7 @@ export function OfficeTools({ links }: { links: OfficeLink[] }) {
 
       {others.length > 0 ? (
         <Part title={m.office_tools_links()} className="lg:col-span-5">
-          <ItemGroup variant="ruled">
+          <ItemGroup variant="strips" className="lg:grid-cols-1">
             {others.map((link) => (
               <LinkRow key={link.id} href={link.url} title={link.title} icon={LINK_ICONS[link.icon]} />
             ))}

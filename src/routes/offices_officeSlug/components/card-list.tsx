@@ -1,11 +1,13 @@
 import { BookIcon } from "lucide-react";
 
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "#/components/primitive/item/item";
-import { LinkRow } from "#/components/shared/link-row/link-row";
+import { hostOf, LinkRow } from "#/components/shared/link-row/link-row";
 import { MediaImage } from "#/components/shared/media-image/media-image";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { formatNumber } from "#/lib/locale";
+import { cn } from "#/lib/utils";
 import type { Office } from "#/orpc/office/contract";
+import { m } from "#/paraglide/messages";
 
 type OfficeList = Office["lists"][number];
 type OfficeListItem = OfficeList["items"][number];
@@ -13,16 +15,21 @@ type OfficeListItem = OfficeList["items"][number];
 /*===== Card List =====*/
 
 /**
- * One of an office's lists. A list with pictures (the press's books) stands on a shelf; the rest are a numbered index
- * of ruled rows: a link row for an entry that leads somewhere (a unit's page, a machine's old page), a plain row for
- * one that doesn't. Names alone (the clubs, the agreements) are short enough for three columns.
+ * One of an office's lists. A list with pictures (the press's books) stands on a shelf. A list whose every entry leads
+ * somewhere (the lab's machines, a vice-presidency's offices) is a list of link rows that stand on cards on a wide
+ * screen; the rest are a numbered index of ruled rows, a link row only where an entry has a page. Names alone (the
+ * clubs, the agreements) are short enough for three columns.
  */
 export function CardList({ list }: { list: OfficeList }) {
   if (list.items.some((item) => item.image)) return <Shelf items={list.items} />;
 
   const namesOnly = list.items.every((item) => !item.text);
+  const allLinks = list.items.every((item) => item.url);
   return (
-    <ItemGroup variant={namesOnly ? "index-wide" : "index"}>
+    <ItemGroup
+      variant={allLinks ? "strips" : namesOnly ? "index-wide" : "index"}
+      className={cn(allLinks && namesOnly && "lg:grid-cols-3")}
+    >
       {list.items.map((item, index) =>
         item.url ? (
           <LinkRow
@@ -31,6 +38,8 @@ export function CardList({ list }: { list: OfficeList }) {
             title={item.title}
             description={item.text ?? undefined}
             number={index + 1}
+            // An entry that leads off this site is its own page on the office's old site: a machine's specs.
+            action={hostOf(item.url) ? m.office_list_details() : undefined}
           />
         ) : (
           <li key={item.id}>

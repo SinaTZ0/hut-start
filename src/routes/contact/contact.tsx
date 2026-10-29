@@ -99,7 +99,7 @@ function ContactPage() {
       <section aria-labelledby="contact-write-title" className="border-t bg-background">
         <div className="mx-auto max-w-site px-gutter py-12 md:py-section">
           <RuledHeading id="contact-write-title" number={1} title={m.contact_write_title()} />
-          <ItemGroup variant="index" className="mt-8">
+          <ItemGroup variant="strips" className="mt-8">
             {WRITE_TO.map((item) => (
               <LinkRow
                 key={item.href}

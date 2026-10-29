@@ -5,7 +5,7 @@ import { cn } from "#/lib/utils";
 import type { ComponentProps } from "react";
 import { Separator } from "#/components/primitive/separator/separator";
 import {
-  itemActionsClasses,
+  itemActionsVariants,
   itemContentClasses,
   itemDescriptionClasses,
   itemFooterClasses,
@@ -99,9 +99,23 @@ function ItemDescription({ className, ...props }: ComponentProps<"p">) {
   return <p data-slot="item-description" {...props} className={cn(itemDescriptionClasses, className)} />;
 }
 
-/** The trailing icon or controls; an icon here turns `brand-text` while its row is hovered or focused. */
-function ItemActions({ className, ...props }: ComponentProps<"div">) {
-  return <div data-slot="item-actions" {...props} className={cn(itemActionsClasses, className)} />;
+/**
+ * The trailing icon or controls; an icon here turns `brand-text` while its row is hovered or focused. `pill` makes it
+ * a labelled button from `md` up, the label in `data-slot="item-action-label"`; a phone keeps the icon alone.
+ */
+function ItemActions({
+  className,
+  variant = "default",
+  ...props
+}: ComponentProps<"div"> & VariantProps<typeof itemActionsVariants>) {
+  return (
+    <div
+      data-slot="item-actions"
+      data-variant={variant}
+      {...props}
+      className={cn(itemActionsVariants({ variant }), className)}
+    />
+  );
 }
 
 function ItemHeader({ className, ...props }: ComponentProps<"div">) {

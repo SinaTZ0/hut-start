@@ -57,7 +57,7 @@ function PublicationsPage() {
             title={m.publications_student_title()}
             action={<TextLink href={ASSOCIATIONS_HREF}>{m.nav_campus_life_associations()}</TextLink>}
           />
-          <ItemGroup variant="index" className="mt-8">
+          <ItemGroup variant="strips" className="mt-8">
             {STUDENT_PUBLICATIONS.map((publication) => (
               <PublicationRow key={publication.id} publication={publication} icon="magazine" />
             ))}
@@ -69,7 +69,7 @@ function PublicationsPage() {
       <section aria-labelledby="publications-journal-title" className="border-t bg-background">
         <div className="mx-auto max-w-site px-gutter py-12 md:py-section">
           <RuledHeading id="publications-journal-title" number={2} title={m.publications_journal_title()} />
-          <ItemGroup variant="ruled" className="mt-8 md:max-w-1/2">
+          <ItemGroup variant="strips" className="mt-8 md:max-w-1/2 md:grid-cols-1">
             <PublicationRow publication={UNIVERSITY_JOURNAL} icon="journal" />
           </ItemGroup>
         </div>

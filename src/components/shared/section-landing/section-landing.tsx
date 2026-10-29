@@ -144,7 +144,7 @@ export function SectionLanding({ sectionId, feed }: { sectionId: SectionId; feed
 /** A group's links as a numbered index: where a visitor most often goes from this section. */
 function GroupIndex({ group }: { group: NavGroup }) {
   return (
-    <ItemGroup variant="index-wide">
+    <ItemGroup variant="strips" className="lg:grid-cols-3">
       {group.links.map((link, index) => (
         <LinkRow key={link.href} href={link.href} title={link.label()} number={index + 1} />
       ))}

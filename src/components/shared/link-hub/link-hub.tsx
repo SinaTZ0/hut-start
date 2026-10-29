@@ -122,7 +122,7 @@ export function LinkHub({
                 title={candidate.title}
               />
               <p className="mt-2 text-body-sm text-muted-foreground">{candidate.summary}</p>
-              <ItemGroup variant="index" className="mt-6">
+              <ItemGroup variant="strips" className="mt-6">
                 {candidate.items.map((item) => (
                   <LinkRow
                     key={item.id}

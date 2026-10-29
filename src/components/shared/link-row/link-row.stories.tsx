@@ -15,7 +15,7 @@ const meta = {
     icon: GraduationCapIcon,
   },
   render: (args) => (
-    <ItemGroup variant="ruled" className="max-w-xl">
+    <ItemGroup variant="strips" className="max-w-xl md:grid-cols-1">
       <LinkRow {...args} />
     </ItemGroup>
   ),
@@ -29,16 +29,30 @@ type Story = StoryObj<typeof meta>;
 // An outside system: its address under the name, so a visitor sees they're leaving the site.
 export const Playground: Story = {};
 
-// A page of this site gets the forward arrow and no address.
+// A page of this site: «مشاهده» with the forward arrow, and no address.
 export const Internal: Story = { args: { href: "/calendar", title: "تقویم آموزشی", description: undefined } };
 
-// An entry of a numbered index (an office's equipment, a new student's steps).
-export const Numbered: Story = { args: { icon: undefined, number: 3 } };
+// An email address: «ارسال ایمیل».
+export const Email: Story = {
+  args: { href: "mailto:egrad@hut.ac.ir", title: "ایمیل دانش‌آموختگان", description: undefined },
+};
 
-// The rows of an index, in two columns from `md` up.
-export const Index: Story = {
+// An entry of a numbered list whose destination doesn't say what it holds: a machine's page, «مشخصات».
+export const Numbered: Story = {
+  args: {
+    href: "https://lab.hut.ac.ir/",
+    title: "سانتریفیوژ",
+    description: "Universal 320 · Hettich",
+    icon: undefined,
+    number: 3,
+    action: "مشخصات",
+  },
+};
+
+// A list of links: ruled rows on a phone, two columns of cards that lift on hover from `md` up.
+export const Strips: Story = {
   render: (args) => (
-    <ItemGroup variant="index">
+    <ItemGroup variant="strips">
       {[1, 2, 3, 4, 5].map((number) => (
         <LinkRow key={number} {...args} icon={undefined} number={number} />
       ))}

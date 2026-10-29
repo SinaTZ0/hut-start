@@ -24,13 +24,27 @@ export function hostOf(href: string): string | null {
   }
 }
 
+/*===== Action =====*/
+
+// The site's forms, where a row's button says the visitor fills something in rather than reads.
+const FORM_PATHS = new Set(["/feedback", "/consultation"]);
+
+/** What pressing a row does, by where it goes: write an email, fill in a form, visit another site, or view a page. */
+function actionOf(href: string): string {
+  if (href.startsWith("mailto:")) return m.link_row_email();
+  if (FORM_PATHS.has(href)) return m.link_row_form();
+  return hostOf(href) ? m.link_row_visit() : m.link_row_view();
+}
+
 /*===== Link Row =====*/
 
 /**
- * A link as one row of a ruled list (`ItemGroup variant="ruled"` or `"index"`): its icon or its number, its name and
- * what a person does there, and the address it opens, so a visitor sees they're leaving this site. `internalOnly`
- * systems say they need the campus network. Rows replace the old grids of link tiles: a list reads down a page, and
- * the few links that matter more get their own place beside it (an office's systems desk).
+ * A link as one row of a list of links (`ItemGroup variant="strips"`): its icon or its number, its name and what a
+ * person does there, the address it opens, so a visitor sees they're leaving this site, and, from `md` up, a button
+ * saying what pressing it does (a phone keeps today's bare icon) («مشاهده», «ورود به سایت»; `action` names it when the destination alone can't, a machine's
+ * «مشخصات»). `internalOnly` systems say they need the campus network. The whole row is the link; the button only
+ * makes it look pressable. Rows replace the old grids of link tiles, and the few links that matter more get their own
+ * place beside them (an office's systems desk).
  */
 export function LinkRow({
   href,
@@ -39,6 +53,7 @@ export function LinkRow({
   icon: Icon,
   number,
   internalOnly = false,
+  action,
 }: {
   href: string;
   title: string;
@@ -47,8 +62,11 @@ export function LinkRow({
   /** A step's or an entry's number, shown in the icon's place. */
   number?: number;
   internalOnly?: boolean;
+  /** The button's label, when the destination's kind doesn't say it. */
+  action?: string;
 }) {
   const host = hostOf(href);
+  const Arrow = host ? ExternalLinkIcon : ArrowLeftIcon;
 
   return (
     <li>
@@ -80,8 +98,9 @@ export function LinkRow({
             </p>
           )}
         </ItemContent>
-        <ItemActions>
-          {host ? <ExternalLinkIcon data-icon="external" /> : <ArrowLeftIcon data-icon="forward" />}
+        <ItemActions variant="pill">
+          <span data-slot="item-action-label">{action ?? actionOf(href)}</span>
+          <Arrow aria-hidden data-icon={host ? "external" : "forward"} />
         </ItemActions>
       </Item>
     </li>

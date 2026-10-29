@@ -45,7 +45,7 @@ function NewStudentsPage() {
       {/*===== First Steps =====*/}
       <section aria-labelledby="new-students-steps" className="mx-auto max-w-site px-gutter pb-section">
         <RuledHeading id="new-students-steps" number={1} title={m.new_students_steps_title()} />
-        <ItemGroup variant="index" ordered className="mt-8">
+        <ItemGroup variant="strips" ordered className="mt-8">
           {FIRST_STEPS.map((step, index) => (
             <LinkRow
               key={step.href}
