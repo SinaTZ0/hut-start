@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { asc, count, eq } from "drizzle-orm";
 
 import type { Database } from "#/db/client.server";
 import {
@@ -42,11 +42,40 @@ export function findDepartments({
   db,
 }: {
   db: Database;
-}): Promise<Pick<DepartmentRecord, "slug" | "name" | "updatedAt">[]> {
+}): Promise<Pick<DepartmentRecord, "id" | "slug" | "name" | "updatedAt">[]> {
   return db
-    .select({ slug: department.slug, name: department.name, updatedAt: department.updatedAt })
+    .select({ id: department.id, slug: department.slug, name: department.name, updatedAt: department.updatedAt })
     .from(department)
     .orderBy(asc(department.slug));
+}
+
+/** The fields of every department, in the editor's order, for the index. */
+export function findAllFields({
+  db,
+}: {
+  db: Database;
+}): Promise<Pick<DepartmentFieldRecord, "departmentId" | "key" | "name">[]> {
+  return db
+    .select({ departmentId: departmentField.departmentId, key: departmentField.key, name: departmentField.name })
+    .from(departmentField)
+    .orderBy(asc(departmentField.position));
+}
+
+/** How many faculty members each department has; a department with none has no row. */
+export function countFaculty({ db }: { db: Database }): Promise<{ departmentId: string; total: number }[]> {
+  return db
+    .select({ departmentId: departmentMember.departmentId, total: count() })
+    .from(departmentMember)
+    .where(eq(departmentMember.kind, "faculty"))
+    .groupBy(departmentMember.departmentId);
+}
+
+/** How many labs each department has; a department with none has no row. */
+export function countLabs({ db }: { db: Database }): Promise<{ departmentId: string; total: number }[]> {
+  return db
+    .select({ departmentId: departmentLab.departmentId, total: count() })
+    .from(departmentLab)
+    .groupBy(departmentLab.departmentId);
 }
 
 /** A department's people with their photos, in the editor's order. */

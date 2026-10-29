@@ -3,6 +3,9 @@ import { DEPARTMENT_SLUG_PATTERN } from "#/orpc/department/constants";
 import type { Department, DepartmentSummary } from "#/orpc/department/contract";
 import { toDepartmentSummary, toPublicDepartment } from "#/orpc/department/mapper";
 import {
+  countFaculty,
+  countLabs,
+  findAllFields,
   findDepartmentBySlug,
   findDepartments,
   findDocuments,
@@ -45,8 +48,20 @@ export async function getDepartment({ db, slug }: { db: Database; slug: string }
 }
 
 /*===== List =====*/
-/** Every department that has a page. */
+/** Every department that has a page, with what the index shows of it: its fields and how many faculty and labs. */
 export async function listDepartments({ db }: { db: Database }): Promise<DepartmentSummary[]> {
-  const rows = await findDepartments({ db });
-  return rows.map(toDepartmentSummary);
+  const [rows, fields, faculty, labs] = await Promise.all([
+    findDepartments({ db }),
+    findAllFields({ db }),
+    countFaculty({ db }),
+    countLabs({ db }),
+  ]);
+  return rows.map((record) =>
+    toDepartmentSummary({
+      record,
+      fields: fields.filter((field) => field.departmentId === record.id),
+      facultyCount: faculty.find((row) => row.departmentId === record.id)?.total ?? 0,
+      labCount: labs.find((row) => row.departmentId === record.id)?.total ?? 0,
+    }),
+  );
 }

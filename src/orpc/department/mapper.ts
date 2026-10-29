@@ -145,6 +145,23 @@ export function toPublicDepartment({
 }
 
 /*===== Summary =====*/
-export function toDepartmentSummary(record: Pick<DepartmentRecord, "slug" | "name" | "updatedAt">): DepartmentSummary {
-  return { slug: record.slug, name: localize(record.name), updatedAt: record.updatedAt };
+export function toDepartmentSummary({
+  record,
+  fields,
+  facultyCount,
+  labCount,
+}: {
+  record: Pick<DepartmentRecord, "slug" | "name" | "updatedAt">;
+  fields: Pick<DepartmentFieldRecord, "key" | "name">[];
+  facultyCount: number;
+  labCount: number;
+}): DepartmentSummary {
+  return {
+    slug: record.slug,
+    name: localize(record.name),
+    updatedAt: record.updatedAt,
+    fields: fields.map((field) => ({ key: field.key, name: localize(field.name) })),
+    facultyCount,
+    labCount,
+  };
 }

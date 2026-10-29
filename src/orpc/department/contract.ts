@@ -104,6 +104,10 @@ export const departmentSummarySchema = z.object({
   slug: z.string(),
   name: z.string(),
   updatedAt: z.date(),
+  /** In the editor's order; `key` names the field's drawing. */
+  fields: z.array(z.object({ key: z.string(), name: z.string() })),
+  facultyCount: z.number().int(),
+  labCount: z.number().int(),
 });
 
 export type DepartmentSummary = z.infer<typeof departmentSummarySchema>;
@@ -122,7 +126,7 @@ export const getDepartmentContract = oc
   .input(getDepartmentInputSchema)
   .output(departmentSchema);
 
-/** Every department with a page, for the sitemap. */
+/** Every department with a page, for the sitemap and the departments index. */
 export const listDepartmentsContract = oc.errors(commonErrors).output(z.array(departmentSummarySchema));
 
 export const departmentContract = {
