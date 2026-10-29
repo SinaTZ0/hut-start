@@ -13,7 +13,7 @@ import { useSearchText } from "#/hooks/use-search-text";
 import { formatNumber } from "#/lib/locale";
 import { pageMeta } from "#/lib/seo";
 import { PAGE_DRAWINGS } from "#/lib/university/drawings";
-import { KIND_LABELS, NEWS_CATEGORIES } from "#/lib/university/feed";
+import { archiveRowLabel, KIND_LABELS, NEWS_CATEGORIES } from "#/lib/university/feed";
 import { orpc } from "#/orpc/client";
 import { ARCHIVE_SORTS, type ArchiveKind, type ArchiveSort, type FeedCategory } from "#/orpc/home-feed/constants";
 import type { ArchivePage } from "#/orpc/home-feed/contract";
@@ -46,13 +46,6 @@ const SORT_LABELS: Record<ArchiveSort, () => string> = {
 
 /** A year as a year, without the thousands separator a count would have: «۱۴۰۴», not «۱٬۴۰۴». */
 const yearLabel = (year: number) => formatNumber(year, { useGrouping: false });
-
-/** «اطلاعیه · تحصیلات تکمیلی»; the incubator's stories, whose kind and category are both the incubator, name it once. */
-function rowLabel({ kind, category }: { kind: ArchiveKind; category: FeedCategory }): string {
-  const one = KIND_LABELS[kind].one();
-  const topic = NEWS_CATEGORIES[category].title();
-  return one === topic ? one : `${one} · ${topic}`;
-}
 
 /*===== Page =====*/
 
@@ -139,7 +132,7 @@ function NewsPage() {
                   key={item.id}
                   item={item}
                   // The archive lists only its kinds (`ARCHIVE_KINDS`); an occasion never reaches it.
-                  label={rowLabel({ kind: item.kind as ArchiveKind, category: item.category })}
+                  label={archiveRowLabel({ kind: item.kind as ArchiveKind, category: item.category })}
                   media="aspect-photo w-26 sm:w-44"
                 />
               ))}

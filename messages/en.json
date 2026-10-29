@@ -116,7 +116,7 @@
   "nav_privacy": "Privacy",
   "nav_ethics": "Code of ethics",
   "nav_suggestions": "Suggestions",
-  "nav_alumni": "Alumni association",
+  "nav_alumni": "Alumni",
   "nav_related_msrt": "Ministry of Science, Research and Technology",
   "nav_related_isti": "Vice Presidency for Science and Technology",
   "nav_related_park": "Hamedan Science and Technology Park",
@@ -1063,5 +1063,91 @@
         "": "Page {pageText}"
       }
     }
-  ]
+  ],
+  "site_postal_code": "6516913733",
+  "contact_lede": "The university's address and numbers, and how to reach each part of it. For a faster answer, write straight to the office your question is for.",
+  "contact_postal_code": "Postal code",
+  "contact_map": "Directions",
+  "contact_write_title": "Write to the university",
+  "contact_write_feedback": "Suggestions, criticism or complaints about any part of the university",
+  "contact_write_consultation": "Ask for a counselling session (students)",
+  "contact_write_phonebook": "Extensions for staff and faculty",
+  "contact_write_ministry": "Complaints about the university to the Ministry of Science",
+  "contact_offices_title": "Offices",
+  "publications_lede": "The student scientific associations' magazines and the university's journal, each with its latest issue.",
+  "publications_student_title": "Association magazines",
+  "publications_journal_title": "The university's journal",
+  "publications_posts_title": "Latest on publications",
+  "publications_posts_more": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "All {countText} posts"
+      }
+    }
+  ],
+  "publications_issue": [
+    {
+      "declarations": ["input issue", "local issueText = issue: number", "input date"],
+      "match": {
+        "": "Issue {issueText}, {date}"
+      }
+    }
+  ],
+  "publications_vista": "Vista",
+  "publications_vista_publisher": "Computer Engineering Scientific Association",
+  "publications_pulse": "Pulse",
+  "publications_pulse_publisher": "Electrical Engineering Scientific Association",
+  "publications_nels": "NELS",
+  "publications_nels_publisher": "Nanotechnology Scientific Association",
+  "publications_vital_signal": "Vital Signal",
+  "publications_journal": "Sustainable Energy and Artificial Intelligence",
+  "publications_journal_publisher": "Hamedan University of Technology",
+  "alumni_title": "Alumni",
+  "alumni_lede": "Graduation documents and services, ways to stay in touch with the university, and alumni news.",
+  "alumni_documents_title": "Documents and services",
+  "alumni_office": "Admissions and Alumni Office",
+  "alumni_office_description": "Clearance, degree certificates, transcripts and degree confirmations",
+  "alumni_sajad": "Sajad",
+  "alumni_sajad_description": "Degree verification and Ministry services",
+  "alumni_regulations": "Graduation regulations",
+  "alumni_regulations_description": "The rules for clearance and documents",
+  "alumni_forms": "Forms",
+  "alumni_forms_description": "The university's administrative and academic forms",
+  "alumni_in_touch_title": "Stay in touch",
+  "alumni_linkedin_description": "The university's page and its alumni network",
+  "alumni_graduate": "Further study",
+  "alumni_graduate_description": "Master's and doctoral study at the university",
+  "alumni_email": "Email the alumni office",
+  "alumni_email_description": "egrad@hut.ac.ir",
+  "alumni_news_title": "Alumni news",
+  "calendar_lede": "This semester's dates for registration, classes, evaluation and exams, with the rules that go with each date.",
+  "calendar_term_code": "term {code}",
+  "calendar_cohort_label": "My entry year",
+  "calendar_year_and_earlier": "{year} or earlier",
+  "calendar_kind_registration": "Registration",
+  "calendar_kind_classes": "Classes",
+  "calendar_kind_changes": "Changes",
+  "calendar_kind_evaluation": "Evaluation and pre-registration",
+  "calendar_kind_exams": "Exams",
+  "calendar_day_label": "{date}: {event}",
+  "calendar_event_cohort": "{event}, {cohort}",
+  "calendar_mine_title": "My dates",
+  "calendar_past": "Past",
+  "calendar_ics": "Add to my calendar",
+  "calendar_ics_name": "Academic calendar, {term}",
+  "calendar_rules_title": "Calendar rules",
+  "calendar_rule_absence": "Under article 17 of the academic regulations, a student with too many absences in a course may not withdraw from it.",
+  "calendar_rule_recheck": "A week after add and drop ends, check your registration again for changes your advisor made.",
+  "calendar_rule_project": "Project grades must be in, and the project with the library, by the last day for project grades.",
+  "calendar_rule_prereg": "Skip pre-registration and next semester you can only register on the late registration day.",
+  "calendar_rule_units": "Skip registration and you can take at most 14 units in add and drop.",
+  "calendar_rule_evaluation": "Skip the teaching evaluation and you get no exam entry card and can't pre-register for next semester.",
+  "calendar_events_and": "{first}; {second}",
+  "calendar_cohort_caption": "I entered in:",
+  "calendar_pick_year": "Pick your entry year first to see your dates.",
+  "calendar_for": "Calendar for entry year",
+  "calendar_change_year": "Change year",
+  "calendar_mine_for": "Dates for entry year",
+  "calendar_ics_name_cohort": "Academic calendar for entry year {cohort}, {term}"
 }

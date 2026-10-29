@@ -319,6 +319,20 @@
   --chart-4: #8f6312;
   --chart-5: #a9c0bd;
 
+  /* The academic calendar's kinds of date (/calendar), checked as one set with the dataviz palette validator in both
+     themes: blue registration, green add and drop, pink evaluation, amber exams; classes stay neutral. `--kind-*` is the
+     hue, mixed into the card at `--kind-tint` for a day's fill; `--kind-*-ink` is a deeper step (a lighter one in dark)
+     for the day's ring, at least 4.99:1 on its tint. */
+  --kind-registration: #2a78d6;
+  --kind-registration-ink: #1c5aa6;
+  --kind-changes: #008300;
+  --kind-changes-ink: #006400;
+  --kind-evaluation: #e87ba4;
+  --kind-evaluation-ink: #a83a68;
+  --kind-exams: #eda100;
+  --kind-exams-ink: #8a5c00;
+  --kind-tint: 20%;
+
   --sidebar: #fbfcfa;
   --sidebar-foreground: #15292b;
   --sidebar-primary: #103d40;
@@ -387,6 +401,17 @@
   --chart-3: #2a8a80;
   --chart-4: #c99a45;
   --chart-5: #9db0ad;
+
+  /* Stronger tints at night: a 20% tint on the dark card barely shows */
+  --kind-registration: #3987e5;
+  --kind-registration-ink: #8ab9f2;
+  --kind-changes: #008300;
+  --kind-changes-ink: #6fd06f;
+  --kind-evaluation: #d55181;
+  --kind-evaluation-ink: #f39cc0;
+  --kind-exams: #c98500;
+  --kind-exams-ink: #f2c25a;
+  --kind-tint: 30%;
 
   --sidebar: #0f1e20;
   --sidebar-foreground: #e3ebe8;
@@ -585,6 +610,38 @@
 /* The 3px "today" line at `--at` (0–1), centred on its day */
 @utility term-marker {
   inset-inline-start: calc(var(--at) * 100% - 1.5px);
+}
+
+/*------ Academic Calendar ------*/
+
+/* A date's kind on the calendar (/calendar): the hue and ink its day cell and swatches are drawn in (`day-tint`).
+   Classes are neutral: a faint heading-grey day in a heading ring, so it isn't taken for today's ring on a plain day. */
+@utility kind-registration {
+  --kind: var(--kind-registration);
+  --kind-ink: var(--kind-registration-ink);
+}
+@utility kind-classes {
+  --kind: var(--heading);
+  --kind-ink: var(--heading);
+  --kind-tint: 10%;
+}
+@utility kind-changes {
+  --kind: var(--kind-changes);
+  --kind-ink: var(--kind-changes-ink);
+}
+@utility kind-evaluation {
+  --kind: var(--kind-evaluation);
+  --kind-ink: var(--kind-evaluation-ink);
+}
+@utility kind-exams {
+  --kind: var(--kind-exams);
+  --kind-ink: var(--kind-exams-ink);
+}
+
+/* A day with a date, or its swatch: the kind's tint inside a ring of its ink */
+@utility day-tint {
+  background: color-mix(in srgb, var(--kind) var(--kind-tint), var(--card));
+  box-shadow: inset 0 0 0 1.5px var(--kind-ink);
 }
 
 /*------ Drawings ------*/

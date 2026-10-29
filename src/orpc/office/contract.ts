@@ -65,8 +65,17 @@ export const officeSchema = z.object({
 });
 
 export type Office = z.infer<typeof officeSchema>;
+export type OfficeSummary = z.infer<typeof officeSummarySchema>;
 
-export const officeSummarySchema = z.object({ slug: z.string(), updatedAt: z.date() });
+/** An office as the sitemap and the contact page list it. */
+export const officeSummarySchema = z.object({
+  slug: z.string(),
+  section: z.enum(OFFICE_SECTIONS),
+  name: z.string(),
+  phone: z.string().nullable(),
+  email: z.string().nullable(),
+  updatedAt: z.date(),
+});
 
 const getOfficeInputSchema = z.strictObject({ slug: z.string() });
 

@@ -21,8 +21,22 @@ export async function findOfficeBySlug({
   return row;
 }
 
-export function findOffices({ db }: { db: Database }): Promise<Pick<OfficeRecord, "slug" | "updatedAt">[]> {
-  return db.select({ slug: office.slug, updatedAt: office.updatedAt }).from(office).orderBy(asc(office.slug));
+export function findOffices({
+  db,
+}: {
+  db: Database;
+}): Promise<Pick<OfficeRecord, "slug" | "section" | "name" | "phone" | "email" | "updatedAt">[]> {
+  return db
+    .select({
+      slug: office.slug,
+      section: office.section,
+      name: office.name,
+      phone: office.phone,
+      email: office.email,
+      updatedAt: office.updatedAt,
+    })
+    .from(office)
+    .orderBy(asc(office.slug));
 }
 
 export function findOfficeMembers({

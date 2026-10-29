@@ -327,7 +327,7 @@ export const offices: OfficeSeed[] = [
       {
         role: "head",
         honorific: "engineer",
-        name: { fa: "محمدحسین دوست‌محمدی", en: "Mohammad Hossein Doost Mohammadi" },
+        name: { fa: "محمدحسین دوست‌محمدی", en: "Mohammad Hossein Doostmohammadi" },
         jobTitle: { fa: "رئیس مرکز رشد، فناوری و کارآفرینی", en: "Head of the centre" },
         degree: { fa: "مهندسی برق، گرایش الکترونیک", en: "Electrical engineering (electronics)" },
         phone: "08138411464",
@@ -385,7 +385,7 @@ export const offices: OfficeSeed[] = [
         url: `${WEB}/web/edu/فرآیندها-و-فایل‌های-راهنما`,
         icon: "guide",
       },
-      { title: { fa: "تقویم آموزشی", en: "Academic calendar" }, url: `${WEB}/web/edu/تقویم-آموزشی`, icon: "calendar" },
+      { title: { fa: "تقویم آموزشی", en: "Academic calendar" }, url: "/calendar", icon: "calendar" },
       {
         title: { fa: "گزارش‌ها و پردازش‌های پرکاربرد گلستان", en: "Common Golestan reports" },
         url: `${WEB}/web/edu/گزارش-پرکاربرد`,

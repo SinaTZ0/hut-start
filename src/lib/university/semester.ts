@@ -67,11 +67,26 @@ export function todayInTehran(): JDate {
 
 /*===== Semester =====*/
 
+/** The kinds of date the academic calendar (/calendar) colours its days by. */
+export type EventKind = "registration" | "classes" | "changes" | "evaluation" | "exams";
+
+/** The entry years a date can be set for. `1402` is «۱۴۰۲ و ماقبل»: every year up to it. */
+export const COHORTS = ["1402", "1403", "1404"] as const;
+export type Cohort = (typeof COHORTS)[number];
+
+/** The rules tied to the calendar's dates, in the order the calendar lists them (`CALENDAR_RULES`). */
+export type CalendarRuleId = "absence" | "recheck" | "project" | "prereg" | "units" | "evaluation";
+
 export type CalendarEvent = {
   id: string;
   label: () => string;
+  kind: EventKind;
   /** Who it applies to, e.g. «ورودی ۱۴۰۳». */
   cohort?: () => string;
+  /** The entry years it's set for, behind `cohort`; left out when it's for everyone. */
+  cohorts?: readonly Cohort[];
+  /** The rule a student should know on this date. */
+  rule?: CalendarRuleId;
   start: JDate;
   end?: JDate;
   /** Milestones are the headline events: the hero's notice and the calendar's cells. */
@@ -141,52 +156,154 @@ const year = (value: number) => formatNumber(value, { useGrouping: false });
 const COHORT_1402_AND_EARLIER = () => m.home_cohort_and_earlier({ year: year(1402) });
 const COHORT_1403_AND_1404 = () => m.home_cohort_pair({ first: year(1403), second: year(1404) });
 
-export const SEMESTER: { name: () => string; sourceHref: string; calendarHref: string; events: CalendarEvent[] } = {
+export const SEMESTER: {
+  name: () => string;
+  /** The term's number in the student portal, «۴۰۵۱». */
+  code: number;
+  sourceHref: string;
+  calendarHref: string;
+  events: CalendarEvent[];
+} = {
   name: () => m.home_term_name({ years: `${year(1405)}–${year(1406)}` }),
+  code: 4051,
   sourceHref: "https://hut.ac.ir/fa/w/-772",
-  calendarHref: "https://hut.ac.ir/web/edu/تقویم-آموزشی",
+  calendarHref: "/calendar",
   events: [
     {
       id: "reg-1402",
       label: m.home_event_registration,
+      kind: "registration",
       cohort: COHORT_1402_AND_EARLIER,
+      cohorts: ["1402"],
+      rule: "units",
       start: [1405, 6, 15],
       milestone: true,
     },
     {
       id: "reg-1403",
       label: m.home_event_registration,
+      kind: "registration",
       cohort: () => m.home_cohort({ year: year(1403) }),
+      cohorts: ["1403"],
+      rule: "units",
       start: [1405, 6, 16],
     },
     {
       id: "reg-1404",
       label: m.home_event_registration,
+      kind: "registration",
       cohort: () => m.home_cohort({ year: year(1404) }),
+      cohorts: ["1404"],
+      rule: "units",
       start: [1405, 6, 17],
     },
-    { id: "reg-late", label: m.home_event_late_registration, cohort: m.home_cohort_all, start: [1405, 6, 18] },
-    { id: "classes-start", label: m.home_event_classes_start, start: [1405, 6, 28], milestone: true },
+    {
+      id: "reg-late",
+      label: m.home_event_late_registration,
+      kind: "registration",
+      cohort: m.home_cohort_all,
+      start: [1405, 6, 18],
+    },
+    { id: "classes-start", label: m.home_event_classes_start, kind: "classes", start: [1405, 6, 28], milestone: true },
     {
       id: "adddrop-1402",
       label: m.home_event_add_drop,
+      kind: "changes",
       cohort: COHORT_1402_AND_EARLIER,
+      cohorts: ["1402"],
+      rule: "recheck",
       start: [1405, 7, 5],
       milestone: true,
     },
-    { id: "adddrop-1403", label: m.home_event_add_drop, cohort: COHORT_1403_AND_1404, start: [1405, 7, 6] },
-    { id: "single-drop", label: m.home_event_single_drop, start: [1405, 9, 24], end: [1405, 9, 25], milestone: true },
-    { id: "evaluation", label: m.home_event_evaluation, start: [1405, 9, 28], end: [1405, 10, 11], milestone: true },
+    {
+      id: "adddrop-1403",
+      label: m.home_event_add_drop,
+      kind: "changes",
+      cohort: COHORT_1403_AND_1404,
+      cohorts: ["1403", "1404"],
+      rule: "recheck",
+      start: [1405, 7, 6],
+    },
+    {
+      id: "single-drop",
+      label: m.home_event_single_drop,
+      kind: "changes",
+      rule: "absence",
+      start: [1405, 9, 24],
+      end: [1405, 9, 25],
+      milestone: true,
+    },
+    {
+      id: "evaluation",
+      label: m.home_event_evaluation,
+      kind: "evaluation",
+      rule: "evaluation",
+      start: [1405, 9, 28],
+      end: [1405, 10, 11],
+      milestone: true,
+    },
     {
       id: "prereg-1402",
       label: m.home_event_preregistration,
+      kind: "evaluation",
       cohort: COHORT_1402_AND_EARLIER,
+      cohorts: ["1402"],
+      rule: "prereg",
       start: [1405, 9, 29],
     },
-    { id: "prereg-1403", label: m.home_event_preregistration, cohort: COHORT_1403_AND_1404, start: [1405, 9, 30] },
-    { id: "classes-end", label: m.home_event_classes_end, start: [1405, 10, 15], milestone: true },
-    { id: "practical-exams", label: m.home_event_practical_exams, start: [1405, 10, 19], end: [1405, 10, 23] },
-    { id: "exams", label: m.home_event_exams, start: [1405, 10, 26], end: [1405, 11, 13], milestone: true },
-    { id: "project-deadline", label: m.home_event_project_deadline, start: [1405, 11, 15] },
+    {
+      id: "prereg-1403",
+      label: m.home_event_preregistration,
+      kind: "evaluation",
+      cohort: COHORT_1403_AND_1404,
+      cohorts: ["1403", "1404"],
+      rule: "prereg",
+      start: [1405, 9, 30],
+    },
+    { id: "classes-end", label: m.home_event_classes_end, kind: "classes", start: [1405, 10, 15], milestone: true },
+    {
+      id: "practical-exams",
+      label: m.home_event_practical_exams,
+      kind: "exams",
+      start: [1405, 10, 19],
+      end: [1405, 10, 23],
+    },
+    {
+      id: "exams",
+      label: m.home_event_exams,
+      kind: "exams",
+      start: [1405, 10, 26],
+      end: [1405, 11, 13],
+      milestone: true,
+    },
+    {
+      id: "project-deadline",
+      label: m.home_event_project_deadline,
+      kind: "exams",
+      rule: "project",
+      start: [1405, 11, 15],
+    },
   ],
 };
+
+/*===== Calendar Rules =====*/
+// From the academic council's resolutions and the academic regulations, as the old calendar page listed them.
+
+export const CALENDAR_RULES: { id: CalendarRuleId; text: () => string }[] = [
+  { id: "absence", text: m.calendar_rule_absence },
+  { id: "recheck", text: m.calendar_rule_recheck },
+  { id: "project", text: m.calendar_rule_project },
+  { id: "prereg", text: m.calendar_rule_prereg },
+  { id: "units", text: m.calendar_rule_units },
+  { id: "evaluation", text: m.calendar_rule_evaluation },
+];
+
+/** An entry year as the calendar names it on its own: «۱۴۰۲ و ماقبل», «۱۴۰۳». */
+export function cohortName(cohort: Cohort): string {
+  return cohort === "1402" ? m.calendar_year_and_earlier({ year: year(1402) }) : year(Number(cohort));
+}
+
+/** Whether a date is set for an entry year: dates without entry years are for everyone. */
+export function isForCohort({ event, cohort }: { event: CalendarEvent; cohort: Cohort | "all" }): boolean {
+  return cohort === "all" || !event.cohorts || event.cohorts.includes(cohort);
+}

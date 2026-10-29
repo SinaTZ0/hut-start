@@ -63,11 +63,13 @@ export const NAV_DRAWINGS: Record<string, string> = {
 
 /** The plain pages' drawings, at the end of their title (`PageHero`): an iwan with its office counter for an office, a
  * printing press for the news archive, a switchboard for the phone book, a cabinet of rolled documents for the forms,
- * and a hub of gears for the systems and payments. */
+ * a hub of gears for the systems and payments, and a Persian astrolabe for the academic calendar (the Jalali calendar's
+ * months were set by the sun's passage through the zodiac). */
 export const PAGE_DRAWINGS = {
   office: "/images/pages/office.webp",
   archive: "/images/pages/archive.webp",
   directory: "/images/pages/directory.webp",
   documents: "/images/pages/documents.webp",
   hub: "/images/pages/hub.webp",
+  calendar: "/images/pages/calendar.webp",
 };

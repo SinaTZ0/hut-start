@@ -17,8 +17,9 @@ const twSharedStyles = defineStyles({
 
 /*===== Appearance =====*/
 
-// `default` is the quiet category chip; `highlight` marks one featured item per card; `media` is the label set on a
-// photo («خبر ویژه», «در کانون توجه»). Status tones always pair with an icon or a word.
+// `default` is the quiet category chip; `highlight` marks one featured item per card, and `highlight-soft` is its quiet
+// form for a label that names the page's subject (the calendar's term); `media` is the label set on a photo («خبر
+// ویژه», «در کانون توجه»). Status tones always pair with an icon or a word.
 const twVariant = defineStyles({
   default: {
     appearance: "bg-accent text-heading",
@@ -27,6 +28,10 @@ const twVariant = defineStyles({
   highlight: {
     appearance: "bg-highlight text-highlight-foreground",
     hover: "[a]:hover:bg-highlight-hover",
+  },
+  "highlight-soft": {
+    typography: "font-bold",
+    appearance: "bg-highlight-surface text-highlight-text",
   },
   media: {
     typography: "font-bold",

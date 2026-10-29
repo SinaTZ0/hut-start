@@ -40,3 +40,18 @@ export const Playground: Story = {};
 export const Small: Story = {
   args: { size: "sm" },
 };
+
+// A choice still to make: no chip is pressed until the reader picks one (the calendar's entry year).
+export const Unpicked: Story = {
+  render: () => <EntryYears />,
+};
+
+function EntryYears() {
+  const [value, setValue] = useState<string>();
+  const years: FilterChip<string>[] = [
+    { value: "1402", label: "۱۴۰۲ و ماقبل" },
+    { value: "1403", label: "۱۴۰۳" },
+    { value: "1404", label: "۱۴۰۴" },
+  ];
+  return <FilterChips label="ورودی من" chips={years} value={value} onValueChange={setValue} />;
+}

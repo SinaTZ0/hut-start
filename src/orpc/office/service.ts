@@ -7,7 +7,7 @@ import { findLatestInCategory } from "#/orpc/home-feed/repository";
 import { loadSections } from "#/orpc/library/service";
 import { toPublicMedia } from "#/orpc/media/mapper";
 import { OFFICE_LINK_ICONS, OFFICE_ROLES, OFFICE_SECTIONS, OFFICE_SLUG_PATTERN } from "#/orpc/office/constants";
-import type { Office } from "#/orpc/office/contract";
+import type { Office, OfficeSummary } from "#/orpc/office/contract";
 import { findOfficeBySlug, findOfficeLinks, findOfficeMembers, findOffices } from "#/orpc/office/repository";
 
 /*===== Constants =====*/
@@ -93,6 +93,11 @@ export async function getOffice({ db, slug }: { db: Database; slug: string }): P
 }
 
 /*===== List =====*/
-export function listOffices({ db }: { db: Database }) {
-  return findOffices({ db });
+export async function listOffices({ db }: { db: Database }): Promise<OfficeSummary[]> {
+  const rows = await findOffices({ db });
+  return rows.map((row) => ({
+    ...row,
+    section: oneOf({ allowed: OFFICE_SECTIONS, value: row.section, what: "office section" }),
+    name: localize(row.name),
+  }));
 }

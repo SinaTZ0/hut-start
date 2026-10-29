@@ -116,7 +116,7 @@
   "nav_privacy": "حریم خصوصی",
   "nav_ethics": "منشور اخلاق",
   "nav_suggestions": "نظام پیشنهادات",
-  "nav_alumni": "انجمن دانش‌آموختگان",
+  "nav_alumni": "دانش‌آموختگان",
   "nav_related_msrt": "وزارت علوم، تحقیقات و فناوری",
   "nav_related_isti": "معاونت علمی و فناوری ریاست جمهوری",
   "nav_related_park": "پارک علم و فناوری استان همدان",
@@ -1045,5 +1045,91 @@
         "": "صفحه {pageText}"
       }
     }
-  ]
+  ],
+  "site_postal_code": "۶۵۱۶۹۱۳۷۳۳",
+  "contact_lede": "نشانی و شماره‌های دانشگاه، و راه پیام دادن به هر بخش آن. برای پاسخ زودتر، پیامتان را مستقیم به دفتر مربوط بفرستید.",
+  "contact_postal_code": "کد پستی",
+  "contact_map": "مسیریابی روی نقشه",
+  "contact_write_title": "پیام به دانشگاه",
+  "contact_write_feedback": "پیشنهاد، انتقاد یا شکایت درباره هر بخش دانشگاه",
+  "contact_write_consultation": "درخواست نوبت مشاوره برای دانشجویان",
+  "contact_write_phonebook": "شماره داخلی کارکنان و استادان",
+  "contact_write_ministry": "شکایت از دانشگاه به وزارت علوم",
+  "contact_offices_title": "دفترها و ادارات",
+  "publications_lede": "نشریه‌های انجمن‌های علمی دانشجویی و نشریه علمی دانشگاه، با تازه‌ترین شماره هر یک.",
+  "publications_student_title": "نشریه‌های انجمن‌های علمی",
+  "publications_journal_title": "نشریه علمی دانشگاه",
+  "publications_posts_title": "تازه‌ترین خبرهای نشریات",
+  "publications_posts_more": [
+    {
+      "declarations": ["input count", "local countText = count: number"],
+      "match": {
+        "": "همه {countText} مطلب"
+      }
+    }
+  ],
+  "publications_issue": [
+    {
+      "declarations": ["input issue", "local issueText = issue: number", "input date"],
+      "match": {
+        "": "شماره {issueText}، {date}"
+      }
+    }
+  ],
+  "publications_vista": "ویستا",
+  "publications_vista_publisher": "انجمن علمی مهندسی کامپیوتر",
+  "publications_pulse": "پالس",
+  "publications_pulse_publisher": "انجمن علمی مهندسی برق",
+  "publications_nels": "نلس",
+  "publications_nels_publisher": "انجمن علمی نانوفناوری",
+  "publications_vital_signal": "سیگنال حیاتی",
+  "publications_journal": "انرژی پایدار و هوش مصنوعی",
+  "publications_journal_publisher": "دانشگاه صنعتی همدان",
+  "alumni_title": "دانش‌آموختگان",
+  "alumni_lede": "مدارک و خدمات دانش‌آموختگی، راه‌های در ارتباط ماندن با دانشگاه و خبرهای دانش‌آموختگان.",
+  "alumni_documents_title": "مدارک و خدمات",
+  "alumni_office": "اداره پذیرش و دانش‌آموختگان",
+  "alumni_office_description": "تسویه حساب، دانشنامه، ریزنمرات و تأییدیه تحصیلی",
+  "alumni_sajad": "سامانه سجاد",
+  "alumni_sajad_description": "تأیید مدرک و خدمات وزارت علوم",
+  "alumni_regulations": "آیین‌نامه دانش‌آموختگی",
+  "alumni_regulations_description": "قوانین تسویه حساب و صدور مدارک",
+  "alumni_forms": "فرم‌ها",
+  "alumni_forms_description": "فرم‌های اداری و آموزشی دانشگاه",
+  "alumni_in_touch_title": "در ارتباط بمانید",
+  "alumni_linkedin_description": "صفحه دانشگاه و شبکه دانش‌آموختگان آن",
+  "alumni_graduate": "ادامه تحصیل",
+  "alumni_graduate_description": "کارشناسی ارشد و دکترا در دانشگاه",
+  "alumni_email": "نامه به اداره دانش‌آموختگان",
+  "alumni_email_description": "egrad@hut.ac.ir",
+  "alumni_news_title": "خبرهای دانش‌آموختگان",
+  "calendar_lede": "تاریخ‌های انتخاب واحد، کلاس‌ها، ارزشیابی و امتحانات این نیم‌سال، با قانون‌هایی که به هر تاریخ گره خورده است.",
+  "calendar_term_code": "نیم‌سال {code}",
+  "calendar_cohort_label": "ورودی من",
+  "calendar_year_and_earlier": "{year} و ماقبل",
+  "calendar_kind_registration": "انتخاب واحد",
+  "calendar_kind_classes": "کلاس‌ها",
+  "calendar_kind_changes": "حذف و اضافه",
+  "calendar_kind_evaluation": "ارزشیابی و پیش‌ثبت‌نام",
+  "calendar_kind_exams": "امتحانات",
+  "calendar_day_label": "{date}: {event}",
+  "calendar_event_cohort": "{event}، {cohort}",
+  "calendar_mine_title": "تاریخ‌های من",
+  "calendar_past": "گذشت",
+  "calendar_ics": "افزودن به تقویم من",
+  "calendar_ics_name": "تقویم آموزشی، {term}",
+  "calendar_rules_title": "قانون‌های تقویم",
+  "calendar_rule_absence": "براساس ماده ۱۷ آیین‌نامه آموزشی، دانشجویی که در درسی غیبت بیش از حد داشته باشد، مجاز به حذف اضطراری آن درس نیست.",
+  "calendar_rule_recheck": "یک هفته پس از پایان حذف و اضافه، انتخاب واحد خود را دوباره بررسی کنید تا از تغییراتی که استاد راهنما داده باخبر شوید.",
+  "calendar_rule_project": "نمره پروژه باید تا آخرین مهلت ثبت نمره پروژه ثبت و پروژه به کتابخانه تحویل شده باشد.",
+  "calendar_rule_prereg": "دانشجویی که در پیش‌ثبت‌نام شرکت نکند، در نیم‌سال بعد فقط در روز انتخاب واحد با تأخیر می‌تواند انتخاب واحد کند.",
+  "calendar_rule_units": "دانشجویی که در انتخاب واحد شرکت نکند، در حذف و اضافه حداکثر ۱۴ واحد می‌تواند بگیرد.",
+  "calendar_rule_evaluation": "دانشجویی که در ارزشیابی اساتید شرکت نکند، کارت ورود به جلسه امتحان نمی‌گیرد و نمی‌تواند برای نیم‌سال بعد پیش‌ثبت‌نام کند.",
+  "calendar_events_and": "{first}؛ {second}",
+  "calendar_cohort_caption": "ورودی من:",
+  "calendar_pick_year": "برای دیدن تاریخ‌هایتان، اول ورودی خود را انتخاب کنید.",
+  "calendar_for": "تقویم ورودی",
+  "calendar_change_year": "تغییر ورودی",
+  "calendar_mine_for": "تاریخ‌های ورودی",
+  "calendar_ics_name_cohort": "تقویم آموزشی ورودی {cohort}، {term}"
 }

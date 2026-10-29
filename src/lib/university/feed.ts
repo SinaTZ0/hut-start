@@ -13,10 +13,28 @@ export const KIND_LABELS: Record<FeedKind, { one: () => string; many: () => stri
   occasion: { one: m.article_kind_occasion, many: m.article_kinds_occasion },
 };
 
-/** The archive filtered to a kind, and to a category within it. */
-export function archiveHref({ kind, category }: { kind?: ArchiveKind; category?: FeedCategory }): string {
-  const query = [kind && `kind=${kind}`, category && `category=${category}`].filter(Boolean).join("&");
+/** The archive filtered to a kind, a category within it, or a search. */
+export function archiveHref({
+  kind,
+  category,
+  q,
+}: {
+  kind?: ArchiveKind;
+  category?: FeedCategory;
+  q?: string;
+}): string {
+  const query = [kind && `kind=${kind}`, category && `category=${category}`, q && `q=${encodeURIComponent(q)}`]
+    .filter(Boolean)
+    .join("&");
   return query ? `/news?${query}` : "/news";
+}
+
+/** An archive row's kicker: «اطلاعیه · تحصیلات تکمیلی». The incubator's stories, whose kind and category are both the
+ * incubator, name it once. */
+export function archiveRowLabel({ kind, category }: { kind: ArchiveKind; category: FeedCategory }): string {
+  const one = KIND_LABELS[kind].one();
+  const topic = NEWS_CATEGORIES[category].title();
+  return one === topic ? one : `${one} · ${topic}`;
 }
 
 /*===== Feed Categories =====*/

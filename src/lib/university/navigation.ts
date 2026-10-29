@@ -92,7 +92,7 @@ export const DEPARTMENTS: Department[] = [
 
 /*------ Shared Links ------*/
 
-export const CONTACT_LINK: NavLink = { label: m.nav_contact, href: "https://hut.ac.ir/ارتباط-با-ما" };
+export const CONTACT_LINK: NavLink = { label: m.nav_contact, href: "/contact" };
 const PHONEBOOK_LINK: NavLink = { label: m.nav_about_phonebook, href: "/phonebook" };
 const RECRUITMENT_LINK: NavLink = { label: m.nav_about_recruitment, href: "http://jazb.hut.ac.ir/" };
 
@@ -156,7 +156,7 @@ export const NAV_SECTIONS: NavSection[] = [
           { label: m.nav_education_services, href: "/offices/academic-services" },
           { label: m.nav_education_graduate, href: "/offices/graduate" },
           { label: m.nav_education_admissions, href: "/offices/alumni-affairs" },
-          { label: m.nav_education_calendar, href: "https://hut.ac.ir/web/edu/تقویم-آموزشی" },
+          { label: m.nav_education_calendar, href: "/calendar" },
         ],
       },
       {
@@ -215,7 +215,7 @@ export const NAV_SECTIONS: NavSection[] = [
           { label: m.nav_campus_life_clubs, href: "https://student.hut.ac.ir/کانون-های-فرهنگی" },
           { label: m.nav_campus_life_associations, href: "https://student.hut.ac.ir/انجمن-های-علمی-صنعتی" },
           { label: m.nav_campus_life_organizations, href: "https://student.hut.ac.ir/tashakol" },
-          { label: m.nav_campus_life_publications, href: "https://hut.ac.ir/پایگاه-نشریات-دانشجویی" },
+          { label: m.nav_campus_life_publications, href: "/publications" },
         ],
       },
       {
@@ -249,7 +249,7 @@ export const FOOTER_LINKS: NavLink[] = [
   { label: m.nav_ethics, href: "https://hut.ac.ir/documents/38165/453653/نظامنامه+اخلاق+آموزش.pdf" },
   SUGGESTIONS_LINK,
   { label: m.nav_privacy, href: "/privacy" },
-  { label: m.nav_alumni, href: "https://hut.ac.ir/web/دانش-آموختگان" },
+  { label: m.nav_alumni, href: "/alumni" },
   RECRUITMENT_LINK,
 ];
 

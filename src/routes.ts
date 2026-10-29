@@ -23,6 +23,10 @@ export const routes = rootRoute("__root.tsx", [
     route("/departments/$departmentSlug", "departments_departmentSlug/departments-department-slug.tsx"),
     route("/departments/$departmentSlug/labs", "departments_departmentSlug_labs/departments-department-slug-labs.tsx"),
     route("/news", "news/news.tsx"),
+    route("/contact", "contact/contact.tsx"),
+    route("/publications", "publications/publications.tsx"),
+    route("/alumni", "alumni/alumni.tsx"),
+    route("/calendar", "calendar/calendar.tsx"),
     route("/articles/$articleId", "articles_articleId/articles-article-id.tsx"),
     layout("notes_layout/notes-layout.tsx", [route("/notes", "notes/notes.tsx")]),
   ]),
@@ -34,4 +38,5 @@ export const routes = rootRoute("__root.tsx", [
   route("/healthz", "healthz/healthz.ts"),
   route("/robots.txt", "robots/robots.ts"),
   route("/sitemap.xml", "sitemap/sitemap.ts"),
+  route("/calendar.ics", "calendar_ics/calendar-ics.ts"),
 ]);

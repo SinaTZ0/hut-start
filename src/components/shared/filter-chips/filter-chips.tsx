@@ -6,8 +6,9 @@ import { formatNumber } from "#/lib/locale";
 export type FilterChip<T extends string> = { value: T; label: string; count?: number };
 
 /**
- * One-of filter tags over a list, each with how many items it holds: «همه ۱۳۴», «گروه‌های آموزشی ۶۲». One is always
- * pressed; pressing it again keeps it, so the list is never left unfiltered by accident.
+ * One-of filter tags over a list, each with how many items it holds: «همه ۱۳۴», «گروه‌های آموزشی ۶۲». Once one is
+ * pressed, one always is; pressing it again keeps it, so the list is never left unfiltered by accident. None is pressed
+ * while `value` is unset: a choice the reader still has to make (the calendar's entry year).
  */
 export function FilterChips<T extends string>({
   label,
@@ -20,7 +21,7 @@ export function FilterChips<T extends string>({
   /** Names the group for screen readers: «واحد», «دسته». */
   label: string;
   chips: FilterChip<T>[];
-  value: T;
+  value?: T;
   onValueChange: (value: T) => void;
   /** `sm` for a second row of filters under the main one (the archive's topics). */
   size?: "default" | "sm";
@@ -29,7 +30,7 @@ export function FilterChips<T extends string>({
   return (
     <ToggleGroup
       aria-label={label}
-      value={[value]}
+      value={value === undefined ? [] : [value]}
       size={size}
       onValueChange={(next: string[]) => {
         // Every chip's value is a T; an empty array means the pressed chip was pressed again.

@@ -24,6 +24,10 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   { path: "/phonebook" },
   { path: "/forms" },
   { path: "/news" },
+  { path: "/contact" },
+  { path: "/publications" },
+  { path: "/alumni" },
+  { path: "/calendar" },
 ];
 
 /*===== sitemap.xml =====*/
