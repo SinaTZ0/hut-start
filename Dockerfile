@@ -2,7 +2,7 @@
 
 # Production image: the built app, runtime dependencies only, and the deploy scripts (`migrate.mjs`,
 # `init-storage.mjs`) that `compose.prod.yaml` runs from the same image, plus the departments' seed that
-# `deploy/deploy.sh departments` runs. See docs/deployment.md.
+# `deploy/deploy.sh seed departments` runs. See docs/deployment.md.
 
 # ===== Base =====
 FROM node:24-slim AS base

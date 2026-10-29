@@ -110,17 +110,81 @@ func (t *Tool) Admin(args []string) error {
 	return nil
 }
 
-/*===== Load Departments =====*/
+/*===== Seed =====*/
 
-// Departments loads the departments' pages from the seed bundled into the app's image (`src/db/seed-departments.ts`).
-// A department that exists is skipped, so editors' changes stay; --replace loads it again, and slugs limit the run.
-func (t *Tool) Departments(args []string) error {
+// Seed loads a server's content: the departments, the offices' pages with the forms and the phone book, and the news
+// archive. Each part takes its own options after its name; `all` runs the three in that order, the long archive last.
+// Without a part, on a terminal, it asks which.
+func (t *Tool) Seed(args []string) error {
 	if err := t.requireSetUp(); err != nil {
 		return err
 	}
+	if len(args) == 0 {
+		if !ui.Interactive {
+			return ui.Usage("seed needs a part: departments, pages, archive or all (see deploy/deploy.sh help)")
+		}
+		return t.seedMenu()
+	}
+	switch part, rest := args[0], args[1:]; part {
+	case "departments":
+		return t.seedDepartments(rest)
+	case "pages":
+		return t.seedPages(rest)
+	case "archive":
+		return t.seedArchive(rest)
+	case "all":
+		if err := noArgs("seed all", rest); err != nil {
+			return err
+		}
+		return t.seedAll()
+	default:
+		return ui.Usage("Unknown seed part: %s (departments, pages, archive or all)", part)
+	}
+}
+
+func (t *Tool) seedMenu() error {
+	n, err := ui.Choose("Seed what?", []string{
+		"All             departments, pages, then the news archive",
+		"Departments     add the departments' pages that are missing",
+		"Pages           add the offices, forms and phone book if missing",
+		"News archive    read the old site's news and notices (long the first time)",
+		"Back",
+	})
+	if err != nil {
+		return err
+	}
+	switch n {
+	case 0:
+		return t.seedAll()
+	case 1:
+		return t.seedDepartments(nil)
+	case 2:
+		return t.seedPages(nil)
+	case 3:
+		return t.seedArchive(nil)
+	}
+	return nil
+}
+
+// seedAll stops at the first part that fails. Every part skips what's loaded, so running it again carries on.
+func (t *Tool) seedAll() error {
+	for _, seed := range []func([]string) error{t.seedDepartments, t.seedPages, t.seedArchive} {
+		if err := seed(nil); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+/*------ Departments ------*/
+
+// seedDepartments loads the departments' pages from the seed bundled into the app's image
+// (`src/db/seed-departments.ts`). A department that exists is skipped, so editors' changes stay; --replace loads it
+// again, and slugs limit the run.
+func (t *Tool) seedDepartments(args []string) error {
 	for _, arg := range args {
 		if arg != "--replace" && strings.HasPrefix(arg, "-") {
-			return ui.Usage("departments doesn't know %s (see deploy/deploy.sh help)", arg)
+			return ui.Usage("seed departments doesn't know %s (see deploy/deploy.sh help)", arg)
 		}
 	}
 	// A one-off container of the running app's service: its image, settings and networks (database, storage).
@@ -132,21 +196,18 @@ func (t *Tool) Departments(args []string) error {
 	return nil
 }
 
-/*===== Load Pages =====*/
+/*------ Pages ------*/
 
 // pageParts are the parts of `src/db/seed-pages.ts`, which a run can be limited to.
 var pageParts = map[string]bool{"offices": true, "library": true, "phonebook": true}
 
-// Pages loads the offices' pages, the forms library and the phone book from the seed bundled into the app's image
+// seedPages loads the offices' pages, the forms library and the phone book from the seed bundled into the app's image
 // (`src/db/seed-pages.ts`). A part that has rows is skipped, so editors' changes stay; --replace loads it again, and
 // part names limit the run.
-func (t *Tool) Pages(args []string) error {
-	if err := t.requireSetUp(); err != nil {
-		return err
-	}
+func (t *Tool) seedPages(args []string) error {
 	for _, arg := range args {
 		if arg != "--replace" && !pageParts[arg] {
-			return ui.Usage("pages doesn't know %s (see deploy/deploy.sh help)", arg)
+			return ui.Usage("seed pages doesn't know %s (see deploy/deploy.sh help)", arg)
 		}
 	}
 	run := append([]string{"run", "--rm", "--no-deps", "-T", "app", "node", "deploy/seed-pages.mjs"}, args...)
@@ -157,16 +218,13 @@ func (t *Tool) Pages(args []string) error {
 	return nil
 }
 
-/*===== Fill the News Archive =====*/
+/*------ News Archive ------*/
 
-// Archive reads the old site's news, notices and courses listings into the news archive, then every article page not
-// read yet (`src/db/sync-feed-archive.ts`): about 2,400 on a new server, an hour or more. Stopping it midway is safe;
-// the app's timer reads the rest a few at a time. --listings-only skips the article pages, --pages <n> reads only
-// the first n pages of each listing, --articles <n> at most n article pages.
-func (t *Tool) Archive(args []string) error {
-	if err := t.requireSetUp(); err != nil {
-		return err
-	}
+// seedArchive reads the old site's news, notices and courses listings into the news archive, then every article page
+// not read yet (`src/db/sync-feed-archive.ts`): about 2,400 on a new server, an hour or more. Stopping it midway is
+// safe; the app's timer reads the rest a few at a time. --listings-only skips the article pages, --pages <n> reads
+// only the first n pages of each listing, --articles <n> at most n article pages.
+func (t *Tool) seedArchive(args []string) error {
 	for i := 0; i < len(args); i++ {
 		switch args[i] {
 		case "--listings-only":
@@ -176,7 +234,7 @@ func (t *Tool) Archive(args []string) error {
 			}
 			i++
 		default:
-			return ui.Usage("archive doesn't know %s (see deploy/deploy.sh help)", args[i])
+			return ui.Usage("seed archive doesn't know %s (see deploy/deploy.sh help)", args[i])
 		}
 	}
 	run := append([]string{"run", "--rm", "--no-deps", "-T", "app", "node", "deploy/sync-feed-archive.mjs"}, args...)

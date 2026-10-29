@@ -105,12 +105,12 @@ in headless screenshots. Set a normal Chrome user agent there; real browsers are
 
 ## Running It
 
-| Way                  | When                                                                                                                                                                                        |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The server's timer   | Every `HOME_FEED_SYNC_MINUTES` (default 30). The first run is 30 seconds after start. `0` turns it off.                                                                                     |
-| `pnpm crawl:home`    | By hand, in development or on the server. Needs no server running and no secret. Reads every page it needs in one go. `-- --refresh` reads every article's page again.                      |
-| `pnpm crawl:archive` | The archive, by hand: every listing page, then every unread article page. `-- --listings-only`, `--pages <n>` and `--articles <n>` cut it short. On the server: `deploy/deploy.sh archive`. |
-| `homeFeed.sync`      | On demand over HTTP, with the secret. A call during a timed run joins it.                                                                                                                   |
+| Way                  | When                                                                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| The server's timer   | Every `HOME_FEED_SYNC_MINUTES` (default 30). The first run is 30 seconds after start. `0` turns it off.                                                                                          |
+| `pnpm crawl:home`    | By hand, in development or on the server. Needs no server running and no secret. Reads every page it needs in one go. `-- --refresh` reads every article's page again.                           |
+| `pnpm crawl:archive` | The archive, by hand: every listing page, then every unread article page. `-- --listings-only`, `--pages <n>` and `--articles <n>` cut it short. On the server: `deploy/deploy.sh seed archive`. |
+| `homeFeed.sync`      | On demand over HTTP, with the secret. A call during a timed run joins it.                                                                                                                        |
 
 ```sh
 curl -X POST -H "Authorization: Bearer $HOME_FEED_SYNC_SECRET" https://<domain>/rpc/homeFeed/sync

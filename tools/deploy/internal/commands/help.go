@@ -29,15 +29,17 @@ With no command, a menu with the stack's status under it.
   status                        containers, disk, backups and the status lines
   logs [<service>]              follow a service's logs: %s
   admin [<email>]               give an account the admin role
-  departments [--replace] [<slug>...]
-                                load the departments' pages that are missing; --replace loads existing ones
-                                again (editors' changes are lost), slugs limit it to those departments
-  pages [--replace] [offices|library|phonebook...]
-                                load the offices' pages, the forms and the phone book where missing;
+  seed [all]                    all loads the three parts below, in this order; without a part, on a terminal,
+                                it asks which
+  seed departments [--replace] [<slug>...]
+                                the departments' pages that are missing; --replace loads existing ones again
+                                (editors' changes are lost), slugs limit it to those departments
+  seed pages [--replace] [offices|library|phonebook...]
+                                the offices' pages, the forms and the phone book where missing;
                                 --replace loads them again (editors' changes are lost)
-  archive [--listings-only] [--pages <n>] [--articles <n>]
-                                fill the news archive from the old site's listings, then read every article
-                                page not read yet (an hour or more the first time; safe to stop and rerun)
+  seed archive [--listings-only] [--pages <n>] [--articles <n>]
+                                the news archive from the old site's listings, then every article page not
+                                read yet (an hour or more the first time; safe to stop and rerun)
   pgweb open [--for <time>] [--no-backup]
                                 a database browser with full access, through an SSH tunnel, for 30m, 4h…
                                 (24h at most, the default); a database dump first, unless --no-backup

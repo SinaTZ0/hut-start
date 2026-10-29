@@ -29,8 +29,8 @@ import { attachMedia, deleteMedia } from "#/orpc/media/service";
 
 /*===== Seed Departments =====*/
 // Loads the departments' pages from `src/db/departments/`: `pnpm db:seed:departments`, or in production
-// `deploy/deploy.sh departments`. Every media row names its uploader, so the photos are uploaded as a system user the
-// seed creates (see `systemUser`).
+// `deploy/deploy.sh seed departments`. Every media row names its uploader, so the photos are uploaded as a system user
+// the seed creates (see `systemUser`).
 //
 // A department that already exists is skipped, so the editor's changes are never overwritten. `--replace` deletes it
 // first (its photos too) and loads it again; name slugs after it to limit the run: `-- --replace ee`.

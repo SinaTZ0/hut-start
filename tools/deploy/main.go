@@ -41,22 +41,20 @@ func main() {
 	}
 
 	run := map[string]func([]string) error{
-		"menu":        func([]string) error { return menu.Run(t) },
-		"setup":       t.Setup,
-		"update":      t.Update,
-		"rollback":    t.Rollback,
-		"env":         t.Settings,
-		"apply":       t.Apply,
-		"backup":      t.Backup,
-		"restore":     t.Restore,
-		"cert":        t.Cert,
-		"status":      t.Status,
-		"logs":        t.Logs,
-		"admin":       t.Admin,
-		"departments": t.Departments,
-		"pages":       t.Pages,
-		"archive":     t.Archive,
-		"pgweb":       t.Pgweb,
+		"menu":     func([]string) error { return menu.Run(t) },
+		"setup":    t.Setup,
+		"update":   t.Update,
+		"rollback": t.Rollback,
+		"env":      t.Settings,
+		"apply":    t.Apply,
+		"backup":   t.Backup,
+		"restore":  t.Restore,
+		"cert":     t.Cert,
+		"status":   t.Status,
+		"logs":     t.Logs,
+		"admin":    t.Admin,
+		"seed":     t.Seed,
+		"pgweb":    t.Pgweb,
 	}[command]
 	if run == nil {
 		commands.Help(ui.Err)

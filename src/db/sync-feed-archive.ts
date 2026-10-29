@@ -4,8 +4,8 @@ import { fetchSourcePage, measureSource } from "#/orpc/home-feed/source.server";
 
 /*===== Sync Feed Archive =====*/
 // Fills the archive (`/news`) from the old site's listings (docs/backend/home-feed.md → Archive). Run with
-// `pnpm crawl:archive`; on the server, `deploy/deploy.sh archive`. By default it reads every listing page (about 45)
-// and then every article page not read yet (about 2,400 on a new server, a few seconds each: an hour or more).
+// `pnpm crawl:archive`; on the server, `deploy/deploy.sh seed archive`. By default it reads every listing page (about
+// 45) and then every article page not read yet (about 2,400 on a new server, a few seconds each: an hour or more).
 // `--pages <n>` reads only the first n pages of each listing, `--articles <n>` at most n article pages, and
 // `--listings-only` none. Stopping it midway is safe: the next run, or the server's timer, carries on.
 

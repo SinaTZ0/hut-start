@@ -21,7 +21,7 @@ import { attachMedia, deleteMedia } from "#/orpc/media/service";
 /*===== Seed Pages =====*/
 // Loads the pages moved from the old site that hold content rather than links (`src/db/pages/`): the offices, the forms
 // library (and the offices' files) and the phone book.
-// `pnpm db:seed:pages`, or in production `deploy/deploy.sh pages`.
+// `pnpm db:seed:pages`, or in production `deploy/deploy.sh seed pages`.
 //
 // A part that already has rows is skipped, so an editor's changes are never overwritten. `--replace` deletes it first
 // and loads it again; name parts after it to limit the run: `-- --replace phonebook`.
