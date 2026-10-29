@@ -27,6 +27,7 @@ import { Route as departmentsDepartmentsRouteImport } from './routes/departments
 import { Route as educationEducationRouteImport } from './routes/education/education'
 import { Route as feedbackFeedbackRouteImport } from './routes/feedback/feedback'
 import { Route as formsFormsRouteImport } from './routes/forms/forms'
+import { Route as newStudentsNewStudentsRouteImport } from './routes/new-students/new-students'
 import { Route as newsNewsRouteImport } from './routes/news/news'
 import { Route as paymentsPaymentsRouteImport } from './routes/payments/payments'
 import { Route as phonebookPhonebookRouteImport } from './routes/phonebook/phonebook'
@@ -132,6 +133,11 @@ const formsFormsRoute = formsFormsRouteImport.update({
   path: '/forms',
   getParentRoute: () => site_layoutSiteLayoutRoute,
 } as any)
+const newStudentsNewStudentsRoute = newStudentsNewStudentsRouteImport.update({
+  id: '/new-students',
+  path: '/new-students',
+  getParentRoute: () => site_layoutSiteLayoutRoute,
+} as any)
 const newsNewsRoute = newsNewsRouteImport.update({
   id: '/news',
   path: '/news',
@@ -232,6 +238,7 @@ export interface FileRoutesByFullPath {
   '/education': typeof educationEducationRoute
   '/feedback': typeof feedbackFeedbackRoute
   '/forms': typeof formsFormsRoute
+  '/new-students': typeof newStudentsNewStudentsRoute
   '/news': typeof newsNewsRoute
   '/payments': typeof paymentsPaymentsRoute
   '/phonebook': typeof phonebookPhonebookRoute
@@ -265,6 +272,7 @@ export interface FileRoutesByTo {
   '/education': typeof educationEducationRoute
   '/feedback': typeof feedbackFeedbackRoute
   '/forms': typeof formsFormsRoute
+  '/new-students': typeof newStudentsNewStudentsRoute
   '/news': typeof newsNewsRoute
   '/payments': typeof paymentsPaymentsRoute
   '/phonebook': typeof phonebookPhonebookRoute
@@ -301,6 +309,7 @@ export interface FileRoutesById {
   '/_site-layout/education': typeof educationEducationRoute
   '/_site-layout/feedback': typeof feedbackFeedbackRoute
   '/_site-layout/forms': typeof formsFormsRoute
+  '/_site-layout/new-students': typeof newStudentsNewStudentsRoute
   '/_site-layout/news': typeof newsNewsRoute
   '/_site-layout/payments': typeof paymentsPaymentsRoute
   '/_site-layout/phonebook': typeof phonebookPhonebookRoute
@@ -336,6 +345,7 @@ export interface FileRouteTypes {
     | '/education'
     | '/feedback'
     | '/forms'
+    | '/new-students'
     | '/news'
     | '/payments'
     | '/phonebook'
@@ -369,6 +379,7 @@ export interface FileRouteTypes {
     | '/education'
     | '/feedback'
     | '/forms'
+    | '/new-students'
     | '/news'
     | '/payments'
     | '/phonebook'
@@ -404,6 +415,7 @@ export interface FileRouteTypes {
     | '/_site-layout/education'
     | '/_site-layout/feedback'
     | '/_site-layout/forms'
+    | '/_site-layout/new-students'
     | '/_site-layout/news'
     | '/_site-layout/payments'
     | '/_site-layout/phonebook'
@@ -559,6 +571,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof formsFormsRouteImport
       parentRoute: typeof site_layoutSiteLayoutRoute
     }
+    '/_site-layout/new-students': {
+      id: '/_site-layout/new-students'
+      path: '/new-students'
+      fullPath: '/new-students'
+      preLoaderRoute: typeof newStudentsNewStudentsRouteImport
+      parentRoute: typeof site_layoutSiteLayoutRoute
+    }
     '/_site-layout/news': {
       id: '/_site-layout/news'
       path: '/news'
@@ -695,6 +714,7 @@ interface site_layoutSiteLayoutRouteChildren {
   educationEducationRoute: typeof educationEducationRoute
   feedbackFeedbackRoute: typeof feedbackFeedbackRoute
   formsFormsRoute: typeof formsFormsRoute
+  newStudentsNewStudentsRoute: typeof newStudentsNewStudentsRoute
   newsNewsRoute: typeof newsNewsRoute
   paymentsPaymentsRoute: typeof paymentsPaymentsRoute
   phonebookPhonebookRoute: typeof phonebookPhonebookRoute
@@ -723,6 +743,7 @@ const site_layoutSiteLayoutRouteChildren: site_layoutSiteLayoutRouteChildren = {
   educationEducationRoute: educationEducationRoute,
   feedbackFeedbackRoute: feedbackFeedbackRoute,
   formsFormsRoute: formsFormsRoute,
+  newStudentsNewStudentsRoute: newStudentsNewStudentsRoute,
   newsNewsRoute: newsNewsRoute,
   paymentsPaymentsRoute: paymentsPaymentsRoute,
   phonebookPhonebookRoute: phonebookPhonebookRoute,

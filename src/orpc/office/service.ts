@@ -8,7 +8,13 @@ import { loadSections } from "#/orpc/library/service";
 import { toPublicMedia } from "#/orpc/media/mapper";
 import { OFFICE_LINK_ICONS, OFFICE_ROLES, OFFICE_SECTIONS, OFFICE_SLUG_PATTERN } from "#/orpc/office/constants";
 import type { Office, OfficeSummary } from "#/orpc/office/contract";
-import { findOfficeBySlug, findOfficeLinks, findOfficeMembers, findOffices } from "#/orpc/office/repository";
+import {
+  findOfficeBySlug,
+  findOfficeLinks,
+  findOfficeLists,
+  findOfficeMembers,
+  findOffices,
+} from "#/orpc/office/repository";
 
 /*===== Constants =====*/
 const NOTICE_COUNT = 5;
@@ -37,9 +43,10 @@ export async function getOffice({ db, slug }: { db: Database; slug: string }): P
   if (!record) return { kind: "not-found" };
 
   // Independent reads; the pool runs them side by side.
-  const [members, links, library, notices] = await Promise.all([
+  const [members, links, lists, library, notices] = await Promise.all([
     findOfficeMembers({ db, officeId: record.id }),
     findOfficeLinks({ db, officeId: record.id }),
+    findOfficeLists({ db, officeId: record.id }),
     loadSections({ db, officeId: record.id }),
     record.feedCategory
       ? findLatestInCategory({ db, category: record.feedCategory, limit: NOTICE_COUNT })
@@ -85,6 +92,23 @@ export async function getOffice({ db, slug }: { db: Database; slug: string }): P
         description: localizeOptional(link.description),
         url: link.url,
         icon: oneOf({ allowed: OFFICE_LINK_ICONS, value: link.icon, what: "office link icon" }),
+      })),
+      lists: lists.map((list) => ({
+        id: list.id,
+        title: localize(list.title),
+        items: list.items.map(({ item, image }) => ({
+          id: item.id,
+          title: localize(item.title),
+          text: localizeOptional(item.text),
+          url: item.url,
+          image: image ? toPublicMedia(image) : null,
+        })),
+      })),
+      faq: record.faq.map((entry) => ({ question: localize(entry.question), answer: localize(entry.answer) })),
+      schedules: record.schedules.map((schedule) => ({
+        title: localize(schedule.title),
+        columns: schedule.columns.map(localize),
+        rows: schedule.rows.map((row) => ({ label: localize(row.label), cells: row.cells.map(localize) })),
       })),
       sections: library.sections,
       notices: notices.map(toListedItem),

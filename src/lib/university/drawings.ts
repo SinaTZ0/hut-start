@@ -76,3 +76,19 @@ export const PAGE_DRAWINGS = {
   hub: "/images/pages/hub.webp",
   calendar: "/images/pages/calendar.webp",
 };
+
+/** An office's drawing at the end of its title: its own where it has one (the central laboratory's spectrometer,
+ * tensile tester, centrifuge and microscope), otherwise the offices' shared iwan. */
+const OFFICE_DRAWINGS: Record<string, string> = {
+  "central-lab": "/images/pages/central-lab.webp",
+};
+
+/** The central laboratory's tensile tester on its own, for its tile beside the departments' labs (`/research`). */
+export const CENTRAL_LAB_MARK = "/images/pages/central-lab-mark.webp";
+
+/** The new students' page's drawing: a satchel of notebooks, keys, and a campus plan with a compass and dividers. */
+export const NEW_STUDENTS_DRAWING = "/images/pages/new-students.webp";
+
+export function officeDrawing(slug: string): string {
+  return OFFICE_DRAWINGS[slug] ?? PAGE_DRAWINGS.office;
+}

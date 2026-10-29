@@ -27,6 +27,7 @@ export const routes = rootRoute("__root.tsx", [
     route("/publications", "publications/publications.tsx"),
     route("/alumni", "alumni/alumni.tsx"),
     route("/calendar", "calendar/calendar.tsx"),
+    route("/new-students", "new-students/new-students.tsx"),
     route("/articles/$articleId", "articles_articleId/articles-article-id.tsx"),
     layout("notes_layout/notes-layout.tsx", [route("/notes", "notes/notes.tsx")]),
   ]),

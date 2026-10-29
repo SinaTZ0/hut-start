@@ -173,6 +173,34 @@ export function archiveWhere({ filter, except }: { filter: ArchiveFilter; except
   );
 }
 
+/*===== New Students =====*/
+// The old site tags nothing as being for new students, so they're found by what the posts say: «نودانشجو»,
+// «نوورود», «جدیدالورود», «ورودی‌های جدید», «پذیرفته‌شدگان», each spelled with and without its spaces and ZWNJs (read
+// as spaces in `SEARCHED_TEXT`).
+const NEW_STUDENT_PATTERN = "(نو ?دانشجو|نو ?ورود|جدید ?ال ?ورود|ورودی( ?های)? جدید|پذیرفته ?شدگان)";
+
+/** The newest archive posts addressed to new students: enrolment, their first days, their dorm and meals. */
+export function findNewStudentArticles({
+  db,
+  limit,
+}: {
+  db: Database;
+  limit: number;
+}): Promise<(FeedArticleRecord & { kind: string; category: string })[]> {
+  return db
+    .select()
+    .from(feedArticle)
+    .where(
+      and(
+        inArray(feedArticle.kind, [...ARCHIVE_KINDS]),
+        isNotNull(feedArticle.category),
+        sql`${SEARCHED_TEXT} ~ ${NEW_STUDENT_PATTERN}`,
+      ),
+    )
+    .orderBy(sql`${feedArticle.publishedOn} desc nulls last`, desc(feedArticle.createdAt))
+    .limit(limit) as Promise<(FeedArticleRecord & { kind: string; category: string })[]>;
+}
+
 /** One page of the archive, newest or oldest first; undated articles last either way. */
 export function findArchivePage({
   db,

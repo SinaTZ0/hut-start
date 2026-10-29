@@ -316,9 +316,22 @@ export const office = pgTable("office", {
   email: text("email"),
   /** The home feed's category whose notices the page lists. */
   feedCategory: text("feed_category"),
+  /** Questions visitors ask most, each with its answer. */
+  faq: jsonb("faq").$type<OfficeFaqEntry[]>().notNull().default([]),
+  /** Opening hours as tables (a library's desks by day), when one line in `hours` can't say it. */
+  schedules: jsonb("schedules").$type<OfficeSchedule[]>().notNull().default([]),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export type OfficeFaqEntry = { question: LocalizedText; answer: LocalizedText };
+
+/** One table: a header row of `columns` (the days), then a row per service with a cell under each column. */
+export type OfficeSchedule = {
+  title: LocalizedText;
+  columns: LocalizedText[];
+  rows: { label: LocalizedText; cells: LocalizedText[] }[];
+};
 
 /** Someone on the office's page: its head, its staff, or (the president's office) a former president. */
 export const officeMember = pgTable(
@@ -363,6 +376,38 @@ export const officeLink = pgTable(
     position: integer("position").notNull().default(0),
   },
   (table) => [index("office_link_office_id_position_idx").on(table.officeId, table.position)],
+);
+
+/** A titled set of cards on the office's page: its units, the books it published, the agreements it signed. */
+export const officeList = pgTable(
+  "office_list",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    officeId: uuid("office_id")
+      .notNull()
+      .references(() => office.id, { onDelete: "cascade" }),
+    title: jsonb("title").$type<LocalizedText>().notNull(),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("office_list_office_id_position_idx").on(table.officeId, table.position)],
+);
+
+export const officeListItem = pgTable(
+  "office_list_item",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    listId: uuid("list_id")
+      .notNull()
+      .references(() => officeList.id, { onDelete: "cascade" }),
+    title: jsonb("title").$type<LocalizedText>().notNull(),
+    text: jsonb("text").$type<LocalizedText>(),
+    /** A page of this site (`/offices/...`) or another one. */
+    url: text("url"),
+    /** A `portrait` media: a book's cover. */
+    imageMediaId: uuid("image_media_id").references(() => media.id, { onDelete: "set null" }),
+    position: integer("position").notNull().default(0),
+  },
+  (table) => [index("office_list_item_list_id_position_idx").on(table.listId, table.position)],
 );
 
 /*===== Document Library =====*/

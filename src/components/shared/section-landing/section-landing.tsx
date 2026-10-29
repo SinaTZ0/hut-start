@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, ExternalLinkIcon, FlaskConicalIcon } from "lucide-react";
+import { ArrowLeftIcon, ExternalLinkIcon } from "lucide-react";
 import { useMemo } from "react";
 
 import { DepartmentGrid } from "#/components/shared/department-grid/department-grid";
@@ -8,7 +8,7 @@ import { PageHero } from "#/components/shared/page-hero/page-hero";
 import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
 import { SiteLink } from "#/components/shared/site-link/site-link";
 import { TextLink } from "#/components/shared/text-link/text-link";
-import { NAV_DRAWINGS } from "#/lib/university/drawings";
+import { CENTRAL_LAB_MARK, NAV_DRAWINGS } from "#/lib/university/drawings";
 import { type NavGroup, NAV_SECTIONS } from "#/lib/university/navigation";
 import { SECTION_PAGES, type SectionId } from "#/lib/university/sections";
 import type { FeedItem, HomeFeed } from "#/orpc/home-feed/contract";
@@ -18,7 +18,7 @@ import { UpcomingDates } from "./upcoming-dates";
 /*===== Constants =====*/
 
 const NOTICE_COUNT = 6;
-const CENTRAL_LAB_HREF = "http://lab.hut.ac.ir/";
+const CENTRAL_LAB_HREF = "/offices/central-lab";
 
 /*===== Notices =====*/
 
@@ -92,7 +92,7 @@ export function SectionLanding({ sectionId, feed }: { sectionId: SectionId; feed
                 href={CENTRAL_LAB_HREF}
                 title={m.nav_research_central_lab()}
                 description={m.home_unit_lab()}
-                icon={FlaskConicalIcon}
+                art={CENTRAL_LAB_MARK}
               />
             </div>
           )}

@@ -7,6 +7,7 @@ import {
   getArticleProcedure,
   getHomeFeedProcedure,
   listArchiveProcedure,
+  listNewStudentPostsProcedure,
   syncHomeFeedProcedure,
 } from "#/orpc/home-feed/procedure";
 import { implementer } from "#/orpc/implementer.server";
@@ -40,6 +41,7 @@ export const router = implementer.router({
     get: getHomeFeedProcedure,
     article: getArticleProcedure,
     list: listArchiveProcedure,
+    newStudents: listNewStudentPostsProcedure,
     sync: syncHomeFeedProcedure,
   },
   library: {

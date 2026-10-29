@@ -94,7 +94,7 @@ export const DEPARTMENTS: Department[] = [
 
 export const CONTACT_LINK: NavLink = { label: m.nav_contact, href: "/contact" };
 const PHONEBOOK_LINK: NavLink = { label: m.nav_about_phonebook, href: "/phonebook" };
-const RECRUITMENT_LINK: NavLink = { label: m.nav_about_recruitment, href: "http://jazb.hut.ac.ir/" };
+const RECRUITMENT_LINK: NavLink = { label: m.nav_about_recruitment, href: "/offices/recruitment" };
 
 /** The university portal's sign-in, in the utility bar. */
 export const PORTAL_HREF = "https://hut.ac.ir/c/portal/login?p_l_id=13";
@@ -121,9 +121,9 @@ export const NAV_SECTIONS: NavSection[] = [
         title: m.nav_about_management,
         links: [
           { label: m.nav_about_president, href: "/offices/president" },
-          { label: m.nav_about_vp_education, href: "https://edu.hut.ac.ir/" },
-          { label: m.nav_about_vp_student, href: "https://student.hut.ac.ir/" },
-          { label: m.nav_about_vp_admin, href: "https://daf.hut.ac.ir/" },
+          { label: m.nav_about_vp_education, href: "/offices/vp-education" },
+          { label: m.nav_about_vp_student, href: "/offices/vp-student-affairs" },
+          { label: m.nav_about_vp_admin, href: "/offices/vp-admin" },
           { label: m.nav_about_trustees, href: "https://omana.basu.ac.ir/" },
         ],
       },
@@ -177,18 +177,18 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         title: m.nav_research_research,
         links: [
-          { label: m.nav_research_affairs, href: "https://edu.hut.ac.ir/مدیریت-پژوهشی" },
+          { label: m.nav_research_affairs, href: "/offices/research-affairs" },
           { label: m.nav_research_journal, href: "https://enai.hut.ac.ir/" },
-          { label: m.nav_research_press, href: "http://press.hut.ac.ir/" },
-          { label: m.nav_research_library, href: "http://library.hut.ac.ir/" },
+          { label: m.nav_research_press, href: "/offices/press" },
+          { label: m.nav_research_library, href: "/offices/library" },
         ],
       },
       {
         title: m.nav_research_technology,
         links: [
           { label: m.nav_research_incubator, href: "/offices/incubator" },
-          { label: m.nav_research_industry, href: "http://industry.hut.ac.ir/" },
-          { label: m.nav_research_central_lab, href: "http://lab.hut.ac.ir/" },
+          { label: m.nav_research_industry, href: "/offices/industry" },
+          { label: m.nav_research_central_lab, href: "/offices/central-lab" },
           { label: m.nav_research_labs, href: "/research" },
         ],
       },
@@ -203,18 +203,18 @@ export const NAV_SECTIONS: NavSection[] = [
       {
         title: m.nav_campus_life_welfare,
         links: [
-          { label: m.nav_campus_life_welfare_services, href: "https://student.hut.ac.ir/خدمات-رفاهی-دانشجویی" },
-          { label: m.nav_campus_life_dorms, href: "https://student.hut.ac.ir/اداره-خوابگاه-ها" },
-          { label: m.nav_campus_life_dining, href: "https://student.hut.ac.ir/اداره-تغذیه" },
+          { label: m.nav_campus_life_welfare_services, href: "/offices/welfare" },
+          { label: m.nav_campus_life_dorms, href: "/offices/dorms" },
+          { label: m.nav_campus_life_dining, href: "/offices/dining" },
           { label: m.nav_campus_life_sports, href: "/offices/sports" },
         ],
       },
       {
         title: m.nav_campus_life_culture,
         links: [
-          { label: m.nav_campus_life_clubs, href: "https://student.hut.ac.ir/کانون-های-فرهنگی" },
-          { label: m.nav_campus_life_associations, href: "https://student.hut.ac.ir/انجمن-های-علمی-صنعتی" },
-          { label: m.nav_campus_life_organizations, href: "https://student.hut.ac.ir/tashakol" },
+          { label: m.nav_campus_life_clubs, href: "/offices/clubs" },
+          { label: m.nav_campus_life_associations, href: "/offices/associations" },
+          { label: m.nav_campus_life_organizations, href: "/offices/organizations" },
           { label: m.nav_campus_life_publications, href: "/publications" },
         ],
       },
@@ -222,7 +222,7 @@ export const NAV_SECTIONS: NavSection[] = [
         title: m.nav_campus_life_support,
         links: [
           { label: m.nav_campus_life_counseling, href: "/consultation" },
-          { label: m.nav_campus_life_discipline, href: "https://student.hut.ac.ir/شورای-انضباطی" },
+          { label: m.nav_campus_life_discipline, href: "/offices/discipline" },
           { label: m.nav_campus_life_shahed, href: "/offices/shahed" },
         ],
       },

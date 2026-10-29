@@ -28,6 +28,7 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   { path: "/publications" },
   { path: "/alumni" },
   { path: "/calendar" },
+  { path: "/new-students" },
 ];
 
 /*===== sitemap.xml =====*/

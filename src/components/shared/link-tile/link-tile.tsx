@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import type { CSSProperties } from "react";
 
 import { Card, CardArrow, CardContent, CardDescription, CardTitle } from "#/components/primitive/card/card";
 import { SiteLink } from "#/components/shared/site-link/site-link";
@@ -19,19 +20,21 @@ function hostOf(href: string): string | null {
 /**
  * A system, a payment gateway or an office's tool as one card: its icon, name and what a person does there, and the
  * address it opens, so a visitor sees they're leaving this site. `internalOnly` systems say they need the campus
- * network.
+ * network. `art`, a drawing's mask (the central laboratory's instrument), takes the icon's place.
  */
 export function LinkTile({
   href,
   title,
   description,
   icon: Icon,
+  art,
   internalOnly = false,
 }: {
   href: string;
   title: string;
   description?: string;
   icon?: LucideIcon;
+  art?: string;
   internalOnly?: boolean;
 }) {
   const host = hostOf(href);
@@ -40,15 +43,23 @@ export function LinkTile({
     <Card render={<SiteLink href={href} />} size="sm" className="h-full">
       <CardContent>
         <div className="flex items-start gap-4">
-          {Icon && (
-            <Icon aria-hidden className="box-content size-5.5 shrink-0 rounded-sm bg-accent p-2.5 text-brand-text" />
+          {art ? (
+            <span
+              aria-hidden
+              style={{ "--art": `url("${art}")` } as CSSProperties}
+              className="block h-14 w-7 shrink-0 mask-art text-art-ink"
+            />
+          ) : (
+            Icon && (
+              <Icon aria-hidden className="box-content size-5.5 shrink-0 rounded-sm bg-accent p-2.5 text-brand-text" />
+            )
           )}
           {/* Centred so a title alone lines up with the arrow; with a description it is the tallest item anyway. */}
           <div className="flex min-w-0 flex-1 flex-col gap-1 self-center">
             <CardTitle>
               <h3>{title}</h3>
             </CardTitle>
-            {description && <CardDescription>{description}</CardDescription>}
+            {description && <CardDescription dir="auto">{description}</CardDescription>}
             {(host || internalOnly) && (
               <p className="mt-1 flex flex-wrap gap-x-3 text-caption text-muted-foreground">
                 {host && (

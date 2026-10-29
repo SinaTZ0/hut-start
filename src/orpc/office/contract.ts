@@ -58,6 +58,33 @@ export const officeSchema = z.object({
       icon: z.enum(OFFICE_LINK_ICONS),
     }),
   ),
+  /** Titled sets of cards: its units, its books, its agreements. */
+  lists: z.array(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      items: z.array(
+        z.object({
+          id: z.string(),
+          title: z.string(),
+          text: z.string().nullable(),
+          /** A path on this site (`/offices/library`) or another site's URL. */
+          url: z.string().nullable(),
+          /** A `portrait` media: a book's cover. */
+          image: mediaSchema.nullable(),
+        }),
+      ),
+    }),
+  ),
+  faq: z.array(z.object({ question: z.string(), answer: z.string() })),
+  /** Opening hours as tables: a cell under each column for every row. */
+  schedules: z.array(
+    z.object({
+      title: z.string(),
+      columns: z.array(z.string()),
+      rows: z.array(z.object({ label: z.string(), cells: z.array(z.string()) })),
+    }),
+  ),
   /** Its files, grouped as on the forms page. */
   sections: z.array(librarySectionSchema),
   /** The newest of its category's notices and news. */

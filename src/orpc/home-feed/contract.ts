@@ -148,6 +148,9 @@ export const getArticleContract = oc
 /** The archive (`/news`): every stored post of the archive's kinds, filtered, a page at a time. */
 export const listArchiveContract = oc.errors(commonErrors).input(archiveInputSchema).output(archivePageSchema);
 
+/** The newest posts addressed to new students, for `/new-students`. */
+export const listNewStudentPostsContract = oc.errors(commonErrors).output(z.array(feedItemSchema));
+
 /**
  * Reads the old homepage now, instead of waiting for the timer. Needs the sync secret
  * (`Authorization: Bearer <HOME_FEED_SYNC_SECRET>`); without that variable set it always answers `UNAUTHORIZED`.
@@ -161,5 +164,6 @@ export const homeFeedContract = {
   get: getHomeFeedContract,
   article: getArticleContract,
   list: listArchiveContract,
+  newStudents: listNewStudentPostsContract,
   sync: syncHomeFeedContract,
 };

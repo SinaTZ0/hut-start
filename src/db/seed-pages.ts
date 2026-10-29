@@ -2,8 +2,11 @@ import { eq } from "drizzle-orm";
 
 import { db } from "#/db/client.server";
 import { directory } from "#/db/pages/directory";
-import { library } from "#/db/pages/library";
-import { offices } from "#/db/pages/offices";
+import { library as forms } from "#/db/pages/library";
+import { offices as mainOffices } from "#/db/pages/offices";
+import { researchOffices, researchOfficeFiles } from "#/db/pages/offices-research";
+import { studentOffices, studentOfficeFiles } from "#/db/pages/offices-student";
+import { vicePresidencies, vicePresidencyFiles } from "#/db/pages/offices-vice-presidencies";
 import { systemUser, uploadPhoto } from "#/db/seed-media";
 import {
   directoryEntry,
@@ -13,6 +16,8 @@ import {
   librarySection,
   office,
   officeLink,
+  officeList,
+  officeListItem,
   officeMember,
 } from "#/db/schema";
 import { normalizePersianText } from "#/lib/persian-text";
@@ -23,8 +28,14 @@ import { attachMedia, deleteMedia } from "#/orpc/media/service";
 // library (and the offices' files) and the phone book.
 // `pnpm db:seed:pages`, or in production `deploy/deploy.sh seed pages`.
 //
-// A part that already has rows is skipped, so an editor's changes are never overwritten. `--replace` deletes it first
-// and loads it again; name parts after it to limit the run: `-- --replace phonebook`.
+// A part that already has rows is skipped, so an editor's changes are never overwritten; the offices and the library
+// only add what's missing (an office or a section added to the seed since). `--replace` deletes a part first and loads
+// it again; name parts after it to limit the run: `-- --replace phonebook`.
+
+// The offices of hut.ac.ir, then the ones moved from the university's own subsites (the vice-presidencies and their
+// units). The files of those come in their own seed files.
+const offices = [...mainOffices, ...vicePresidencies, ...researchOffices, ...studentOffices];
+const library = [...forms, ...vicePresidencyFiles, ...researchOfficeFiles, ...studentOfficeFiles];
 
 /*===== Phone Book =====*/
 async function seedPhonebook(): Promise<string> {
@@ -53,16 +64,32 @@ async function seedPhonebook(): Promise<string> {
 /*===== Offices =====*/
 // Photos are uploaded before each office's transaction, so it doesn't hold a connection open over the network; if the
 // transaction fails, they stay unattached and the media cleanup deletes them.
+/** The offices in the seed that aren't stored: all of them on a first run, then the ones added since. */
+async function missingOffices() {
+  const stored = new Set((await db.select({ slug: office.slug }).from(office)).map((row) => row.slug));
+  return offices.filter((seed) => !stored.has(seed.slug));
+}
+
 async function seedOffices(): Promise<string> {
   const system = await systemUser();
+  const missing = await missingOffices();
   let photoCount = 0;
 
-  for (const seed of offices) {
+  for (const seed of missing) {
     const photos: (string | null)[] = [];
     for (const member of seed.members) {
       photos.push(member.photoUrl ? await uploadPhoto({ url: member.photoUrl, uploader: system.id }) : null);
     }
-    photoCount += photos.filter(Boolean).length;
+    // A list's pictures (book covers) are portraits too, one array per list.
+    const pictures: (string | null)[][] = [];
+    for (const list of seed.lists ?? []) {
+      const row: (string | null)[] = [];
+      for (const item of list.items) {
+        row.push(item.imageUrl ? await uploadPhoto({ url: item.imageUrl, uploader: system.id }) : null);
+      }
+      pictures.push(row);
+    }
+    photoCount += [...photos, ...pictures.flat()].filter(Boolean).length;
 
     await db.transaction(async (tx) => {
       const [row] = await tx
@@ -81,6 +108,8 @@ async function seedOffices(): Promise<string> {
           fax: seed.fax,
           email: seed.email,
           feedCategory: seed.feedCategory,
+          faq: seed.faq ?? [],
+          schedules: seed.schedules ?? [],
         })
         .returning({ id: office.id });
       if (!row) throw new Error(`Inserting the office ${seed.slug} returned no row`);
@@ -100,16 +129,35 @@ async function seedOffices(): Promise<string> {
           .insert(officeLink)
           .values(seed.links.map((link, index) => ({ officeId: row.id, ...link, position: index })));
       }
+
+      for (const [listIndex, list] of (seed.lists ?? []).entries()) {
+        const [listRow] = await tx
+          .insert(officeList)
+          .values({ officeId: row.id, title: list.title, position: listIndex })
+          .returning({ id: officeList.id });
+        if (!listRow) throw new Error(`Inserting a list of ${seed.slug} returned no row`);
+
+        for (const [index, item] of list.items.entries()) {
+          const imageMediaId = pictures[listIndex]?.[index] ?? null;
+          if (imageMediaId) {
+            const attached = await attachMedia({ db: tx, mediaId: imageMediaId, kind: "portrait", userId: system.id });
+            if (attached.kind !== "ok") throw new Error(`Could not attach the picture of ${item.title.fa}`);
+          }
+          const { imageUrl: _imageUrl, ...fields } = item;
+          await tx.insert(officeListItem).values({ listId: listRow.id, ...fields, imageMediaId, position: index });
+        }
+      }
     });
   }
-  return `${offices.length} offices, ${photoCount} photos`;
+  return `${missing.length} offices, ${photoCount} photos`;
 }
 
-/** Deletes every office, its rows (cascade) and then its photos' files. */
+/** Deletes every office, its rows (cascade) and then its photos' and covers' files. */
 async function clearOffices(): Promise<void> {
   const photos = await db.select({ id: officeMember.photoMediaId }).from(officeMember);
+  const covers = await db.select({ id: officeListItem.imageMediaId }).from(officeListItem);
   await db.delete(office);
-  for (const { id } of photos) if (id) await deleteMedia({ db, mediaId: id });
+  for (const { id } of [...photos, ...covers]) if (id) await deleteMedia({ db, mediaId: id });
 }
 
 /*===== Library =====*/
@@ -162,7 +210,7 @@ type Part = { has: () => Promise<boolean>; clear: () => Promise<void>; seed: () 
 // In load order: the library's office sections need their offices.
 const PARTS: Record<string, Part> = {
   offices: {
-    has: async () => (await db.select({ id: office.id }).from(office).limit(1)).length > 0,
+    has: async () => (await missingOffices()).length === 0,
     clear: clearOffices,
     seed: seedOffices,
   },

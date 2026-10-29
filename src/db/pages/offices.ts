@@ -1,3 +1,4 @@
+import type { OfficeFaqEntry, OfficeSchedule } from "#/db/schema";
 import type { LocalizedText } from "#/lib/localized-text";
 import type { AcademicRank, Honorific } from "#/orpc/department/constants";
 import type { FeedCategory } from "#/orpc/home-feed/constants";
@@ -38,6 +39,13 @@ export type OfficeSeed = {
     photoUrl?: string;
   }[];
   links: { title: LocalizedText; description?: LocalizedText; url: string; icon: OfficeLinkIcon }[];
+  /** Titled sets of cards; an item's `imageUrl` (a book's cover) is downloaded and stored like the photos. */
+  lists?: {
+    title: LocalizedText;
+    items: { title: LocalizedText; text?: LocalizedText; url?: string; imageUrl?: string }[];
+  }[];
+  faq?: OfficeFaqEntry[];
+  schedules?: OfficeSchedule[];
 };
 
 const MAIN = "https://hut.ac.ir";

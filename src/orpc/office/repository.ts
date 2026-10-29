@@ -1,13 +1,16 @@
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, inArray } from "drizzle-orm";
 
 import type { Database } from "#/db/client.server";
-import { media, office, officeLink, officeMember } from "#/db/schema";
+import { media, office, officeLink, officeList, officeListItem, officeMember } from "#/db/schema";
 import type { MediaRecord } from "#/orpc/media/repository";
 
 /*===== Types =====*/
 export type OfficeRecord = typeof office.$inferSelect;
 export type OfficeLinkRecord = typeof officeLink.$inferSelect;
 export type OfficeMemberWithPhoto = { member: typeof officeMember.$inferSelect; photo: MediaRecord | null };
+export type OfficeListWithItems = typeof officeList.$inferSelect & {
+  items: { item: typeof officeListItem.$inferSelect; image: MediaRecord | null }[];
+};
 
 /*===== Reads =====*/
 export async function findOfficeBySlug({
@@ -56,4 +59,33 @@ export function findOfficeMembers({
 
 export function findOfficeLinks({ db, officeId }: { db: Database; officeId: string }): Promise<OfficeLinkRecord[]> {
   return db.select().from(officeLink).where(eq(officeLink.officeId, officeId)).orderBy(asc(officeLink.position));
+}
+
+/** The office's card lists in order, each with its cards and their pictures. */
+export async function findOfficeLists({
+  db,
+  officeId,
+}: {
+  db: Database;
+  officeId: string;
+}): Promise<OfficeListWithItems[]> {
+  const lists = await db
+    .select()
+    .from(officeList)
+    .where(eq(officeList.officeId, officeId))
+    .orderBy(asc(officeList.position));
+  if (lists.length === 0) return [];
+
+  const items = await db
+    .select({ item: officeListItem, image: media })
+    .from(officeListItem)
+    .leftJoin(media, eq(officeListItem.imageMediaId, media.id))
+    .where(
+      inArray(
+        officeListItem.listId,
+        lists.map((list) => list.id),
+      ),
+    )
+    .orderBy(asc(officeListItem.position));
+  return lists.map((list) => ({ ...list, items: items.filter(({ item }) => item.listId === list.id) }));
 }

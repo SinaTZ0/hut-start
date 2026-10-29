@@ -29,6 +29,7 @@ import {
   countArchiveDates,
   countArchiveKinds,
   findArchivePage,
+  findNewStudentArticles,
   findArticlesByUrl,
   findArticlesWithoutPage,
   findArticleWithPage,
@@ -155,6 +156,15 @@ function archiveWords(query: string | undefined): string[] {
  * One page of the archive with what each filter's options would show. Each facet is counted with the other filters
  * applied but not its own, so a visitor sees how many they'd get by switching to it.
  */
+/*===== New Students =====*/
+const NEW_STUDENT_POSTS_SHOWN = 8;
+
+/** The newest posts for new students, for `/new-students`. */
+export async function listNewStudentPosts({ db }: { db: Database }): Promise<FeedItem[]> {
+  const rows = await findNewStudentArticles({ db, limit: NEW_STUDENT_POSTS_SHOWN });
+  return rows.map(toListedItem);
+}
+
 export async function listArchive({ db, input }: { db: Database; input: ArchiveInput }): Promise<ArchivePage> {
   const calendar = requestCalendar();
   const filter: ArchiveFilter = {

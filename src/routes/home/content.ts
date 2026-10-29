@@ -37,13 +37,13 @@ export const RESEARCH_UNITS: { label: () => string; description: () => string; h
   {
     label: m.nav_research_industry,
     description: m.home_unit_industry,
-    href: "http://industry.hut.ac.ir/",
+    href: "/offices/industry",
     icon: FactoryIcon,
   },
   {
     label: m.nav_research_central_lab,
     description: m.home_unit_lab,
-    href: "http://lab.hut.ac.ir/",
+    href: "/offices/central-lab",
     icon: FlaskConicalIcon,
   },
 ];

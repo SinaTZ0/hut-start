@@ -14,7 +14,7 @@ import { RuledHeading } from "#/components/shared/ruled-heading/ruled-heading";
 import { TextLink } from "#/components/shared/text-link/text-link";
 import { formatDate, formatNumber } from "#/lib/locale";
 import { absoluteUrl, jsonLd, pageMeta } from "#/lib/seo";
-import { PAGE_DRAWINGS } from "#/lib/university/drawings";
+import { officeDrawing } from "#/lib/university/drawings";
 import { NEWS_CATEGORIES } from "#/lib/university/feed";
 import { formatPhone } from "#/lib/university/phone";
 import { cn } from "#/lib/utils";
@@ -23,7 +23,10 @@ import type { FeedCategory } from "#/orpc/home-feed/constants";
 import type { Office } from "#/orpc/office/contract";
 import { m } from "#/paraglide/messages";
 import { localizeHref } from "#/paraglide/runtime";
+import { CardList } from "./components/card-list";
+import { FaqList } from "./components/faq-list";
 import { PersonCard } from "./components/person-card";
+import { ScheduleTables } from "./components/schedule-tables";
 import { LINK_ICONS, SECTION_CRUMBS } from "./content";
 
 /*===== Query =====*/
@@ -65,7 +68,8 @@ export const Route = createFileRoute("/_site-layout/offices/$officeSlug")({
 
 /**
  * A university office as a ruled sheet: who it is and how to reach it, then numbered sections for what it has (its
- * tools, what it does, its notices, its files, its people, and for the president's office the former presidents).
+ * tools, what it does, its card lists, its notices, its hours, its questions and answers, its files, its people, and
+ * for the president's office the former presidents).
  * Sections without content are left out, and the numbers follow what is shown.
  */
 function OfficePage() {
@@ -104,6 +108,9 @@ function OfficePage() {
   if (hasAbout) {
     sections.push({ id: "about", title: m.office_about_title(), body: <About office={office} head={head} /> });
   }
+  for (const list of office.lists) {
+    sections.push({ id: `list-${list.id}`, title: list.title, body: <CardList list={list} /> });
+  }
   if (office.notices.length > 0) {
     const category = office.feedCategory as FeedCategory | null;
     sections.push({
@@ -122,6 +129,16 @@ function OfficePage() {
     });
   } else if (office.notes.length > 0) {
     sections.push({ id: "notes", title: m.office_notes_title(), band: true, body: <Notes notes={office.notes} /> });
+  }
+  if (office.schedules.length > 0) {
+    sections.push({
+      id: "hours",
+      title: m.office_hours_title(),
+      body: <ScheduleTables schedules={office.schedules} />,
+    });
+  }
+  if (office.faq.length > 0) {
+    sections.push({ id: "faq", title: m.office_faq_title(), band: true, body: <FaqList faq={office.faq} /> });
   }
   for (const section of office.sections) {
     sections.push({
@@ -188,7 +205,7 @@ function OfficePage() {
         crumbs={[{ label: crumb.label(), href: crumb.href }, { label: office.name }]}
         title={office.name}
         lede={office.lede}
-        drawing={PAGE_DRAWINGS.office}
+        drawing={officeDrawing(office.slug)}
       >
         <ContactLines office={office} />
       </PageHero>
