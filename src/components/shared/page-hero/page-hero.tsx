@@ -51,7 +51,7 @@ export function PageHero({
         <div
           aria-hidden
           style={{ "--art": `url("${drawing}")` } as CSSProperties}
-          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-art-page art-page opacity-45 md:opacity-100 ltr:-scale-x-100"
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-art-page art-page opacity-60 md:opacity-100 ltr:-scale-x-100"
         />
       )}
 

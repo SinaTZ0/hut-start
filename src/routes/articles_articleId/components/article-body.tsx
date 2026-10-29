@@ -67,7 +67,7 @@ function Block({ block }: { block: Group }) {
           className={`grid gap-2.5 ps-5.5 marker:text-highlight-text ${block.type === "bulletList" ? "list-disc" : "list-decimal"}`}
         >
           {block.content.map((item, index) => (
-            <li key={index}>
+            <li key={index} className="text-justify hyphens-auto">
               {item.content.map((paragraph, at) => (
                 <ArticleInline key={at} nodes={paragraph.content} />
               ))}

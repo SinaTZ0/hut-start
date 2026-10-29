@@ -296,6 +296,9 @@
      for the page, `art-band` for a pine band. */
   --art-ink: color-mix(in srgb, var(--heading) 46%, transparent);
   --art-band: color-mix(in srgb, var(--on-band) 13%, transparent);
+  /* A plain page's hero drawing (`art-page`): stronger than `art-ink`, since it's the hero's one picture and sits beside
+     the title, not under text, on wide screens. */
+  --art-page: color-mix(in srgb, var(--heading) 78%, transparent);
   /* The home hero's drawing of the campus: the picture itself there, in the sky behind the name, so far stronger than a
      band's backdrop. The hero is pine in both themes, so it keeps this in dark too. */
   --art-hero: color-mix(in srgb, var(--on-band) 75%, transparent);
@@ -391,6 +394,7 @@
   /* Pale lines on the dark page, quieter than in light: light ink on dark reads stronger */
   --art-ink: color-mix(in srgb, var(--heading) 20%, transparent);
   --art-band: color-mix(in srgb, var(--on-band) 9%, transparent);
+  --art-page: color-mix(in srgb, var(--heading) 40%, transparent);
   --art-menu: color-mix(in srgb, var(--heading) 11%, transparent);
 
   --elevation-sm: 0 1px 2px rgb(0 0 0 / 30%);
@@ -666,7 +670,7 @@
 /* A plain page's drawing (`PageHero`): its whole height in view at the end side, where the title leaves room, fading
    out downward and toward the title. English mirrors the layer, as with `art-sheet`. */
 @utility art-page {
-  background-color: var(--art-ink);
+  background-color: var(--art-page);
   mask-image:
     var(--art), linear-gradient(to bottom, #000 40%, transparent 96%),
     linear-gradient(to left, #000 25%, rgb(0 0 0 / 15%) 60%);
@@ -763,8 +767,18 @@
     /* Balanced line breaks keep short Persian headings from ending on a lone word */
     text-wrap: balance;
   }
+  /* Text blocks run justified, edge to edge, as Persian print sets them; the last line stays at the start. A centred or
+     start-aligned paragraph says so with a utility, which beats this layer. Hyphens only take effect in English: the
+     browsers have no Persian hyphenation. */
   p {
+    text-align: justify;
     text-wrap: pretty;
+    hyphens: auto;
+  }
+  /* …except under a centred or end-aligned block (an empty state, a prompt card), which the paragraph would otherwise
+     override rather than inherit */
+  :where([class*="text-center"], [class*="text-end"]) p {
+    text-align: inherit;
   }
   ::selection {
     @apply bg-accent text-foreground;
