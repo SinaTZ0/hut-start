@@ -8,14 +8,15 @@ import { DEPARTMENTS } from "#/lib/university/navigation";
 /*===== Department Grid =====*/
 
 /**
- * The eight departments as cards, each with its key object drawn from its hero: a way into each department's page, or
- * (`to="labs"`) into its labs.
+ * The eight departments as cards: a way into each department's page, with its key object drawn from its hero, or
+ * (`to="labs"`) into its labs, with an instrument from its lab drawing.
  */
 export function DepartmentGrid({ to = "page" }: { to?: "page" | "labs" }) {
   return (
     <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       {DEPARTMENTS.map((department) => {
-        const mark = departmentDrawings(department.id)?.mark;
+        const drawings = departmentDrawings(department.id);
+        const mark = to === "labs" ? drawings?.labMark : drawings?.mark;
         return (
           <li key={department.id}>
             <Card

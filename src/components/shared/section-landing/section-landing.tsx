@@ -55,9 +55,14 @@ export function SectionLanding({ sectionId, feed }: { sectionId: SectionId; feed
 
   if (!section) return null;
 
-  const [firstGroup, ...otherGroups] = section.groups;
+  // The menu's link to this very page («درباره دانشگاه» → /about) would only reload it here.
+  const groups = section.groups.map((group) => ({
+    ...group,
+    links: group.links.filter((link) => link.href !== section.href),
+  }));
+  const [firstGroup, ...otherGroups] = groups;
   // Education's first group is the departments, which the lead already shows; research leads with the labs instead.
-  const listedGroups = page.lead === "labs" ? section.groups : otherGroups;
+  const listedGroups = page.lead === "labs" ? groups : otherGroups;
   const titleId = `section-${sectionId}-title`;
 
   return (

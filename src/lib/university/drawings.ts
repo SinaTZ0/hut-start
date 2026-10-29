@@ -10,6 +10,8 @@ export type Drawings = {
   lab: string;
   /** The department's key object, cut from its hero drawing, for its cell in the home page's grid. */
   mark: string;
+  /** One instrument cut from its lab drawing, for its cell in the grids that lead to the labs. */
+  labMark: string;
   field: (key: string) => string;
 };
 
@@ -20,6 +22,7 @@ export function departmentDrawings(slug: string): Drawings | null {
     hero: `${folder}/hero.webp`,
     lab: `${folder}/lab.webp`,
     mark: `${folder}/mark.webp`,
+    labMark: `${folder}/lab-mark.webp`,
     field: (key) => `${folder}/field-${key}.webp`,
   };
 }
