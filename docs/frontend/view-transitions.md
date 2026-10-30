@@ -56,6 +56,9 @@ snapshot in the new state only:
 - The site header has its own snapshot (`site-header`), so it cross-fades in place above the sliding `#main`. In
   `root` it would be drawn under `#main`'s snapshot, hidden wherever the new page's top is opaque (a page restored
   mid-scroll) until the fade ends.
+- Below `lg`, the tab bar fixed to the bottom of the screen has its own snapshot (`tab-bar`) for the same reason. Being
+  fixed, it sits at the same spot in both states and stays put. The phone header, which scrolls with the page, stays
+  in `root`: a snapshot of its own would fly between the two pages' scroll positions.
 - Forward points left in RTL (`app-identity.md`), so a forward page arrives from the left and a back page from the
   right. `--page-shift` is negative under `dir="rtl"` and positive otherwise, so an LTR page gets the mirror image.
 

@@ -855,6 +855,26 @@
   z-index: 1;
 }
 
+/*------ Tab Bar ------*/
+/* Below `lg` the tab bar (`tab-bar.tsx`) gets a snapshot of its own for the same reason: in `root` the new page's
+   sliding `#main` covers it until the fade ends, and it pops back. It is fixed to the viewport, so unlike the phone
+   header it sits at the same spot in both states and stays put. Hidden from `lg` up, it isn't captured there. Its
+   tabs take the new page's highlight at once and the cross-fade blends it. */
+:root:active-view-transition-type(page) [data-tab-bar] {
+  view-transition-name: tab-bar;
+}
+:root:active-view-transition-type(page) [data-tab-bar] * {
+  transition: none;
+}
+::view-transition-group(tab-bar),
+::view-transition-old(tab-bar),
+::view-transition-new(tab-bar) {
+  animation-duration: 200ms;
+}
+::view-transition-group(tab-bar) {
+  z-index: 1;
+}
+
 /*------ Direction ------*/
 /* Forward and back navigations (types `page-forward` / `page-back`) also slide the new page in. Only the new snapshot
    names `#main` (`data-page-entering`, set by `markEnteringPage` in `src/router.tsx`), so the old page still fades out
